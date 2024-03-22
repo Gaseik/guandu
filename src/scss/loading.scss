@@ -1,0 +1,39 @@
+.loading {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .loading-wording {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .loading-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .loading-icon {
+        color:#{$color};
+        width: 50px;
+        height: 50px;
+      }
+
+      .loading-text {
+        width: 100%;
+        text-align: center;
+        color:#{$color};
+        margin: 16px 0 0 0;
+      }
+    }
+  }
+
+  .asus-logo {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85px;
+  }
+}

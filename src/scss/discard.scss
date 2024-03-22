@@ -1,0 +1,74 @@
+.discard {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #{$background};
+    .discard-pop {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 280px;
+        height: 220px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        padding: 10px 30px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        .image-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+        .discard-text {
+            text-align: center;
+            width: 100%;
+            color: #{$btn-color};
+            margin: 0;
+        }
+
+        .discard-btn-group {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+
+            .delete-btn {
+                width: 100px;
+                height: 40px;
+                background-color: white;
+                border: 2px solid #{$btn-color};
+                border-radius: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
+                p {
+                    color:#{$btn-color};
+                    font-size: 18px;
+                    margin: 0;
+                }
+            }
+            
+            .cancel-btn {
+                width: 100px;
+                height: 40px;
+                background-color: #{$btn-color};
+                border-radius: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
+                p {
+                    color:#{$btn-background};
+                    font-size: 18px;
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+.deviceOrientation {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #{$background};
+    display: flex;
+    align-items: center;
+
+    .phoneOrientation-group {
+        width: 100%;
+        height: 150px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        .icon-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            .phoneOrientation-icon {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        .phoneOrientation-text {
+            color: white;
+            font-size: 1.2rem;
+            padding-top: 1.5rem;
+        }
+    }
+
+}

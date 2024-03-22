@@ -1,0 +1,70 @@
+.use-mobile-background {
+    background-color: #{$background};
+    width: 100vw;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    .contain-group {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        .icon-group {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .computer-icon,
+            .phone-icon {
+                width: 90px;
+                height: 90px;
+                filter: invert(100%) sepia(0%) saturate(7469%) hue-rotate(99deg) brightness(99%) contrast(104%);
+            }
+
+            .east-icon {
+                margin-left: 10px;
+                width: 50px;
+                height: 50px;
+                filter: invert(76%) sepia(80%) saturate(652%) hue-rotate(104deg) brightness(96%) contrast(101%);
+            }
+        }
+        .use-mobile-text {
+            width: 100%;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-size: 1.2rem;
+            color: white;
+            p {
+                margin: 0;
+            }
+            a {
+                color:#{$color}
+            }
+        }
+        .slogan {
+            width: 100%;
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 2.5rem 0;
+        }
+    }
+    .asus-logo {
+        position: absolute;
+        bottom: 5rem;
+        width: 120px;
+    }
+}
+
+
+
+
+
+
