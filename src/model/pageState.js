@@ -16,6 +16,7 @@ const clock = new THREE.Clock();
 export let modelData = undefined;
 let burger = undefined;
 let drinks = undefined;
+let orthoCamera, orthoScene, logoMesh;
 export const AppState = {
   state: {
     pageState: PageState.Loading,
@@ -65,7 +66,7 @@ export const AppState = {
     async loadModelFile(onTargetFound, onTargetLost) {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
-        imageTargetSrc: '/model/targetsTEST.mind',
+        imageTargetSrc: '/model/targets.mind',
         filterMinCF: 0.001,
         filterBeta: 0.009,
         missTolerance: 5,
@@ -104,7 +105,8 @@ export const AppState = {
      
         //設置攝影機的畫面
         connectWebCam(arLib)
-        
+        arLib.camera2D = orthoCamera
+        arLib.scene2D = orthoScene
         console.log(arSceneB)
         console.log(arSceneD)
        
@@ -149,6 +151,12 @@ export const AppState = {
             renderer.render(scene, camera);
             camera.layers.set(0);
             renderer.render(scene, camera);
+
+            // 渲染2D场景（logo）
+            renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+            renderer.render(orthoScene, orthoCamera);
+            renderer.autoClear = true; // 渲染完毕后重置autoClear
+     
             let mixerUpdateDelta = clock.getDelta();
             Object.keys(mixer).forEach(name => {
               mixer[name].update(mixerUpdateDelta)
@@ -159,9 +167,8 @@ export const AppState = {
               burger.rotation.y = Math.max(burger.rotation.y, -Math.PI / 2);
             }
           });
-
-       
         })
+      
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -223,6 +230,8 @@ function connectWebCam(mindarThree) {
   mesh.layers.enable(2);
   scene.add(mesh);
   
+
+
   const textureLoader = new THREE.TextureLoader();
   const texture = textureLoader.load("/image/guanduLogo.png");
   const geometry = new THREE.PlaneGeometry(100, 100);
@@ -238,14 +247,31 @@ function connectWebCam(mindarThree) {
   plane.position.set(
    0,
    0,
-    0
+   0
   );
-  plane.renderOrder = 4
-  plane.position.set(0, position_y, 0);
-  plane.scale.set(10, 10, 10);
-  // plane.layers.set(2);
-  // plane.layers.enable(2);
-  scene.add(plane);
+  plane.renderOrder = 2
+  plane.position.set(video.clientWidth, video.clientHeight, -5000);
+  plane.scale.set(5, 5, 5);
+  plane.layers.set(2);
+  plane.layers.enable(2);
+  // scene.add(plane);
+
+  // 创建2D场景和相机
+  orthoScene = new THREE.Scene();
+  orthoCamera = new THREE.OrthographicCamera(0, window.innerWidth, window.innerHeight, 0, -10, 10);
+
+  // 加载Logo并添加到2D场景
+  const loader = new THREE.TextureLoader();
+  loader.load('/image/guanduLogo.png', (texture) => {
+      const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+      const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+      logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
+      logoMesh.scale.set(0.4,0.4,0.4)
+      // 调整位置以放置在左上角
+      logoMesh.position.set(window.innerWidth/4, window.innerHeight-50, 1);
+      orthoScene.add(logoMesh);
+      // scene.render(orthoScene, orthoCamera);
+  });
 
 }
 

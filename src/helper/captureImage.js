@@ -1,5 +1,5 @@
 export function captureImage(arLib) {
-  const { video, renderer, scene, camera } = arLib;
+  const { video, renderer, scene, camera,camera2D,scene2D } = arLib;
   const renderCanvas = renderer.domElement;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
@@ -18,21 +18,17 @@ export function captureImage(arLib) {
 
   context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-  // 创建浮水印图像对象
-  const waterMarkImage = new Image();
-  waterMarkImage.src = '/path/to/your/watermark/image.png';
+  renderer.preserveDrawingBuffer = true;
+  camera.layers.set(0);
+  renderer.render(scene, camera);
+  // camera.layers.set(0);
+  // renderer.render(scene, camera);
+  
+  renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+  renderer.render(scene2D, camera2D);
+  renderer.autoClear = true; 
+  context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
+  renderer.preserveDrawingBuffer = false;
 
-  // 绘制浮水印
-  waterMarkImage.onload = () => {
-    const x = canvas.width - waterMarkImage.width - 10;
-    const y = canvas.height - waterMarkImage.height - 10;
-    context.drawImage(waterMarkImage, x, y);
-
-    renderer.preserveDrawingBuffer = true;
-    renderer.render(scene, camera);
-    context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
-    renderer.preserveDrawingBuffer = false;
-  };
-
-  return canvas;
+  return [canvas.toDataURL(), canvas];
 }

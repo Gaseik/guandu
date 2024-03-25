@@ -27,14 +27,7 @@ const ARView = function () {
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
-      const waterMarkImage = new Image();
-      waterMarkImage.src = '/image/guanduLogo.png';
-      waterMarkImage.onload = () => {
-        // 调用 captureImage 函数并传递浮水印图像
-        const canvas = captureImage(arLib, waterMarkImage);
-        // 在这里可以对 canvas 做进一步处理，比如显示在界面上或者保存成文件等
-      };
-  
+    
       const imageUrl = captureImage(state.arLib);
       dispatch.AppState.setImage(imageUrl);
       
