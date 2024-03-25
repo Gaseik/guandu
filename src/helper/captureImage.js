@@ -1,7 +1,6 @@
 export function captureImage(arLib) {
   const { video, renderer, scene, camera } = arLib;
   const renderCanvas = renderer.domElement;
-
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   canvas.width = renderCanvas.width;
@@ -19,10 +18,21 @@ export function captureImage(arLib) {
 
   context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-  renderer.preserveDrawingBuffer = true;
-  renderer.render(scene, camera);
-  context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
-  renderer.preserveDrawingBuffer = false;
+  // 创建浮水印图像对象
+  const waterMarkImage = new Image();
+  waterMarkImage.src = '/path/to/your/watermark/image.png';
 
-  return [canvas.toDataURL(), canvas];
+  // 绘制浮水印
+  waterMarkImage.onload = () => {
+    const x = canvas.width - waterMarkImage.width - 10;
+    const y = canvas.height - waterMarkImage.height - 10;
+    context.drawImage(waterMarkImage, x, y);
+
+    renderer.preserveDrawingBuffer = true;
+    renderer.render(scene, camera);
+    context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
+    renderer.preserveDrawingBuffer = false;
+  };
+
+  return canvas;
 }

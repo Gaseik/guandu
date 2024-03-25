@@ -107,6 +107,7 @@ export const AppState = {
         
         console.log(arSceneB)
         console.log(arSceneD)
+       
         //設置3D場景
         setScene(anchor.group, scene, arSceneD, () => {
           renderer.shadowMap.enabled = true;
@@ -114,10 +115,12 @@ export const AppState = {
           renderer.shadowMap.needsUpdate = true;
           renderer.setAnimationLoop(() => {
             renderer.autoClear = false;
+          
             camera.layers.set(2);
             renderer.render(scene, camera);
             camera.layers.set(0);
             renderer.render(scene, camera);
+           
             let mixerUpdateDelta = clock.getDelta();
             Object.keys(mixer).forEach(name => {
               mixer[name].update(mixerUpdateDelta)
@@ -141,6 +144,7 @@ export const AppState = {
           renderer.shadowMap.needsUpdate = true;
           renderer.setAnimationLoop(() => {
             renderer.autoClear = false;
+            
             camera.layers.set(2);
             renderer.render(scene, camera);
             camera.layers.set(0);
@@ -160,6 +164,7 @@ export const AppState = {
         })
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
+        dispatch.AppState.setIsArModeOn(true)
       }).catch((e)=>{
       });
     },
@@ -210,12 +215,38 @@ function connectWebCam(mindarThree) {
   let scale = 13.5;
   let position_y = 0;
   mesh.renderOrder = 2
-  //設定攝影機的顯示平面的位置,大小,層級和加入場景
+
+
   mesh.position.set(0, position_y, -10000);
   mesh.scale.set(scale, scale, 1);
   mesh.layers.set(2);
   mesh.layers.enable(2);
   scene.add(mesh);
+  
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load("/image/guanduLogo.png");
+  const geometry = new THREE.PlaneGeometry(100, 100);
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    opacity: 1,
+    side: THREE.DoubleSide,
+  });
+
+  
+  const plane = new THREE.Mesh(geometry, material);
+  plane.position.set(
+   0,
+   0,
+    0
+  );
+  plane.renderOrder = 4
+  plane.position.set(0, position_y, 0);
+  plane.scale.set(10, 10, 10);
+  // plane.layers.set(2);
+  // plane.layers.enable(2);
+  scene.add(plane);
+
 }
 
 //設置場景
@@ -237,7 +268,6 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
   modelObject.position.x = -0.2
   modelObject.position.y = -0.13
   anchorGroup.add(modelObject);
-
   //掃描ThreeJS的物件並做處理
   modelObject.traverse((item) => {
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件

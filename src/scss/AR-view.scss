@@ -8,8 +8,10 @@
         position: absolute;
         right: 40px;
         top: 30px;
-        width: 80px;
-        height: 40px;
+       
+        padding:.5rem .75rem;
+        // width: 80px;
+        // height: 40px;
         background-color: #{$btn-background};
         border-radius: 20px;
         display: flex;
@@ -17,7 +19,7 @@
         justify-content: center;
 
         span {
-            font-weight: 500;
+            font-weight: 750;
             color: #{$btn-color};
             font-size: 18px;
             margin: 0;
@@ -33,11 +35,11 @@
         height: 290px;
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 10px;
-        padding: 10px 20px;
+        padding: 1rem 20px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-
+        align-items: center;
         .close-icon-btn {
             padding: 0;
             width: 100%;
@@ -52,12 +54,12 @@
 
 
         img {
-            width: 100%;
+            // width: 100%;
         }
 
         .help-large-scale{
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 700;
             text-align: center;
             color: #{$btn-color};
             margin: 0;
@@ -67,7 +69,7 @@
             font-weight: 500;
             text-align: center;
             color: gray;
-            margin: 0 0 15px 0;
+            // margin: 0 0 15px 0;
         }
     }
 

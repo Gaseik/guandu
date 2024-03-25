@@ -30,6 +30,7 @@
             width: 100%;
             color: #{$btn-color};
             margin: 0;
+            font-weight: 600;
         }
 
         .discard-btn-group {
@@ -46,7 +47,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                
+                font-weight: 600;
                 p {
                     color:#{$btn-color};
                     font-size: 18px;
@@ -62,7 +63,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                
+                font-weight: 600;
                 p {
                     color:#{$btn-background};
                     font-size: 18px;

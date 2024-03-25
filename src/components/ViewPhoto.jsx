@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { shareImage } from "../helper/shareImage";
+import { MdSaveAlt } from "react-icons/md";
+import { FaTrash } from "react-icons/fa6";
 
 const ViewPhoto = function () {
   const [pop, setPop] = useState()
@@ -42,26 +44,21 @@ const ViewPhoto = function () {
       </div>
       <div className="view-photo">
         <div className="close-group">
-          <div className="btn close-btn" onClick={onClickClose}>
-            <img src="/image/icon/close-icon.svg" className="close-icon" alt="" />
+          <div className="rounded-full bg-white flex text-black font-bold py-3 px-4" onClick={onClickClose}>
+          <FaTrash className="text-2xl mr-2 text-main"/> 刪掉重拍
           </div>
         </div>
-        <div className="press-to-save-group">
+        {/* <div className="press-to-save-group">
           <div className="press-to-save-pop">
             <p>Long press to save</p>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="stepBtn-container">
         <div className="stepBtn-group">
-          <button className="btn copy-btn" onClick={copyPop}>
-            <p>Copy Hashtags</p>
-          </button>
-          <button className="btn share-btn" onClick={onShareClick}>
-            <p>Share</p>
-          </button>
-          <button className="btn save-btn" onClick={savePop}>
-            <img src="/image/icon/download-icon.svg" alt="" />
+        
+          <button className="text-white flex items-center rounded-full bg-main" onClick={savePop}>
+            儲存 <MdSaveAlt className="text-2xl ml-2 mb-1"/>
           </button>
         </div>
         <div className="btn-pop">{pop}</div>
