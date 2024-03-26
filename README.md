@@ -1,8 +1,35 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# deploy init
+```
+sudo apt update
+sudo apt install curl
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
-Currently, two official plugins are available:
+git fetch
+git reset --hard origin/dev
+npm i
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+vim ./node_modules/mind-ar/dist/mindar-image-three.prod.js
+import { CSS3DRenderer as Vd } from "three/examples/jsm/renderers/CSS3DRenderer.js";
+
+sudo apt install screen
+
+啟動一個新的screen會話：
+screen -S devsession
+
+在screen會話中，運行你的命令：
+npm run dev
+按下Ctrl + A然後按下D來脫離screen會話。這樣，你的命令會在後台繼續運行。
+
+要重新連接到你的screen會話，使用以下命令：
+screen -r devsession
+```
+
+# connect
+```
+ssh ictserver@192.168.1.220
+*****server
+
+cd projects/guandu_dock/
+```
