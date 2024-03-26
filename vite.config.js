@@ -28,7 +28,7 @@ export default defineConfig({
     },
     basicSsl({
       /** name of certification */
-      name: "test",
+      name: "test", 
       /** custom trust domains */
       domains: ["*.custom.com"],
       /** custom certification directory */

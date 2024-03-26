@@ -7,6 +7,7 @@ import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
 import { IoIosInformationCircle, IoIosClose,IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
+import { IoStop } from "react-icons/io5";
 
 const viewButton = {
   camera: "camera",
@@ -94,7 +95,7 @@ const ARView = function () {
         state.isArModeOn ? "z-[20] opacity-100" : "opacity-0 z-[-1]"
       }`}
     >
-      <div id="ar_container" className=" h-full flex " />
+      <div id="ar_container" className=" h-[100vh] flex " />
       {/* <img
         src="image/guanduLogo.png"
         className="absolute w-[120px] top-4 left-10"
@@ -124,10 +125,7 @@ const ARView = function () {
                   <AiFillVideoCamera className="text-4xl text-main"
                   />
                 ) : (
-                  <img
-                    src="/image/icon/stop-record-icon.svg"
-                    className="videocam-icon"
-                    alt=""
+                  <IoStop className="text-4xl text-main"
                   />
                 )}
               </div>
