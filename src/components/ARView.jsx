@@ -27,8 +27,10 @@ const ARView = function () {
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
-    
+      const { renderer } = state.arLib;
+      // console.log(renderer.domElement)
       const imageUrl = captureImage(state.arLib);
+      // console.log(imageUrl)
       dispatch.AppState.setImage(imageUrl);
       
     } else {
