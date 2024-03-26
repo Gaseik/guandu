@@ -64,17 +64,19 @@ const ViewVideo = function () {
       <div className="view-video" >
       <div className="close-group">
           <div className="rounded-full bg-white flex text-black font-bold py-3 px-4" onClick={onClickClose}>
-          <FaTrash className="text-2xl mr-2 text-main"/> 刪掉重拍
+            <FaTrash className="text-2xl mr-2 text-main"/> 刪掉重拍
           </div>
         </div>
       </div>
       <div className="play-btn" style={{ display: playVideo ? "block" : "none" }}>
         <img src="/image/icon/play-icon.svg" className="play-icon" alt="" />
       </div>
-      <div className="stop-btn" style={{ display: playVideo ? "none" : "block" }}>
+      <div className="stop-btn" style={{ display: playVideo ? "none" : "flex" }}>
         <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" />
+        <div className="bg"></div>
       </div>
       <div className="stepBtn-container">
+      <div className="info">請在相簿或資料夾中找到您的檔案</div>
         <div className="stepBtn-group">
         
           <button className="text-white flex items-center rounded-full bg-main" onClick={savePop}>

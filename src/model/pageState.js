@@ -206,7 +206,7 @@ function setModelAnimation(glbModel, animationObject, name) {
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
-  video.style.opacity = 1;
+  video.style.opacity = 0;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
   videoTex.encoding = THREE.sRGBEncoding;
@@ -220,7 +220,7 @@ function connectWebCam(mindarThree) {
   );
 
   //設定大小及位置
-  let scale = 9;
+  let scale = 13 ;
   let position_y = 0;
   mesh.renderOrder = 2
 
@@ -246,7 +246,7 @@ function connectWebCam(mindarThree) {
       logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
       logoMesh.scale.set(0.4,0.4,0.4)
       // 调整位置以放置在左上角
-      logoMesh.position.set(window.innerWidth/4, window.innerHeight-50, 1);
+      logoMesh.position.set(window.innerWidth/4-20, window.innerHeight-50, 1);
       orthoScene.add(logoMesh);
       // scene.render(orthoScene, orthoCamera);
   });

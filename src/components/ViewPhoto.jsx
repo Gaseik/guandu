@@ -32,7 +32,7 @@ const ViewPhoto = function () {
       </div>
       <div className="view-photo">
         <div className="close-group">
-          <div className="rounded-full bg-white flex text-black font-bold py-3 px-4" onClick={onClickClose}>
+          <div className="rounded-full bg-white flex text-[#020202] font-bold py-3 px-4 " onClick={onClickClose}>
           <FaTrash className="text-2xl mr-2 text-main"/> 刪掉重拍
           </div>
         </div>
@@ -42,10 +42,11 @@ const ViewPhoto = function () {
           </div>
         </div> */}
       </div>
+      
       <div className="stepBtn-container">
+        <div className="info">請在相簿或資料夾中找到您的檔案</div>
         <div className="stepBtn-group">
-        
-          <button className="text-white flex items-center rounded-full bg-main" onClick={savePop}>
+          <button className="text-white text-xl flex items-center rounded-full bg-main" onClick={savePop}>
             儲存 <MdSaveAlt className="text-3xl ml-2 mb-1"/>
           </button>
         </div>
