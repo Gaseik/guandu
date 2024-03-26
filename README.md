@@ -29,7 +29,12 @@ screen -r devsession
 # connect
 ```
 ssh ictserver@192.168.1.220
-*****server
+你的密碼
+
+sudo su
+你的密碼
 
 cd projects/guandu_dock/
+git pull
+npm run dev
 ```
