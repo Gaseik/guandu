@@ -5,7 +5,6 @@ let rtc;
 export function startCaptureVideo(canvasDom) {
   rtc = new RecordRTC(canvasDom, {
     type: 'canvas',
-
   });
   rtc.startRecording();
 }

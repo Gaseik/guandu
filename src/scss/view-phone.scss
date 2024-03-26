@@ -85,7 +85,14 @@
         font-size: 3rem;
         filter: invert(99%) sepia(47%) saturate(270%) hue-rotate(158deg) brightness(118%) contrast(100%);
         opacity: 0;
+        padding:1rem;
+        background-color: rgba(92, 194, 213, .5)
+        ;
+     
+        border-radius: 100%;
         animation: play-gradual-change 1s 1;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
     }
 
     .stop-icon {
@@ -122,7 +129,7 @@
     height: 120px;
     position: absolute;
     padding: 30px 25px;
-    bottom: 0;
+    bottom: 60px;
     background-color:transparent;
     
     display: flex;

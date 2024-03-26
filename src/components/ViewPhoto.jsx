@@ -22,23 +22,11 @@ const ViewPhoto = function () {
     await setTimeout(() => { setPop() }, 1000)
   }
 
-  async function copyPop() {
-    await setPop(
-      <>
-        <p>Copied! Share the AR result on social media.</p>
-      </>)
-    await navigator.clipboard.writeText("Seeing an incredible future with #ASUS at #CES2023!👀\n#ASUSLaunchEvent\n👉 Visit this link to have some AR fun! https://asus.click/ces23_wa")
-    await setTimeout(() => { setPop() }, 1000)
-  }
-
-  async function onShareClick() {
-    shareImage(state.imageData[0])
-  }
 
   return (
     <>
       <div className="viewer">
-        <img src={state.imageData[0]} alt="" />
+        <img src={state.imageData[0]} alt="" className="h-full"/>
         {/* <canvas className="canvas" ref={canvas} height={100} width={100}></canvas> */}
 
       </div>

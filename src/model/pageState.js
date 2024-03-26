@@ -153,6 +153,7 @@ export const AppState = {
             renderer.render(scene, camera);
 
             // 渲染2D场景（logo）
+            // 目前因為時序問題,由最後一個函式渲染
             renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
             renderer.render(orthoScene, orthoCamera);
             renderer.autoClear = true; // 渲染完毕后重置autoClear
@@ -205,7 +206,7 @@ function setModelAnimation(glbModel, animationObject, name) {
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
-  video.style.opacity = 0;
+  video.style.opacity = 1;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
   videoTex.encoding = THREE.sRGBEncoding;
@@ -219,7 +220,7 @@ function connectWebCam(mindarThree) {
   );
 
   //設定大小及位置
-  let scale = 13.5;
+  let scale = 9;
   let position_y = 0;
   mesh.renderOrder = 2
 
@@ -232,29 +233,6 @@ function connectWebCam(mindarThree) {
   
 
 
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load("/image/guanduLogo.png");
-  const geometry = new THREE.PlaneGeometry(100, 100);
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    opacity: 1,
-    side: THREE.DoubleSide,
-  });
-
-  
-  const plane = new THREE.Mesh(geometry, material);
-  plane.position.set(
-   0,
-   0,
-   0
-  );
-  plane.renderOrder = 2
-  plane.position.set(video.clientWidth, video.clientHeight, -5000);
-  plane.scale.set(5, 5, 5);
-  plane.layers.set(2);
-  plane.layers.enable(2);
-  // scene.add(plane);
 
   // 创建2D场景和相机
   orthoScene = new THREE.Scene();

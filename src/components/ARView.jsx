@@ -23,7 +23,6 @@ const ARView = function () {
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-  const waterMarkImageRef = useRef();
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -72,9 +71,14 @@ const ARView = function () {
       setRecordingTime(0);
       setIsRecord(false);
       stopCaptureVideo((blob) => {
+        console.log(blob)
         if (sec < 1) {
+          
+     
           return;
+
         }
+        console.log(blob)
         dispatch.AppState.setVideo(blob);
       });
     }
