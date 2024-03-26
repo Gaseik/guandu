@@ -46,7 +46,7 @@ const ViewPhoto = function () {
         <div className="stepBtn-group">
         
           <button className="text-white flex items-center rounded-full bg-main" onClick={savePop}>
-            儲存 <MdSaveAlt className="text-2xl ml-2 mb-1"/>
+            儲存 <MdSaveAlt className="text-3xl ml-2 mb-1"/>
           </button>
         </div>
         <div className="btn-pop">{pop}</div>

@@ -6,6 +6,7 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 export default defineConfig({
   server: {
     https: true,
+    host:'0.0.0.0'
   },
   plugins: [
     react(),
@@ -27,7 +28,7 @@ export default defineConfig({
     },
     basicSsl({
       /** name of certification */
-      name: "test",
+      name: "test", 
       /** custom trust domains */
       domains: ["*.custom.com"],
       /** custom certification directory */

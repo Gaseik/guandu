@@ -24,7 +24,7 @@ function App() {
           style={state.pageState === PageState.Intro ? {} : { display: "none" }}
         />
         <ARView  theme={theme} />
-        <Panel theme={theme} setTheme={setTheme} />
+        {/* <Panel theme={theme} setTheme={setTheme} /> */}
       </ThemeContext.Provider>
     </div>
   );
