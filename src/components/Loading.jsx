@@ -13,32 +13,6 @@ function Loading(props) {
     dispatch.AppState.loadModelFile(onTargetFound, onTargetLost);
   }, []);
 
-  // function onTargetFound(modelData) {
-  //   modelData.children[0].scale.set(0, 0, 0);
-  //   animationList["left_start"].stop();
-  //   animationList["left_loop"].stop();
-  //   animationList["left_start"].timeScale = 0;
-  //   animationList["left_start"].play();
-  //   animationList["left_start"].loop = THREE.LoopOnce;
-  //   setTimeout(() => {
-  //     animationList["left_start"].timeScale = 1;
-  //     modelData.children[0].scale.set(0.235, 0.235, 0.235);
-  //   }, 1500);
-
-  //   animationList["ball_start"].stop();
-  //   animationList["ball_loop"].stop();
-  //   animationList["aa"].stop();
-  //   animationList["bb"].stop();
-  //   animationList["cc"].stop();
-  //   animationList["dd"].stop();
-  //   animationList["ball_start"].timeScale = 0;
-  //   animationList["ball_start"].play();
-  //   animationList["ball_start"].loop = THREE.LoopOnce;
-  //   setTimeout(() => {
-  //     animationList["ball_start"].timeScale = 1;
-  //     modelData.children[0].scale.set(0.235, 0.235, 0.235);
-  //   }, 1500);
-  // }
   function onTargetFound(modelData) {
     // console.log(animationList);
     // animationList["Empty.001Action.001"].play()

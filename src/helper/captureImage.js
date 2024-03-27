@@ -5,7 +5,11 @@ export function captureImage(arLib) {
   const context = canvas.getContext('2d');
   canvas.width = renderCanvas.width;
   canvas.height = renderCanvas.height;
-
+  console.log('videoHeight = ',video.clientHeight)
+  console.log('videoW = ',video.clientWidth)
+  console.log('canvasW = ',canvas.width)
+  console.log('canvasH = ',canvas.height)
+  console.log(renderCanvas.clientWidth)
   const sx =
     (((video.clientWidth - renderCanvas.clientWidth) / 2) * video.videoWidth) /
     video.clientWidth;
@@ -30,5 +34,24 @@ export function captureImage(arLib) {
   context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
   renderer.preserveDrawingBuffer = false;
 
-  return [canvas.toDataURL(), canvas];
+  return canvas.toDataURL();
+}
+
+export function captureImageFromCanvas(canvas) {
+  // 建立一個新的 Canvas 元素來暫存擷取的影像
+  const tempCanvas = document.createElement('canvas');
+  const tempCtx = tempCanvas.getContext('2d');
+
+  // 設定新 Canvas 的寬高與原始 Canvas 相同
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+
+  // 在新 Canvas 上繪製原始 Canvas 的影像
+  tempCtx.drawImage(canvas, 0, 0);
+
+  // 從新 Canvas 中擷取影像，並返回資料 URL
+  const imageDataURL = tempCanvas.toDataURL('image/png');
+  
+  // 返回影像的資料 URL
+  return imageDataURL;
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
@@ -8,7 +8,7 @@ import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
 import { IoIosInformationCircle, IoIosClose,IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
-
+import bgMusicFile from "/music/MetroCity.mp3";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -21,14 +21,33 @@ const ARView = function () {
   const [recordingTime, setRecordingTime] = useState(0);
   const [changeBtn, setChangeBtn] = useState(viewButton.camera);
   const [videoBtn, setVideoBtn] = useState(false);
+  
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
 
+  const [bgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
+  const [musicStarted, setMusicStarted] = useState(false); // 添加一个状态来跟踪音乐是否已经开始播放
+
+  useEffect(() => {
+    // alert(state.pageState)
+    // 当页面状态为 Intro 或 ARView 时，播放背景音乐
+    if (state.pageState === PageState.Intro || state.pageState === PageState.ARView) {
+      bgMusic.volume = 0.3; 
+      bgMusic.play();
+      setMusicStarted(true); // 标记音乐已经开始播放
+    } else {
+      bgMusic.pause(); // 否则暂停背景音乐
+    }
+  }, [state.pageState, bgMusic,musicStarted]); // 依赖于页面状态和背景音乐实例
+
+
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
-    
+      const { renderer } = state.arLib;
+      // console.log(renderer.domElement)
       const imageUrl = captureImage(state.arLib);
+      // console.log(imageUrl)
       dispatch.AppState.setImage(imageUrl);
       
     } else {
@@ -88,6 +107,8 @@ const ARView = function () {
   function onClickHelp() {
     dispatch.AppState.setHelpPop(!state.helpPop);
   }
+
+ 
 
   return (
     <div

@@ -16,7 +16,7 @@ const ViewPhoto = function () {
   async function savePop() {
     const link = document.createElement("a");
     link.download = "image.png";
-    link.href = state.imageData[0];
+    link.href = state.imageData;
     link.click();
     await setPop(<p>Please find your file in the album or folder.</p>)
     await setTimeout(() => { setPop() }, 1000)
@@ -26,7 +26,7 @@ const ViewPhoto = function () {
   return (
     <>
       <div className="viewer">
-        <img src={state.imageData[0]} alt="" className="h-full"/>
+        <img src={state.imageData} alt="ss" className="h-full"/>
         {/* <canvas className="canvas" ref={canvas} height={100} width={100}></canvas> */}
 
       </div>
