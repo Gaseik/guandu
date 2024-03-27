@@ -263,7 +263,7 @@ function connectWebCam(mindarThree) {
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
   videoTex.maxFilter = THREE.LinearFilter;
-
+  requestMicrophonePermission()
   //建立 mesh
   const mesh = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(video.clientWidth+200, video.clientHeight),
@@ -303,6 +303,16 @@ function connectWebCam(mindarThree) {
   });
 
 }
+//麥克風權限
+function requestMicrophonePermission() {
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function(stream) {
+      // 麦克风权限已授予
+    })
+    .catch(function(err) {
+      console.error('Failed to get microphone permission', err);
+    });
+}
 
 //設置場景
 async function setScene(anchorGroup, scene, sceneData, callback) {
@@ -335,7 +345,7 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
 
 
     let animations = item.animations;
-    console.log(item.name)
+    // console.log(item.name)
     //設定球體漸變動畫
 
     if (item.name === `Cylinder_cup002`) {
