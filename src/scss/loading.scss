@@ -36,4 +36,16 @@
     transform: translate(-50%, -50%);
     width: 85px;
   }
+  .bottomDeco{
+    transform:translateX(-400px);
+    animation: loop 6s linear infinite;
+  }
+  @keyframes loop {
+    0% {
+      transform:translateX(-400px);
+    }
+    100% {
+      transform:translateX(350px);
+    }
+  }
 }

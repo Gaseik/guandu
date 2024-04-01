@@ -8,6 +8,7 @@ import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
 import { IoIosInformationCircle, IoIosClose,IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
+import { BsMusicNoteBeamed } from "react-icons/bs";
 import bgMusicFile from "/music/MetroCity.mp3";
 const viewButton = {
   camera: "camera",
@@ -30,15 +31,17 @@ const ARView = function () {
   const [musicStarted, setMusicStarted] = useState(false); // 添加一个状态来跟踪音乐是否已经开始播放
 
   useEffect(() => {
-    // alert(state.pageState)
-    // 当页面状态为 Intro 或 ARView 时，播放背景音乐
-    if (state.pageState === PageState.Intro || state.pageState === PageState.ARView) {
-      bgMusic.volume = 0.3; 
-      bgMusic.play();
-      setMusicStarted(true); // 标记音乐已经开始播放
-    } else {
-      bgMusic.pause(); // 否则暂停背景音乐
-    }
+   
+   // 当页面状态为 Intro 或 ARView 时，播放背景音乐
+    // if (state.pageState === PageState.Intro || state.pageState === PageState.ViewPhoto ||state.pageState === PageState.ARView || musicStarted) {
+    //   bgMusic.volume = 0.1; 
+    //   bgMusic.play();
+    //   setMusicStarted(true); // 标记音乐已经开始播放
+    //   console.log('play')
+    // } else {
+    //   bgMusic.pause();
+    //   setMusicStarted(false) // 否则暂停背景音乐
+    // }
   }, [state.pageState, bgMusic,musicStarted]); // 依赖于页面状态和背景音乐实例
 
 
@@ -108,6 +111,16 @@ const ARView = function () {
     dispatch.AppState.setHelpPop(!state.helpPop);
   }
 
+  function onClickMusic() {
+    if(musicStarted){
+      bgMusic.pause()
+      setMusicStarted(false)
+    }else{
+      bgMusic.play()
+      setMusicStarted(true)
+    }
+  }
+
  
 
   return (
@@ -121,11 +134,19 @@ const ARView = function () {
         src="image/guanduLogo.png"
         className="absolute w-[120px] top-4 left-10"
       /> */}
-      <div className="btn help" onClick={onClickHelp}>
-        <span className="flex items-center">
-          <IoIosInformationCircle className="text-[28px] mr-1 text-main" />
-          體驗說明
+      <div className="btn help">
+        <span className="flex items-center"  onClick={onClickHelp}>
+          <IoIosInformationCircle className="text-[28px] mr-2 text-main" />
+       
         </span>
+        <span className="flex relative items-center bg-main rounded-full p-1" onClick={onClickMusic}>
+          <div className="w-1 h-7 bg-red-600 absolute"></div>
+          <BsMusicNoteBeamed className="text-[16px]  text-white" />
+
+        </span>
+      </div>
+      <div className="absolute bottom-0 z-[0]">
+        <img src={'/image/frameGroup.png'} alt="frame" />
       </div>
       <div className="button-group absolute bottom-0">
         <div className="circle-frame">
@@ -170,6 +191,7 @@ const ARView = function () {
           </div>
         </div>
       </div>
+     
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div

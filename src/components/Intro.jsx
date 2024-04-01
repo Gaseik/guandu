@@ -9,7 +9,7 @@ const Intro = function (props) {
   const dispatch = useDispatch();
 
   function onClickStart() {
-    dispatch.AppState.changePageState(PageState.ARView)
+    // dispatch.AppState.changePageState(PageState.ARView)
     modelData.children[0].scale.set(0, 0, 0);
     animationList["left_start"].stop();
     animationList["left_loop"].stop();

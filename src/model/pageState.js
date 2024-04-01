@@ -26,6 +26,7 @@ export const AppState = {
     isArModeOn: false,
     modelData: undefined,
     arLib: undefined,
+    
     targetFind: false,
     imageData: undefined,
     videoData: undefined,
@@ -67,7 +68,7 @@ export const AppState = {
   },
   effects: (dispatch) => ({
     async loadModelFile(onTargetFound, onTargetLost) {
-      const arLib = new window.MINDAR.IMAGE.MindARThree({
+      const arLib = new window.MINDAR.IMAGE.MindARThreeb({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
         filterMinCF: 0.001,
@@ -307,7 +308,8 @@ function connectWebCam(mindarThree) {
 function requestMicrophonePermission() {
   navigator.mediaDevices.getUserMedia({ audio: true })
     .then(function(stream) {
-      // 麦克风权限已授予
+      // 麦克风权限已授予 
+
     })
     .catch(function(err) {
       console.error('Failed to get microphone permission', err);

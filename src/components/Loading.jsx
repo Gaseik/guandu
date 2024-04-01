@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { animationList } from "../model/pageState";
-import * as THREE from "three";
 import PropTypes from "prop-types";
 import { FaChrome, FaSafari } from "react-icons/fa6";
 
@@ -57,6 +55,9 @@ function Loading(props) {
             <br />
             iOS 15.0、Android 9.0、Google Chrome 76 或更高版本。
           </div>
+        </div>
+        <div className="absolute bottom-[-10px] bottomDeco">
+          <img src="/image/bottomDeco.png" alt="bottomDeco" />
         </div>
       </div>
 

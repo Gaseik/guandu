@@ -6,8 +6,8 @@ import { MdSaveAlt } from "react-icons/md";
 import { FaTrash } from "react-icons/fa6";
 
 const ViewPhoto = function () {
-  const [pop, setPop] = useState()
-  const state = useSelector((state) => state.AppState)
+  const [pop, setPop] = useState();
+  const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
   function onClickClose() {
     dispatch.AppState.showDiscard(PageState.ViewPhoto);
@@ -18,22 +18,25 @@ const ViewPhoto = function () {
     link.download = "image.png";
     link.href = state.imageData;
     link.click();
-    await setPop(<p>Please find your file in the album or folder.</p>)
-    await setTimeout(() => { setPop() }, 1000)
+    await setPop(<p>Please find your file in the album or folder.</p>);
+    await setTimeout(() => {
+      setPop();
+    }, 1000);
   }
-
 
   return (
     <>
       <div className="viewer">
-        <img src={state.imageData} alt="ss" className="h-full"/>
+        <img src={state.imageData} alt="ss" className="h-full" />
         {/* <canvas className="canvas" ref={canvas} height={100} width={100}></canvas> */}
-
       </div>
       <div className="view-photo">
         <div className="close-group">
-          <div className="rounded-full bg-white flex text-[#020202] font-bold py-3 px-4 " onClick={onClickClose}>
-          <FaTrash className="text-2xl mr-2 text-main"/> 刪掉重拍
+          <div
+            className="rounded-full bg-white flex text-[#020202] font-bold py-2 px-2 "
+            onClick={onClickClose}
+          >
+            <FaTrash className="text-xl text-main" />
           </div>
         </div>
         {/* <div className="press-to-save-group">
@@ -42,18 +45,23 @@ const ViewPhoto = function () {
           </div>
         </div> */}
       </div>
-      
+      <div className="absolute bottom-0 z-[0]">
+        <img src={"/image/frameGroup.png"} alt="frame" />
+      </div>
       <div className="stepBtn-container">
         <div className="info">請在相簿或資料夾中找到您的檔案</div>
         <div className="stepBtn-group">
-          <button className="text-white text-xl flex items-center rounded-full bg-main" onClick={savePop}>
-            儲存 <MdSaveAlt className="text-3xl ml-2 mb-1"/>
+          <button
+            className="text-white text-base flex items-center rounded-full py-2 px-6 bg-main"
+            onClick={savePop}
+          >
+            儲存 <MdSaveAlt className="text-xl ml-2 mb-1" />
           </button>
         </div>
         <div className="btn-pop">{pop}</div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ViewPhoto
+export default ViewPhoto;
