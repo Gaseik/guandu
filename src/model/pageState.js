@@ -26,7 +26,7 @@ export const AppState = {
     isArModeOn: false,
     modelData: undefined,
     arLib: undefined,
-    
+    musicStarted: false,
     targetFind: false,
     imageData: undefined,
     videoData: undefined,
@@ -65,10 +65,13 @@ export const AppState = {
     setHelpPop: (state, payload) => {
       return { ...state, helpPop: payload }
     },
+    setMusicStarted: (state, payload) => {
+      return { ...state, musicStarted: payload }
+    },
   },
   effects: (dispatch) => ({
     async loadModelFile(onTargetFound, onTargetLost) {
-      const arLib = new window.MINDAR.IMAGE.MindARThreeb({
+      const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
         filterMinCF: 0.001,
@@ -109,13 +112,13 @@ export const AppState = {
         fetch("/model/Bacon_sub_0326.json").then(result => result.json()),
         fetch("/model/dinotest_0326.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arSceneR, arSceneB,arSceneBac,arSceneDino, arLibResult]) => {
+      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
-       
+
         //設置3D場景
         setScene(anchorFour.group, scene, arSceneR, () => {
           renderer.shadowMap.enabled = true;
@@ -149,16 +152,16 @@ export const AppState = {
               // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
             }
             if (burger) {
-              burger.scale.set(20,20,20)
+              burger.scale.set(20, 20, 20)
               burger.rotation.y += 0.01;
               burger.rotation.y %= Math.PI * 2;
             }
             if (bacon) {
-              bacon.scale.set(10,10,10)
+              bacon.scale.set(10, 10, 10)
               bacon.rotation.y += 0.01;
               bacon.rotation.y %= Math.PI * 2;
             }
-          
+
           });
         })
 
@@ -182,14 +185,14 @@ export const AppState = {
           //   Object.keys(mixer).forEach(name => {
           //     mixer[name].update(mixerUpdateDelta)
           //   })
-          
+
           // });
         })
         setScene(anchor.group, scene, arSceneDino, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
-        
+
         })
         setScene(anchorThird.group, scene, arSceneBac, () => {
           renderer.shadowMap.enabled = true;
@@ -267,7 +270,7 @@ function connectWebCam(mindarThree) {
   requestMicrophonePermission()
   //建立 mesh
   const mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(video.clientWidth+200, video.clientHeight),
+    new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
@@ -307,11 +310,11 @@ function connectWebCam(mindarThree) {
 //麥克風權限
 function requestMicrophonePermission() {
   navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-      // 麦克风权限已授予 
+    .then(function (stream) {
 
+      // 麦克风权限已授予 
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.error('Failed to get microphone permission', err);
     });
 }
@@ -322,7 +325,7 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
-  console.log(scene)
+  // console.log(scene)
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
@@ -361,31 +364,31 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
     }
     if (item.name === `BaconEggBuger_240322_001.glb`) {
       bacon = item
-   
+
     }
     if (item.name === `triceratops (1).glb`) {
       dino = item
       animations.forEach(animation => {
-        console.log(animation)
+        // console.log(animation)
         mixer[animation.name] = new THREE.AnimationMixer(item);
         animationList[animation.name] = mixer[animation.name].clipAction(animation);
         animationList[animation.name].clampWhenFinished = true;
         animationList[animation.name].play();
         // if(item.name === `triceratops (1).glb`) {
-          // mixer[animation.name].addEventListener('finished', (e) => {
-          //   if(e.action._clip.name.indexOf("Animation") >=0) {
-          //     animationList["Animation"].loop = THREE.LoopRepeat;
-          //     animationList["Animation"].play();
-        
-          //   }
-          //   else if(e.action._clip.name.indexOf("left") >=0) {
-          //     animationList["left_loop"].loop = THREE.LoopRepeat;
-          //     animationList['left_loop'].play();
-          //   }
-          // });
-          // setModelAnimation(item, animations, "Animation")
+        // mixer[animation.name].addEventListener('finished', (e) => {
+        //   if(e.action._clip.name.indexOf("Animation") >=0) {
+        //     animationList["Animation"].loop = THREE.LoopRepeat;
+        //     animationList["Animation"].play();
+
+        //   }
+        //   else if(e.action._clip.name.indexOf("left") >=0) {
+        //     animationList["left_loop"].loop = THREE.LoopRepeat;
+        //     animationList['left_loop'].play();
+        //   }
+        // });
+        // setModelAnimation(item, animations, "Animation")
         // }
-  
+
       });
     }
     //設定動畫
@@ -398,7 +401,7 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
     //       if(e.action._clip.name.indexOf("Animation") >=0) {
     //         animationList["Animation"].loop = THREE.LoopRepeat;
     //         animationList["Animation"].play();
-      
+
     //       }
     //       else if(e.action._clip.name.indexOf("left") >=0) {
     //         animationList["left_loop"].loop = THREE.LoopRepeat;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { shareImage } from "../helper/shareImage";
 import { MdSaveAlt } from "react-icons/md";
-import { FaTrash } from "react-icons/fa6";
+import Help from "./Help";
 
 const ViewPhoto = function () {
   const [pop, setPop] = useState();
@@ -30,21 +30,7 @@ const ViewPhoto = function () {
         <img src={state.imageData} alt="ss" className="h-full" />
         {/* <canvas className="canvas" ref={canvas} height={100} width={100}></canvas> */}
       </div>
-      <div className="view-photo">
-        <div className="close-group">
-          <div
-            className="rounded-full bg-white flex text-[#020202] font-bold py-2 px-2 "
-            onClick={onClickClose}
-          >
-            <FaTrash className="text-xl text-main" />
-          </div>
-        </div>
-        {/* <div className="press-to-save-group">
-          <div className="press-to-save-pop">
-            <p>Long press to save</p>
-          </div>
-        </div> */}
-      </div>
+      <Help/>
       <div className="absolute bottom-0 z-[0]">
         <img src={"/image/frameGroup.png"} alt="frame" />
       </div>

@@ -9,6 +9,7 @@ export default {
       'main':"#5CC2D5",
       'white':"#FFF",
       "transparent": 'transparent',
+      'red':"#EF8784"
     },
     extend: {
       

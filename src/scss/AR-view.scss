@@ -1,7 +1,7 @@
 .ar-view {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: calc(var(--vh, 1vh) * 100);
 
 
     .help {
@@ -70,6 +70,20 @@
             text-align: center;
             color: gray;
             // margin: 0 0 15px 0;
+        }
+        .boddarti{
+            animation:bodd 3s linear infinite
+        }
+        @keyframes bodd {
+            0% {
+                transform: rotate(-30deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+            100% {
+                transform: rotate(-30deg);
+            }
         }
     }
 

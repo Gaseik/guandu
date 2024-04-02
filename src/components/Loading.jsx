@@ -21,7 +21,7 @@ function Loading(props) {
 
   return (
     <div
-      className={`loading max-w-[600px] text-blue-950 w-full h-full absolute z-20 bg-main transition-all duration-200 ${
+      className={`loading max-w-[600px] text-blue-950 w-full h-full overflow-hidden absolute z-20 bg-main transition-all duration-200 ${
         props.hidden === "hidden"
           ? "z-[-1] pointer-events-none opacity-0"
           : "opacity-100"

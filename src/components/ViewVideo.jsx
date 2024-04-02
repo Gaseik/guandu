@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { shareVideo } from "../helper/captureVideo";
+import Help from "./Help";
 import { MdSaveAlt } from "react-icons/md";
 import { FaTrash } from "react-icons/fa6";
 const ViewVideo = function () {
@@ -73,19 +74,7 @@ const ViewVideo = function () {
           ref={videoDom}
         />
       </div>
-      <div className="view-video">
-        <div className="close-group">
-          <div
-            className="rounded-full bg-white flex text-[#020202] font-bold py-2 px-2 "
-            onClick={onClickClose}
-          >
-          
-              {" "}
-              <FaTrash className="text-xl text-main" />{" "}
-            
-          </div>
-        </div>
-      </div>
+      <Help/>
       <div
         className="play-btn"
         style={{ display: playVideo ? "block" : "none" }}
