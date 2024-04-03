@@ -5,11 +5,11 @@ export function captureImage(arLib) {
   const context = canvas.getContext('2d');
   canvas.width = renderCanvas.width;
   canvas.height = renderCanvas.height;
-  console.log('videoHeight = ',video.clientHeight)
-  console.log('videoW = ',video.clientWidth)
-  console.log('canvasW = ',canvas.width)
-  console.log('canvasH = ',canvas.height)
-  console.log(renderCanvas.clientWidth)
+  // console.log('videoHeight = ',video.clientHeight)
+  // console.log('videoW = ',video.clientWidth)
+  // console.log('canvasW = ',canvas.width)
+  // console.log('canvasH = ',canvas.height)
+  // console.log(renderCanvas.clientWidth)
   const sx =
     (((video.clientWidth - renderCanvas.clientWidth) / 2) * video.videoWidth) /
     video.clientWidth;

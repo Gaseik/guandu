@@ -37,8 +37,28 @@
     width: 85px;
   }
   .bottomDeco{
-    transform:translateX(-400px);
-    animation: loop 6s linear infinite;
+    .birds{
+      width: 60px;
+      transform:translateX(-400px);
+      animation: loop 4s linear infinite;
+      position: absolute;
+      top: -12px;
+      // animation: birds 3s linear infinite;
+    }
+    .bikes{
+      width: 120px;
+      transform:translateX(-400px);
+      animation: loop 6s linear infinite;
+    }
+   
+  }
+  @keyframes birds {
+    0% {
+      transform:translateY(0px);
+    }
+    100% {
+      transform:translateY(10px);
+    }
   }
   @keyframes loop {
     0% {

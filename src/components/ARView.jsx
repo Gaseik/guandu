@@ -179,7 +179,7 @@ const ARView = function () {
             為了獲得最佳的 AR 體驗
             <br /> 請將相機鏡頭與現場的辨識圖標保持平行
           </p>
-          <img src="/image/boddarti.png" alt="" className="absolute bottom-[-30px] boddarti"/>
+          <img src="/image/Boddarti2.png" alt="" className="absolute w-16 bottom-[-20px] boddarti"/>
         </div>
       ) : (
         <></>

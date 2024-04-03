@@ -111,6 +111,7 @@ export const AppState = {
         fetch("/model/J-Burger.json").then(result => result.json()),
         fetch("/model/Bacon_sub_0326.json").then(result => result.json()),
         fetch("/model/dinotest_0326.json").then(result => result.json()),
+        
         arLib.start()
       ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, arLibResult]) => {
 
@@ -299,7 +300,7 @@ function connectWebCam(mindarThree) {
     const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
-    logoMesh.scale.set(0.4, 0.4, 0.4)
+    logoMesh.scale.set(0.14, 0.14, 0.14)
     // 调整位置以放置在左上角
     logoMesh.position.set(window.innerWidth / 4 - 20, window.innerHeight - 50, 1);
     orthoScene.add(logoMesh);

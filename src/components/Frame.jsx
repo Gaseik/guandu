@@ -1,8 +1,8 @@
 export default function Frame() {
   return (
-    <div className="frame">
+    <div className="frame" id="frame">
       <Egret />
-      <img src="/image/Grass.png" alt="" className="grass" />
+      <img src="/image/Grass.png" alt="" className="grass" id="grass"/>
       <Crab />
     </div>
   );
@@ -15,6 +15,7 @@ export const Egret = (props) => (
     width={77}
     height={211}
     fill="none"
+    id="egret"
     className="egret"
     {...props}
   >
@@ -83,6 +84,7 @@ export const Crab = (props) => (
     width={105}
     height={105}
     className="crab"
+    
     fill="none"
     {...props}
   >

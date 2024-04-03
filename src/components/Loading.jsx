@@ -28,7 +28,7 @@ function Loading(props) {
       }`}
     >
       <div className="loading-group w-full h-full flex  items-center flex-col p-5">
-        <img src="/image/guanduLogo.png" alt="" className="mt-[16vh] mb-10" />
+        <img src="/image/guanduLogo.png" alt="" className="mt-[10vh] mb-10 w-[300px]" />
         <div
           className="my-3 inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
           role="status"
@@ -57,7 +57,8 @@ function Loading(props) {
           </div>
         </div>
         <div className="absolute bottom-[-10px] bottomDeco">
-          <img src="/image/bottomDeco.png" alt="bottomDeco" />
+          <img src="/image/birds.png" alt="bottomDeco" className="birds"/>
+          <img src="/image/bikes.png" alt="bottomDeco" className="bikes" />
         </div>
       </div>
 
