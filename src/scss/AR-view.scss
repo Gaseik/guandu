@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
-
+    max-width: 1024px;
 
     .help {
         position: absolute;
