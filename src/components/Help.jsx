@@ -32,21 +32,21 @@ function Help(props) {
     <div className="btn help">
       <Bicycle className="absolute right-[-10px] top-[-25px]" />
       <span className={`flex items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
-        <IoIosInformationCircle className="text-[28px] mr-2 text-main" />
+        <IoIosInformationCircle className="sm:text-5xl text-[28px] sm:mr-4 mr-2 text-main" />
       </span>
       <span
-        className={`flex relative justify-center items-center bg-main rounded-full p-1  ${state.pageState===PageState.ARView?"":"hsidden"}`}
+        className={`flex relative justify-center items-center bg-main rounded-full p-1.5 m-1  ${state.pageState===PageState.ARView?"":"hidden"}`}
         onClick={onClickMusic}
       >
         <div className={`w-1 h-7 bg-red absolute rotate-45 ${state.musicStarted?"hidden":""}`}></div>
-        <BsMusicNoteBeamed className="text-[16px]  text-white" />
+        <BsMusicNoteBeamed className="text-[16px] sm:text-3xl  text-white" />
       </span>
       <div
-        className={`rounded-full bg-white flex text-[#020202] font-bold ml-2 p-1  ${state.pageState!==PageState.ARView?"":"hidden"}`}
+        className={`rounded-full bg-white flex text-[#020202] font-bold  p-1  ${state.pageState!==PageState.ARView?"":"hidden"}`}
         onClick={onClickClose}
       >
         {" "}
-        <FaTrash className="text-xl text-main" />{" "}
+        <FaTrash className="text-xl sm:text-3xl text-main  " />{" "}
       </div>
     </div>
   );

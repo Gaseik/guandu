@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
 import "mind-ar/dist/mindar-image-three.prod";
-import Frame from "./Frame";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
 import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
@@ -148,7 +147,6 @@ const ARView = function () {
         className="absolute w-[120px] top-4 left-10"
       /> */}
       <Help />
-      {/* <Frame /> */}
       <div className="button-group absolute bottom-0">
         <div className="circle-frame">
           <div

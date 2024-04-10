@@ -19,7 +19,9 @@ let drinks = undefined;
 let rice = undefined;
 let bacon = undefined;
 let dino = undefined;
-let orthoCamera, orthoScene, logoMesh, grassMesh,crabMesh,egretMesh;
+let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
+let count = 1
+let dierction = 1
 export const AppState = {
   state: {
     pageState: PageState.Loading,
@@ -200,8 +202,22 @@ export const AppState = {
               bacon.rotation.y += 0.01;
               bacon.rotation.y %= Math.PI * 2;
             }
-            
-          
+            //外面設定一個參數紀錄時間
+            //direction 來設定現在是要變大變小或是往上往下
+            count += 1 * dierction
+            //設定參數
+            crabMesh.position.y += 0.8 * dierction
+            egretMesh.scale.y += 0.0015 * dierction
+            egretMesh.scale.x += 0.0015 * dierction
+            egretMesh.scale.z += 0.0015 * dierction
+            //峰值設定
+            if (count === 50 || count > 50) {
+              dierction = -1
+            }
+            if (count === 0 || count < 0) {
+              dierction = 1
+            }
+
 
           });
         })
@@ -341,25 +357,28 @@ function connectWebCam(mindarThree) {
     const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
     if (window.innerWidth > 600) {
-      logoMesh.scale.set(0.14 * window.innerWidth / 600, 0.14 * window.innerWidth / 600, 0.14 * window.innerWidth / 600)
+      logoMesh.scale.set(0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
-      logoMesh.position.set(window.innerWidth / 4 - 20 * window.innerWidth / 300, window.innerHeight - 50, 1);
+      // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
+      logoMesh.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight *0.95 , 1);
     } else {
-      logoMesh.scale.set(0.14, 0.14, 0.14)
+      logoMesh.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
       logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
     }
+    // logoMesh.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在左上角
+    // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
+    // logoMesh.position.set( texture.image.width*0.3*window.innerWidth / texture.image.width/2+ 0.1 * window.innerWidth, window.innerHeight - 50, 1);
 
 
     orthoScene.add(logoMesh);
-    // scene.render(orthoScene, orthoCamera);
   });
   // 加载grass并添加到2D场景
   loader.load('/image/Grass.png', (texture) => {
     const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
-    console.log(texture.image.width)
     // 設定大小
     grassMesh.scale.set(1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
     // 调整位置以放置在左上角
@@ -372,35 +391,31 @@ function connectWebCam(mindarThree) {
     const crabGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const crabMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     crabMesh = new THREE.Mesh(crabGeometry, crabMaterial);
-    let currentYPosition = 100;
-
 
     // 設定大小
     crabMesh.scale.set(0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width)
     // 调整位置以放置在右下角,草的原始高度是387
-    crabMesh.position.set(window.innerWidth - texture.image.width * 0.18 * 1.5,window.innerWidth/1444*texture.image.height,2);
+    crabMesh.position.set(window.innerWidth - texture.image.width * 0.18 * 1.5, window.innerWidth / 1444 * texture.image.height, 2);
     //新增到2D場景
     orthoScene.add(crabMesh);
 
-    
-});
-// 加载egret并添加到2D场景
-loader.load('/image/egret.png', (texture) => {
-  const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-  const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-  egretMesh = new THREE.Mesh(egretGeometry, egretMaterial);
-  let currentYPosition = 100;
+
+  });
+  // 加载egret并添加到2D场景
+  loader.load('/image/egret.png', (texture) => {
+    const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    egretMesh = new THREE.Mesh(egretGeometry, egretMaterial);
+
+    // 設定大小
+    egretMesh.scale.set(0.15 * window.innerWidth / texture.image.width, 0.15 * window.innerWidth / texture.image.width, 0.15 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    egretMesh.position.set(texture.image.width * 0.18 + window.innerWidth * 0.05, window.innerWidth / 1444 * texture.image.height / 2, 1);
+    //新增到2D場景
+    orthoScene.add(egretMesh);
 
 
-  // 設定大小
-  egretMesh.scale.set(0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width)
-  // 调整位置以放置在右下角,草的原始高度是387
-  egretMesh.position.set( texture.image.width * 0.18 * 1.5,window.innerWidth/1444*texture.image.height/2,1);
-  //新增到2D場景
-  orthoScene.add(egretMesh);
-
-  
-});
+  });
 }
 //麥克風權限
 function requestMicrophonePermission() {
