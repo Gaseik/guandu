@@ -27,6 +27,7 @@ export const AppState = {
     modelData: undefined,
     arLib: undefined,
     musicStarted: false,
+    detect:0,
     targetFind: false,
     imageData: undefined,
     videoData: undefined,
@@ -68,8 +69,12 @@ export const AppState = {
     setMusicStarted: (state, payload) => {
       return { ...state, musicStarted: payload }
     },
+    setDetect: (state, payload) => {
+      return { ...state, detect: payload }
+    },
   },
   effects: (dispatch) => ({
+  
     async loadModelFile(onTargetFound, onTargetLost) {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
@@ -82,6 +87,8 @@ export const AppState = {
         uiLoading: false,
         uiScanning: false
       });
+      console.log(arLib)
+  
       const { renderer, scene, camera } = arLib;
       const anchor = arLib.addAnchor(0);
       const anchorSec = arLib.addAnchor(1);
@@ -94,13 +101,44 @@ export const AppState = {
           dispatch.AppState.setHelpPop(false);
           onTargetFound(anchor.group);
           dispatch.AppState.setModelData(anchor.group)
+          dispatch.AppState.setDetect(0)
+          dispatch.AppState.setMusicStarted(true)
         }
         anchorSec.onTargetFound = async () => {
           dispatch.AppState.setHelpPop(false);
           onTargetFound(anchorSec.group);
           dispatch.AppState.setModelData(anchorSec.group)
+          dispatch.AppState.setDetect(1)
+          dispatch.AppState.setMusicStarted(true)
+        }
+        anchorThird.onTargetFound = async () => {
+          dispatch.AppState.setHelpPop(false);
+          onTargetFound(anchorThird.group);
+          dispatch.AppState.setModelData(anchorThird.group)
+          dispatch.AppState.setDetect(2)
+          dispatch.AppState.setMusicStarted(true)
+        }
+        anchorFour.onTargetFound = async () => {
+          dispatch.AppState.setHelpPop(false);
+          onTargetFound(anchorFour.group);
+          dispatch.AppState.setModelData(anchorFour.group)
+          dispatch.AppState.setDetect(3)
+          dispatch.AppState.setMusicStarted(true)
         }
       }
+      anchor.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+      }
+      anchorSec.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+      }
+      anchorThird.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+      }
+      anchorFour.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+      }
+     
       // if(onTargetLost){
       //   anchor.onTargetLost = onTargetLost
       // }
@@ -111,9 +149,9 @@ export const AppState = {
         fetch("/model/J-Burger.json").then(result => result.json()),
         fetch("/model/Bacon_sub_0326.json").then(result => result.json()),
         fetch("/model/dinotest_0326.json").then(result => result.json()),
-        
+        fetch("/model/billboard_jburger.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, arLibResult]) => {
+      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino,boardBuger, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
@@ -153,7 +191,7 @@ export const AppState = {
               // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
             }
             if (burger) {
-              burger.scale.set(20, 20, 20)
+              burger.scale.set(20,20,20)
               burger.rotation.y += 0.01;
               burger.rotation.y %= Math.PI * 2;
             }
@@ -188,7 +226,7 @@ export const AppState = {
           //   })
 
           // });
-        })
+        },boardBuger)
         setScene(anchor.group, scene, arSceneDino, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -300,9 +338,17 @@ function connectWebCam(mindarThree) {
     const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
-    logoMesh.scale.set(0.14, 0.14, 0.14)
-    // 调整位置以放置在左上角
-    logoMesh.position.set(window.innerWidth / 4 - 20, window.innerHeight - 50, 1);
+    if(window.innerWidth>600){
+      logoMesh.scale.set(0.14*window.innerWidth/600, 0.14*window.innerWidth/600, 0.14*window.innerWidth/600)
+      // 调整位置以放置在左上角
+      logoMesh.position.set(window.innerWidth / 4 - 20 * window.innerWidth/300, window.innerHeight - 50, 1);
+    }else{
+      logoMesh.scale.set(0.14, 0.14, 0.14)
+       // 调整位置以放置在左上角
+       logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
+    }
+    
+
     orthoScene.add(logoMesh);
     // scene.render(orthoScene, orthoCamera);
   });
@@ -321,11 +367,13 @@ function requestMicrophonePermission() {
 }
 
 //設置場景
-async function setScene(anchorGroup, scene, sceneData, callback) {
+async function setScene(anchorGroup, scene, sceneData, callback,board) {
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
+
+
   // console.log(scene)
   //設置環境貼圖
   if (obj.environment !== null) {
@@ -335,6 +383,12 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
   //設置主物件的父層級並把ThreeJS場景資訊放入
   const modelObject = new THREE.Object3D();
   modelObject.add(obj);
+  if(board){
+    const objB = await loader.parseAsync(board ? board.scene : undefined);
+    modelObject.add(objB)
+
+  }
+
   modelObject.scale.set(0.235, 0.235, 0.235);
   modelObject.position.x = -0.2
   modelObject.position.y = -0.13
@@ -351,7 +405,7 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
 
 
     let animations = item.animations;
-    // console.log(item.name)
+    console.log(item.name)
     //設定球體漸變動畫
 
     if (item.name === `Cylinder_cup002`) {

@@ -88,9 +88,9 @@ const ViewVideo = function () {
         <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" />
         <div className="bg"></div>
       </div>
-      <div className="absolute bottom-0 z-[0]">
+      {/* <div className="absolute bottom-0 z-[0]">
         <img src={"/image/frameGroup.png"} alt="frame" />
-      </div>
+      </div> */}
       <div className="stepBtn-container">
         <div className="info">請在相簿或資料夾中找到您的檔案</div>
         <div className="stepBtn-group">

@@ -10,7 +10,9 @@ import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/MetroCity.mp3";
+import bgDMusicFile from "/music/Godzila.mp3";
 import Help from "./Help";
+import {usePageVisibility} from '../App'
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -27,28 +29,54 @@ const ARView = function () {
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-
-  const [bgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
+  const isVisible = usePageVisibility()
+  const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
 
   useEffect(() => {
-    // 当页面状态为 Intro 或 ARView 时，播放背景音乐
     if (
       state.pageState === PageState.Intro ||
       state.pageState === PageState.ViewPhoto ||
       state.pageState === PageState.ARView 
+    
     ) {
-      if(state.musicStarted) {
-        bgMusic.volume = 0.1;
+      bgMusic.volume = 0.1;
+      if (state.musicStarted) {
         bgMusic.play();
         dispatch.AppState.setMusicStarted(true);
-      }else{
+      } else {
         bgMusic.pause();
       }
     } else {
       bgMusic.pause();
       dispatch.AppState.setMusicStarted(false); // 否则暂停背景音乐
     }
-  }, [state.pageState, state.musicStarted]); // 依赖于页面状态和背景音乐实例
+  }, [state.pageState, state.musicStarted]);// 依赖于页面状态和背景音乐实例
+
+  useEffect(()=>{
+    if(!isVisible){
+      bgMusic.pause()
+      dispatch.AppState.setMusicStarted(false) 
+    }
+  },[isVisible])
+
+  useEffect(() => {
+    dispatch.AppState.setMusicStarted(false);
+    if (state.detect > 0) {
+      if (bgMusic.src !== bgMusicFile) {
+        setBgMusic(null);
+        setBgMusic(new Audio(bgMusicFile));
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }
+    } else {
+      setBgMusic(null);
+      setBgMusic(new Audio(bgDMusicFile));
+      setTimeout(() => {
+        dispatch.AppState.setMusicStarted(true);
+      }, 500);
+    }
+  }, [state.detect]);
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -110,7 +138,7 @@ const ARView = function () {
 
   return (
     <div
-      className={`max-w-[600px] ar-view w-full h-full absolute transition-all duration-200 ${
+      className={` ar-view w-full h-full absolute transition-all duration-200 ${
         state.isArModeOn ? "z-[20] opacity-100" : "opacity-0 z-[-1]"
       }`}
     >
@@ -120,7 +148,7 @@ const ARView = function () {
         className="absolute w-[120px] top-4 left-10"
       /> */}
       <Help />
-      <Frame/>
+      <Frame />
       <div className="button-group absolute bottom-0">
         <div className="circle-frame">
           <div
@@ -171,7 +199,7 @@ const ARView = function () {
             }}
           >
             {/* <img src="/image/icon/close-icon.svg" className="close-icon" alt="" /> */}
-            <IoIosClose className="text-4xl" />
+            <IoIosClose className="text-4xl text-[#020202]" />
           </div>
           <img className="w-[200px]" src="/image/LOGO 2.png" alt="" />
           <p className="help-large-scale font-bold">請將相機對準此圖標</p>
@@ -179,7 +207,11 @@ const ARView = function () {
             為了獲得最佳的 AR 體驗
             <br /> 請將相機鏡頭與現場的辨識圖標保持平行
           </p>
-          <img src="/image/Boddarti2.png" alt="" className="absolute w-16 bottom-[-20px] boddarti"/>
+          <img
+            src="/image/Boddarti2.png"
+            alt=""
+            className="absolute w-16 bottom-[-20px] boddarti"
+          />
         </div>
       ) : (
         <></>
@@ -192,5 +224,3 @@ const ARView = function () {
 };
 
 export default ARView;
-
-

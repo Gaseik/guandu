@@ -3,6 +3,7 @@
   width: 100%;
   height: calc(var(--vh, 1vh) * 100);
   overflow: hidden;
+  max-width: 1024px;
   .loading-wording {
     position: absolute;
     top: 50%;
@@ -43,12 +44,19 @@
       animation: loop 4s linear infinite;
       position: absolute;
       top: -12px;
+      @media (min-width:640px) {
+        width: 100px;
+        top: -30px;
+      }
       // animation: birds 3s linear infinite;
     }
     .bikes{
       width: 120px;
       transform:translateX(-400px);
       animation: loop 6s linear infinite;
+      @media (min-width:640px) {
+        width: 180px;
+      }
     }
    
   }
@@ -74,6 +82,7 @@
   position: fixed;
   width: 100%;
   bottom:0;
+  max-width: 1024px;
   .crab{
     position: absolute;
     top:-50px;
@@ -82,7 +91,7 @@
     
   };
   .grass{
-    width: 100%;
+    width: 100vw;
     position: relative;
   }
   .egret{
@@ -90,6 +99,10 @@
     left:20px;
     position: absolute;
     animation: egret 2s linear infinite;
+    @media (min-width:640px) {
+      bottom: 80px;
+      left:50px;
+    }
   }
 
   @keyframes egret {
