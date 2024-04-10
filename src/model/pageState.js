@@ -19,7 +19,7 @@ let drinks = undefined;
 let rice = undefined;
 let bacon = undefined;
 let dino = undefined;
-let orthoCamera, orthoScene, logoMesh;
+let orthoCamera, orthoScene, logoMesh, grassMesh,crabMesh,egretMesh;
 export const AppState = {
   state: {
     pageState: PageState.Loading,
@@ -27,7 +27,7 @@ export const AppState = {
     modelData: undefined,
     arLib: undefined,
     musicStarted: false,
-    detect:0,
+    detect: 0,
     targetFind: false,
     imageData: undefined,
     videoData: undefined,
@@ -74,7 +74,7 @@ export const AppState = {
     },
   },
   effects: (dispatch) => ({
-  
+
     async loadModelFile(onTargetFound, onTargetLost) {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
@@ -88,7 +88,7 @@ export const AppState = {
         uiScanning: false
       });
       console.log(arLib)
-  
+
       const { renderer, scene, camera } = arLib;
       const anchor = arLib.addAnchor(0);
       const anchorSec = arLib.addAnchor(1);
@@ -138,7 +138,7 @@ export const AppState = {
       anchorFour.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
       }
-     
+
       // if(onTargetLost){
       //   anchor.onTargetLost = onTargetLost
       // }
@@ -151,7 +151,7 @@ export const AppState = {
         fetch("/model/dinotest_0326.json").then(result => result.json()),
         fetch("/model/billboard_jburger.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino,boardBuger, arLibResult]) => {
+      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, boardBuger, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
@@ -191,7 +191,7 @@ export const AppState = {
               // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
             }
             if (burger) {
-              burger.scale.set(20,20,20)
+              burger.scale.set(20, 20, 20)
               burger.rotation.y += 0.01;
               burger.rotation.y %= Math.PI * 2;
             }
@@ -200,6 +200,8 @@ export const AppState = {
               bacon.rotation.y += 0.01;
               bacon.rotation.y %= Math.PI * 2;
             }
+            
+          
 
           });
         })
@@ -226,7 +228,7 @@ export const AppState = {
           //   })
 
           // });
-        },boardBuger)
+        }, boardBuger)
         setScene(anchor.group, scene, arSceneDino, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -338,21 +340,67 @@ function connectWebCam(mindarThree) {
     const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
-    if(window.innerWidth>600){
-      logoMesh.scale.set(0.14*window.innerWidth/600, 0.14*window.innerWidth/600, 0.14*window.innerWidth/600)
+    if (window.innerWidth > 600) {
+      logoMesh.scale.set(0.14 * window.innerWidth / 600, 0.14 * window.innerWidth / 600, 0.14 * window.innerWidth / 600)
       // 调整位置以放置在左上角
-      logoMesh.position.set(window.innerWidth / 4 - 20 * window.innerWidth/300, window.innerHeight - 50, 1);
-    }else{
+      logoMesh.position.set(window.innerWidth / 4 - 20 * window.innerWidth / 300, window.innerHeight - 50, 1);
+    } else {
       logoMesh.scale.set(0.14, 0.14, 0.14)
-       // 调整位置以放置在左上角
-       logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
+      // 调整位置以放置在左上角
+      logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
     }
-    
+
 
     orthoScene.add(logoMesh);
     // scene.render(orthoScene, orthoCamera);
   });
+  // 加载grass并添加到2D场景
+  loader.load('/image/Grass.png', (texture) => {
+    const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
+    console.log(texture.image.width)
+    // 設定大小
+    grassMesh.scale.set(1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在左上角
+    grassMesh.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    //新增到2D場景
+    orthoScene.add(grassMesh);
+  });
+  // 加载crab并添加到2D场景
+  loader.load('/image/crab.png', (texture) => {
+    const crabGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const crabMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    crabMesh = new THREE.Mesh(crabGeometry, crabMaterial);
+    let currentYPosition = 100;
 
+
+    // 設定大小
+    crabMesh.scale.set(0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    crabMesh.position.set(window.innerWidth - texture.image.width * 0.18 * 1.5,window.innerWidth/1444*texture.image.height,2);
+    //新增到2D場景
+    orthoScene.add(crabMesh);
+
+    
+});
+// 加载egret并添加到2D场景
+loader.load('/image/egret.png', (texture) => {
+  const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+  const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+  egretMesh = new THREE.Mesh(egretGeometry, egretMaterial);
+  let currentYPosition = 100;
+
+
+  // 設定大小
+  egretMesh.scale.set(0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width)
+  // 调整位置以放置在右下角,草的原始高度是387
+  egretMesh.position.set( texture.image.width * 0.18 * 1.5,window.innerWidth/1444*texture.image.height/2,1);
+  //新增到2D場景
+  orthoScene.add(egretMesh);
+
+  
+});
 }
 //麥克風權限
 function requestMicrophonePermission() {
@@ -367,7 +415,7 @@ function requestMicrophonePermission() {
 }
 
 //設置場景
-async function setScene(anchorGroup, scene, sceneData, callback,board) {
+async function setScene(anchorGroup, scene, sceneData, callback, board) {
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
@@ -383,7 +431,7 @@ async function setScene(anchorGroup, scene, sceneData, callback,board) {
   //設置主物件的父層級並把ThreeJS場景資訊放入
   const modelObject = new THREE.Object3D();
   modelObject.add(obj);
-  if(board){
+  if (board) {
     const objB = await loader.parseAsync(board ? board.scene : undefined);
     modelObject.add(objB)
 
@@ -405,7 +453,7 @@ async function setScene(anchorGroup, scene, sceneData, callback,board) {
 
 
     let animations = item.animations;
-    console.log(item.name)
+    // console.log(item.name)
     //設定球體漸變動畫
 
     if (item.name === `Cylinder_cup002`) {

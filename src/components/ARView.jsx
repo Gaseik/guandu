@@ -148,7 +148,7 @@ const ARView = function () {
         className="absolute w-[120px] top-4 left-10"
       /> */}
       <Help />
-      <Frame />
+      {/* <Frame /> */}
       <div className="button-group absolute bottom-0">
         <div className="circle-frame">
           <div
