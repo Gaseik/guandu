@@ -130,15 +130,19 @@ export const AppState = {
       }
       anchor.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
       }
       anchorSec.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
       }
       anchorThird.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
       }
       anchorFour.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
       }
 
       // if(onTargetLost){
