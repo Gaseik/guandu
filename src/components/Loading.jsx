@@ -2,22 +2,51 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { FaChrome, FaSafari } from "react-icons/fa6";
-
+import { PageState } from "../model/pageState";
+import { usePageVisibility } from "../App";
+import {requestMicrophonePermission} from '../model/pageState'
 function Loading(props) {
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
+  const isVisible = usePageVisibility();
+
+  function stopCameraAndMicrophone() {
+    // 停止摄像头
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(mediaStream => {
+            const videoTracks = mediaStream.getVideoTracks();
+            videoTracks.forEach(track => {
+                track.stop();
+            });
+        })
+        .catch(error => {
+            console.error('Error stopping camera:', error);
+        });
+
+    // 停止麦克风
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(mediaStream => {
+            const audioTracks = mediaStream.getAudioTracks();
+            audioTracks.forEach(track => {
+                track.stop();
+            });
+        })
+        .catch(error => {
+            console.error('Error stopping microphone:', error);
+        });
+}
 
   useEffect(() => {
-    dispatch.AppState.loadModelFile(onTargetFound, onTargetLost);
-  }, []);
-
-  function onTargetFound(modelData) {
-    // console.log(animationList);
-    // animationList["Empty.001Action.001"].play()
-  }
-  function onTargetLost() {
-    // dispatch.AppState.setTargetFind(false);
-  }
+    if (!isVisible) {
+      dispatch.AppState.setMusicStarted(false);
+      stopCameraAndMicrophone()
+      dispatch.AppState.setReset();
+    } else {
+      if (state.pageState === PageState.Loading) {
+        dispatch.AppState.loadModelFile();
+      }
+    }
+  }, [isVisible]);
 
   return (
     <div
@@ -28,7 +57,11 @@ function Loading(props) {
       }`}
     >
       <div className="loading-group w-full h-full flex  items-center flex-col p-5">
-        <img src="/image/guanduLogo.png" alt="" className="mt-[10vh] mb-10 sm:w-[70%] w-[300px]" />
+        <img
+          src="/image/guanduLogo.png"
+          alt=""
+          className="mt-[10vh] mb-10 sm:w-[70%] w-[300px]"
+        />
         <div
           className="my-3 inline-block h-16 w-16 sm:h-24 sm:w-24 animate-spin rounded-full 
           border-4 sm:border-8 border-solid border-current border-r-transparent align-[-0.125em]
@@ -39,7 +72,9 @@ function Loading(props) {
             Loading...
           </span>
         </div>
-        <div className="text-white font-bold text-2xl sm:text-3xl">網頁載入中</div>
+        <div className="text-white font-bold text-2xl sm:text-3xl">
+          網頁載入中
+        </div>
         <div className="info mt-10">
           <div className="text-white text-xs sm:text-sm mb-3">
             *
@@ -59,7 +94,7 @@ function Loading(props) {
           </div>
         </div>
         <div className="absolute bottom-[-10px] bottomDeco">
-          <img src="/image/birds.png" alt="bottomDeco" className="birds"/>
+          <img src="/image/birds.png" alt="bottomDeco" className="birds" />
           <img src="/image/bikes.png" alt="bottomDeco" className="bikes" />
         </div>
       </div>
