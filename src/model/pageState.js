@@ -20,8 +20,23 @@ let rice = undefined;
 let bacon = undefined;
 let dino = undefined;
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
+
 let count = 1
 let dierction = 1
+const initialState = {
+  pageState: PageState.Loading,
+  isArModeOn: false,
+  modelData: undefined,
+  arLib: undefined,
+  musicStarted: false,
+  detect: 0,
+  targetFind: false,
+  imageData: undefined,
+  videoData: undefined,
+  lastPage: undefined,
+  helpPop: true,
+  target: undefined
+}
 export const AppState = {
   state: {
     pageState: PageState.Loading,
@@ -74,10 +89,27 @@ export const AppState = {
     setDetect: (state, payload) => {
       return { ...state, detect: payload }
     },
+    setReset: () => {
+      modelData = undefined;
+      burger = undefined;
+      drinks = undefined;
+      rice = undefined;
+      bacon = undefined;
+      dino = undefined;
+      orthoCamera = undefined
+      orthoScene = undefined
+      logoMesh = undefined
+      grassMesh = undefined
+      crabMesh = undefined
+      egretMesh = undefined
+      count = 1
+      dierction = 1
+      return { ...initialState }
+    }
   },
   effects: (dispatch) => ({
 
-    async loadModelFile(onTargetFound, onTargetLost) {
+    async loadModelFile() {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
@@ -89,7 +121,7 @@ export const AppState = {
         uiLoading: false,
         uiScanning: false
       });
-      console.log(arLib)
+     
 
       const { renderer, scene, camera } = arLib;
       const anchor = arLib.addAnchor(0);
@@ -97,37 +129,37 @@ export const AppState = {
       const anchorThird = arLib.addAnchor(2);
       const anchorFour = arLib.addAnchor(3);
       modelData = anchor.group;
-      if (onTargetFound) {
 
-        anchor.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchor.group);
-          dispatch.AppState.setModelData(anchor.group)
-          dispatch.AppState.setDetect(0)
-          dispatch.AppState.setMusicStarted(true)
-        }
-        anchorSec.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchorSec.group);
-          dispatch.AppState.setModelData(anchorSec.group)
-          dispatch.AppState.setDetect(1)
-          dispatch.AppState.setMusicStarted(true)
-        }
-        anchorThird.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchorThird.group);
-          dispatch.AppState.setModelData(anchorThird.group)
-          dispatch.AppState.setDetect(2)
-          dispatch.AppState.setMusicStarted(true)
-        }
-        anchorFour.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchorFour.group);
-          dispatch.AppState.setModelData(anchorFour.group)
-          dispatch.AppState.setDetect(3)
-          dispatch.AppState.setMusicStarted(true)
-        }
+
+      anchor.onTargetFound = async () => {
+        dispatch.AppState.setHelpPop(false);
+       
+        dispatch.AppState.setModelData(anchor.group)
+        dispatch.AppState.setDetect(0)
+        dispatch.AppState.setMusicStarted(true)
       }
+      anchorSec.onTargetFound = async () => {
+        dispatch.AppState.setHelpPop(false);
+       
+        dispatch.AppState.setModelData(anchorSec.group)
+        dispatch.AppState.setDetect(1)
+        dispatch.AppState.setMusicStarted(true)
+      }
+      anchorThird.onTargetFound = async () => {
+        dispatch.AppState.setHelpPop(false);
+      
+        dispatch.AppState.setModelData(anchorThird.group)
+        dispatch.AppState.setDetect(2)
+        dispatch.AppState.setMusicStarted(true)
+      }
+      anchorFour.onTargetFound = async () => {
+        dispatch.AppState.setHelpPop(false);
+    
+        dispatch.AppState.setModelData(anchorFour.group)
+        dispatch.AppState.setDetect(3)
+        dispatch.AppState.setMusicStarted(true)
+      }
+
       anchor.onTargetLost = async () => {
         dispatch.AppState.setMusicStarted(false)
         dispatch.AppState.setHelpPop(true);
@@ -177,7 +209,10 @@ export const AppState = {
             camera.layers.set(0);
             renderer.render(scene, camera);
             renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-            renderer.render(orthoScene, orthoCamera);
+            if (orthoCamera && orthoScene) {
+              renderer.render(orthoScene, orthoCamera);
+
+            }
             // renderer.autoClear = true; // 渲染完毕后重置autoClear
             // console.log(mixer)
             let mixerUpdateDelta = clock.getDelta();
@@ -209,11 +244,15 @@ export const AppState = {
             //外面設定一個參數紀錄時間
             //direction 來設定現在是要變大變小或是往上往下
             count += 1 * dierction
-            //設定參數
-            crabMesh.position.y += 0.8 * dierction
-            egretMesh.scale.y += 0.0015 * dierction
-            egretMesh.scale.x += 0.0015 * dierction
-            egretMesh.scale.z += 0.0015 * dierction
+            if (crabMesh && egretMesh) {
+              //設定參數
+              crabMesh.position.y += 0.8 * dierction
+              egretMesh.scale.y += 0.0015 * dierction
+              egretMesh.scale.x += 0.0015 * dierction
+              egretMesh.scale.z += 0.0015 * dierction
+            }
+
+          
             //峰值設定
             if (count === 50 || count > 50) {
               dierction = -1
@@ -328,7 +367,7 @@ function connectWebCam(mindarThree) {
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
   videoTex.maxFilter = THREE.LinearFilter;
-  requestMicrophonePermission()
+  requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
@@ -364,7 +403,7 @@ function connectWebCam(mindarThree) {
       logoMesh.scale.set(0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
       // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
-      logoMesh.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight *0.95 , 1);
+      logoMesh.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight * 0.95, 1);
     } else {
       logoMesh.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
@@ -422,8 +461,8 @@ function connectWebCam(mindarThree) {
   });
 }
 //麥克風權限
-function requestMicrophonePermission() {
-  navigator.mediaDevices.getUserMedia({ audio: true })
+export function requestMicrophonePermission(value) {
+  navigator.mediaDevices.getUserMedia({ audio: value })
     .then(function (stream) {
 
       // 麦克风权限已授予 

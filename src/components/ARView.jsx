@@ -11,7 +11,6 @@ import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/MetroCity.mp3";
 import bgDMusicFile from "/music/Godzila.mp3";
 import Help from "./Help";
-import {usePageVisibility} from '../App'
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -28,7 +27,6 @@ const ARView = function () {
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-  const isVisible = usePageVisibility()
   const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
 
   useEffect(() => {
@@ -51,12 +49,7 @@ const ARView = function () {
     }
   }, [state.pageState, state.musicStarted]);// 依赖于页面状态和背景音乐实例
 
-  useEffect(()=>{
-    if(!isVisible){
-      bgMusic.pause()
-      dispatch.AppState.setMusicStarted(false) 
-    }
-  },[isVisible])
+
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
