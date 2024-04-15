@@ -24,9 +24,6 @@ function Help(props) {
     }
   }
 
-  useEffect(()=>{
-    console.log(state.pageState)
-  },[state.pageState])
 
   return (
     <div className="btn help">

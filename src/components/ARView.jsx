@@ -29,6 +29,7 @@ const ARView = function () {
   const dispatch = useDispatch();
   const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
 
+
   useEffect(() => {
     if (
       state.pageState === PageState.Intro ||

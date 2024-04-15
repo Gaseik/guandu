@@ -109,7 +109,7 @@ export const AppState = {
   },
   effects: (dispatch) => ({
 
-    async loadModelFile() {
+    async loadModelFile(reload) {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
@@ -133,28 +133,24 @@ export const AppState = {
 
       anchor.onTargetFound = async () => {
         dispatch.AppState.setHelpPop(false);
-       
         dispatch.AppState.setModelData(anchor.group)
         dispatch.AppState.setDetect(0)
         dispatch.AppState.setMusicStarted(true)
       }
       anchorSec.onTargetFound = async () => {
         dispatch.AppState.setHelpPop(false);
-       
         dispatch.AppState.setModelData(anchorSec.group)
         dispatch.AppState.setDetect(1)
         dispatch.AppState.setMusicStarted(true)
       }
       anchorThird.onTargetFound = async () => {
         dispatch.AppState.setHelpPop(false);
-      
         dispatch.AppState.setModelData(anchorThird.group)
         dispatch.AppState.setDetect(2)
         dispatch.AppState.setMusicStarted(true)
       }
       anchorFour.onTargetFound = async () => {
         dispatch.AppState.setHelpPop(false);
-    
         dispatch.AppState.setModelData(anchorFour.group)
         dispatch.AppState.setDetect(3)
         dispatch.AppState.setMusicStarted(true)
@@ -177,9 +173,7 @@ export const AppState = {
         dispatch.AppState.setHelpPop(true);
       }
 
-      // if(onTargetLost){
-      //   anchor.onTargetLost = onTargetLost
-      // }
+   
       const loader = new GLTFLoader()
       Promise.all([
         //下載場景檔
@@ -197,132 +191,94 @@ export const AppState = {
         arLib.scene2D = orthoScene
 
         //設置3D場景
-        setScene(anchorFour.group, scene, arSceneR, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          renderer.setAnimationLoop(() => {
-            renderer.autoClear = false;
+        if(reload===false){
+          setScene(anchorFour.group, scene, arSceneR, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+            renderer.setAnimationLoop(() => {
+              renderer.autoClear = false;
+              camera.layers.set(2);
+              renderer.render(scene, camera);
+              camera.layers.set(0);
+              renderer.render(scene, camera);
+              renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+              if (orthoCamera && orthoScene) {
+                renderer.render(orthoScene, orthoCamera);
+  
+              }
+              let mixerUpdateDelta = clock.getDelta();
+              Object.keys(mixer).forEach(name => {
+                mixer[name].update(mixerUpdateDelta)
+              })
+              if (drinks) {
+                drinks.rotation.x += 2
+                drinks.rotation.y += 0.01;
+                drinks.rotation.y %= Math.PI * 2;
+                drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+              }
+              if (rice) {
+                // rice.rotation.x += 2
+                rice.rotation.y += 0.01;
+                rice.rotation.y %= Math.PI * 2;
+                // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
+              }
+              if (burger) {
+                burger.scale.set(20, 20, 20)
+                burger.rotation.y += 0.01;
+                burger.rotation.y %= Math.PI * 2;
+              }
+              if (bacon) {
+                bacon.scale.set(10, 10, 10)
+                bacon.rotation.y += 0.01;
+                bacon.rotation.y %= Math.PI * 2;
+              }
+              //外面設定一個參數紀錄時間
+              //direction 來設定現在是要變大變小或是往上往下
+              count += 1 * dierction
+              if (crabMesh && egretMesh) {
+                //設定參數
+            
+                crabMesh.position.y += 0.8 * dierction
+                egretMesh.scale.y += 0.0015 * dierction
+                egretMesh.scale.x += 0.0015 * dierction
+                egretMesh.scale.z += 0.0015 * dierction
+              }
+  
+            
+              //峰值設定
+              if (count === 50 || count > 50) {
+                dierction = -1
+  
+              }
+              if (count === 0 || count < 0) {
+                dierction = 1
+              }
+  
+  
+            });
+          })
+          setScene(anchorSec.group, scene, arSceneB, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardBuger)
+          setScene(anchor.group, scene, arSceneDino, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+  
+          })
+          setScene(anchorThird.group, scene, arSceneBac, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          })
+        }
+       
 
-            camera.layers.set(2);
-            renderer.render(scene, camera);
-            camera.layers.set(0);
-            renderer.render(scene, camera);
-            renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-            if (orthoCamera && orthoScene) {
-              renderer.render(orthoScene, orthoCamera);
 
-            }
-            // renderer.autoClear = true; // 渲染完毕后重置autoClear
-            // console.log(mixer)
-            let mixerUpdateDelta = clock.getDelta();
-            Object.keys(mixer).forEach(name => {
-              mixer[name].update(mixerUpdateDelta)
-            })
-            if (drinks) {
-              drinks.rotation.x += 2
-              drinks.rotation.y += 0.01;
-              drinks.rotation.y %= Math.PI * 2;
-              drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-            }
-            if (rice) {
-              // rice.rotation.x += 2
-              rice.rotation.y += 0.01;
-              rice.rotation.y %= Math.PI * 2;
-              // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
-            }
-            if (burger) {
-              burger.scale.set(20, 20, 20)
-              burger.rotation.y += 0.01;
-              burger.rotation.y %= Math.PI * 2;
-            }
-            if (bacon) {
-              bacon.scale.set(10, 10, 10)
-              bacon.rotation.y += 0.01;
-              bacon.rotation.y %= Math.PI * 2;
-            }
-            //外面設定一個參數紀錄時間
-            //direction 來設定現在是要變大變小或是往上往下
-            count += 1 * dierction
-            if (crabMesh && egretMesh) {
-              //設定參數
-              crabMesh.position.y += 0.8 * dierction
-              egretMesh.scale.y += 0.0015 * dierction
-              egretMesh.scale.x += 0.0015 * dierction
-              egretMesh.scale.z += 0.0015 * dierction
-            }
-
-          
-            //峰值設定
-            if (count === 50 || count > 50) {
-              dierction = -1
-            }
-            if (count === 0 || count < 0) {
-              dierction = 1
-            }
-
-
-          });
-        })
-
-
-        setScene(anchorSec.group, scene, arSceneB, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          // renderer.setAnimationLoop(() => {
-          //   renderer.autoClear = false;
-
-          //   camera.layers.set(2);
-          //   renderer.render(scene, camera);
-          //   camera.layers.set(0);
-          //   renderer.render(scene, camera);
-          //   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-          //   renderer.render(orthoScene, orthoCamera);
-          //   renderer.autoClear = true; // 渲染完毕后重置autoClear
-
-          //   let mixerUpdateDelta = clock.getDelta();
-          //   Object.keys(mixer).forEach(name => {
-          //     mixer[name].update(mixerUpdateDelta)
-          //   })
-
-          // });
-        }, boardBuger)
-        setScene(anchor.group, scene, arSceneDino, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-
-        })
-        setScene(anchorThird.group, scene, arSceneBac, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          // renderer.setAnimationLoop(() => {
-          //   renderer.autoClear = false;
-
-          //   camera.layers.set(2);
-          //   renderer.render(scene, camera);
-          //   camera.layers.set(0);
-          //   renderer.render(scene, camera);
-
-          //   // 渲染2D场景（logo）
-          //   // 目前因為時序問題,由最後一個函式渲染
-          //   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-          //   renderer.render(orthoScene, orthoCamera);
-          //   renderer.autoClear = true; // 渲染完毕后重置autoClear
-
-          //   let mixerUpdateDelta = clock.getDelta();
-          //   Object.keys(mixer).forEach(name => {
-          //     mixer[name].update(mixerUpdateDelta)
-          //   })
-          //   if (burger) {
-          //     burger.rotation.y += 0.01;
-          //     burger.rotation.y %= Math.PI * 2;
-          //     burger.rotation.y = Math.max(burger.rotation.y, -Math.PI / 2);
-          //   }
-          // });
-        })
+    
 
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
@@ -342,6 +298,7 @@ export const AppState = {
       dispatch.AppState.setLastPage(page);
       dispatch.AppState.changePageState(PageState.Discard);
     }
+ 
   })
 }
 
@@ -409,12 +366,6 @@ function connectWebCam(mindarThree) {
       // 调整位置以放置在左上角
       logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
     }
-    // logoMesh.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
-    // 调整位置以放置在左上角
-    // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
-    // logoMesh.position.set( texture.image.width*0.3*window.innerWidth / texture.image.width/2+ 0.1 * window.innerWidth, window.innerHeight - 50, 1);
-
-
     orthoScene.add(logoMesh);
   });
   // 加载grass并添加到2D场景

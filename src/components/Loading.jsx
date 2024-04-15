@@ -1,13 +1,13 @@
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { FaChrome, FaSafari } from "react-icons/fa6";
 import { PageState } from "../model/pageState";
 import { usePageVisibility } from "../App";
-import {requestMicrophonePermission} from '../model/pageState'
 function Loading(props) {
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
+  const [first,setFirst] = useState(true)
   const isVisible = usePageVisibility();
 
   function stopCameraAndMicrophone() {
@@ -42,11 +42,17 @@ function Loading(props) {
       stopCameraAndMicrophone()
       dispatch.AppState.setReset();
     } else {
-      if (state.pageState === PageState.Loading) {
-        dispatch.AppState.loadModelFile();
+      if (state.pageState === PageState.Loading && !first) {
+        dispatch.AppState.loadModelFile(true);
+      
       }
     }
   }, [isVisible]);
+
+  useEffect(()=>{
+    dispatch.AppState.loadModelFile(false);
+    setFirst(false)
+  },[])
 
   return (
     <div
