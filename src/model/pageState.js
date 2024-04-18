@@ -332,7 +332,7 @@ function connectWebCam(mindarThree) {
   );
 
   //設定大小及位置
-  let scale = 13;
+  let scale = 12;
   let position_y = 0;
   mesh.renderOrder = 2
 
@@ -354,7 +354,7 @@ function connectWebCam(mindarThree) {
   const loader = new THREE.TextureLoader();
   loader.load('/image/guanduLogo.png', (texture) => {
     const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-    const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
     if (window.innerWidth > 600) {
       logoMesh.scale.set(0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width)
@@ -370,8 +370,10 @@ function connectWebCam(mindarThree) {
   });
   // 加载grass并添加到2D场景
   loader.load('/image/Grass.png', (texture) => {
+    
     const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true  , toneMapped: false});
+    
     grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
     // 設定大小
     grassMesh.scale.set(1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
@@ -380,6 +382,7 @@ function connectWebCam(mindarThree) {
     //新增到2D場景
     orthoScene.add(grassMesh);
   });
+
   // 加载crab并添加到2D场景
   loader.load('/image/crab.png', (texture) => {
     const crabGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
@@ -394,6 +397,23 @@ function connectWebCam(mindarThree) {
     orthoScene.add(crabMesh);
 
 
+  });
+  loader.load( '/image/Grass.png', function ( texture ) {
+    texture.encoding = sRGBEncoding;
+
+    const materialB = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
+    const sprite = new THREE.Sprite( materialB );
+    sprite.position.set( 100 , 500, 10 );
+    sprite.scale.set(500, 500, 150);
+    orthoScene.add(sprite);
+  });
+  loader.load( '/image/Grass.png', function ( texture ) {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    const materialB = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
+    const sprite = new THREE.Sprite( materialB );
+    sprite.position.set( 100 , 200, 10 );
+    sprite.scale.set(500, 500, 150);
+    orthoScene.add(sprite);
   });
   // 加载egret并添加到2D场景
   loader.load('/image/egret.png', (texture) => {
