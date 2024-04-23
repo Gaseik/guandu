@@ -1,14 +1,16 @@
-import { useState, useRef,useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
 import "mind-ar/dist/mindar-image-three.prod";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
-import { IoIosInformationCircle, IoIosClose,IoMdCamera } from "react-icons/io";
+import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/MetroCity.mp3";
+import bgDMusicFile from "/music/Godzila.mp3";
+import Help from "./Help";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -21,26 +23,72 @@ const ARView = function () {
   const [recordingTime, setRecordingTime] = useState(0);
   const [changeBtn, setChangeBtn] = useState(viewButton.camera);
   const [videoBtn, setVideoBtn] = useState(false);
-  
+
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
+  const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
 
-  const [bgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
-  const [musicStarted, setMusicStarted] = useState(false); // 添加一个状态来跟踪音乐是否已经开始播放
 
   useEffect(() => {
-    // alert(state.pageState)
-    // 当页面状态为 Intro 或 ARView 时，播放背景音乐
-    if (state.pageState === PageState.Intro || state.pageState === PageState.ARView) {
-      bgMusic.volume = 0.3; 
-      bgMusic.play();
-      setMusicStarted(true); // 标记音乐已经开始播放
+    if (
+      state.pageState === PageState.Intro ||
+      state.pageState === PageState.ViewPhoto ||
+      state.pageState === PageState.ARView 
+    
+    ) {
+      bgMusic.volume = 0.1;
+      if (state.musicStarted&&state.playAuth) {
+        bgMusic.play();
+        dispatch.AppState.setMusicStarted(true);
+      } else {
+        bgMusic.pause();
+      }
     } else {
-      bgMusic.pause(); // 否则暂停背景音乐
+      bgMusic.pause();
+      dispatch.AppState.setPlayAuth(false)
+      dispatch.AppState.setMusicStarted(false); // 否则暂停背景音乐
     }
-  }, [state.pageState, bgMusic,musicStarted]); // 依赖于页面状态和背景音乐实例
+  }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
 
+
+
+  useEffect(() => {
+    dispatch.AppState.setMusicStarted(false);
+    if (state.detect > 1) {
+      if (bgMusic.src !== bgMusicFile) {
+        console.log('s')
+        dispatch.AppState.setPlayAuth(false)
+        setBgMusic(null);
+        setBgMusic(new Audio(bgMusicFile));
+        if(state.playAuth){
+          dispatch.AppState.setPlayAuth(false);
+        }
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }
+    } else {
+      console.log(state.detect )
+      if(bgMusic.src !== bgDMusicFile) {
+        console.log('DDD')
+        setBgMusic(null);
+        setBgMusic(new Audio(bgDMusicFile));
+        if(state.playAuth){
+          dispatch.AppState.setPlayAuth(false);
+        }
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }else{
+        console.log('P')
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }
+   
+    }
+  }, [state.detect]);
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -49,7 +97,6 @@ const ARView = function () {
       const imageUrl = captureImage(state.arLib);
       // console.log(imageUrl)
       dispatch.AppState.setImage(imageUrl);
-      
     } else {
       setChangeBtn(viewButton.camera);
       setVideoBtn(false);
@@ -91,42 +138,28 @@ const ARView = function () {
       setRecordingTime(0);
       setIsRecord(false);
       stopCaptureVideo((blob) => {
-        console.log(blob)
+        console.log(blob);
         if (sec < 1) {
-          
-     
           return;
-
         }
-        console.log(blob)
+        console.log(blob);
         dispatch.AppState.setVideo(blob);
       });
     }
   }
 
-  function onClickHelp() {
-    dispatch.AppState.setHelpPop(!state.helpPop);
-  }
-
- 
-
   return (
     <div
-      className={`max-w-[600px] ar-view w-full h-full absolute transition-all duration-200 ${
+      className={` ar-view w-full h-full absolute transition-all duration-200 ${
         state.isArModeOn ? "z-[20] opacity-100" : "opacity-0 z-[-1]"
       }`}
     >
-      <div id="ar_container" className=" h-[100vh] flex " />
+      <div id="ar_container" className=" h-[100%] flex " />
       {/* <img
         src="image/guanduLogo.png"
         className="absolute w-[120px] top-4 left-10"
       /> */}
-      <div className="btn help" onClick={onClickHelp}>
-        <span className="flex items-center">
-          <IoIosInformationCircle className="text-[28px] mr-1 text-main" />
-          體驗說明
-        </span>
-      </div>
+      <Help />
       <div className="button-group absolute bottom-0">
         <div className="circle-frame">
           <div
@@ -143,11 +176,9 @@ const ARView = function () {
             >
               <div className="video-icon bg-white rounded-full p-2">
                 {!isRecord ? (
-                  <AiFillVideoCamera className="text-4xl text-main"
-                  />
+                  <AiFillVideoCamera className="text-4xl text-main" />
                 ) : (
-                  <IoStop className="text-4xl text-main"
-                  />
+                  <IoStop className="text-4xl text-main" />
                 )}
               </div>
               {videoBtn ? (
@@ -164,12 +195,12 @@ const ARView = function () {
               className="btn take-photo-btn bg-main rounded-full p-2"
               onClick={onClickTakePhoto}
             >
-              <IoMdCamera className="text-main text-5xl"
-              />
+              <IoMdCamera className="text-main text-5xl" />
             </div>
           </div>
         </div>
       </div>
+
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div
@@ -179,13 +210,19 @@ const ARView = function () {
             }}
           >
             {/* <img src="/image/icon/close-icon.svg" className="close-icon" alt="" /> */}
-            <IoIosClose className="text-4xl" />
+            <IoIosClose className="text-4xl text-[#020202]" />
           </div>
-          <img className="w-[200px]" src="/image/LOGO 2.png" alt="" />
-          <p className="help-large-scale font-bold">請將相機對準此圖標</p>
+          <img className="w-[180px]" src="/image/show.gif" alt="" />
+          <p className="help-large-scale font-bold mt-4">請將相機對準此圖標</p>
           <p className="help-small-scale">
-            為了獲得最佳的 AR 體驗<br/> 請將相機鏡頭與現場的辨識圖標保持平行
+            為了獲得最佳的 AR 體驗
+            <br /> 請將相機鏡頭與現場的辨識圖標保持平行
           </p>
+          <img
+            src="/image/Boddarti2.png"
+            alt=""
+            className="absolute w-16 bottom-[-20px] boddarti"
+          />
         </div>
       ) : (
         <></>

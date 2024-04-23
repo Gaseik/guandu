@@ -1,19 +1,16 @@
 .ar-view {
     position: relative;
     width: 100%;
-    height: 100%;
-
+    height: calc(var(--vh, 1vh) * 100);
+    max-width: 1024px;
 
     .help {
         position: absolute;
         right: 30px;
-        top: 35px;
-       
-        padding:.5rem .75rem;
-        // width: 80px;
-        // height: 40px;
+        top: 40px;
+        padding:.25rem .75rem;
         background-color: #{$btn-background};
-        border-radius: 20px;
+        border-radius: 200px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -22,8 +19,39 @@
             font-weight: 750;
             color: #{$btn-color};
             font-size: 18px;
-            margin: 0;
         }
+        .tip{
+            z-index: 3;
+            opacity: 1;
+        }
+        .tip::after {
+            content: '';
+            position: absolute;
+            top: -38px;
+            right: 0px;
+            z-index: 1;
+            border-width: 20px;
+            border-style: solid;
+            transform: scaleX(50%);
+            border-color:  transparent transparent #{$main} transparent;
+        }
+        .tip.gone{
+            opacity: 0;
+            animation: gone .5s  linear;
+        }
+        .tip.show{  
+            animation: breath 3s  linear;
+        }
+        @keyframes gone {
+            0%{
+                opacity: 1;
+            }
+            100%{
+                opacity: 0;
+            }
+        }
+     
+    
     }
 
     .help-pop {
@@ -71,15 +99,30 @@
             color: gray;
             // margin: 0 0 15px 0;
         }
+        .boddarti{
+            animation:bodd 3s linear infinite
+        }
+        @keyframes bodd {
+            0% {
+                transform: rotate(-30deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+            100% {
+                transform: rotate(-30deg);
+            }
+        }
     }
 
 
     .button-group {
         width: 100%;
         position: absolute;
-        bottom: 100px;
+        bottom: 50px;
         display: flex;
         justify-content: center;
+        // z-index: 1;
 
         .circle-frame {
             box-shadow: 0 0 0 3px white;

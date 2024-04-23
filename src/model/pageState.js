@@ -19,19 +19,28 @@ let drinks = undefined;
 let rice = undefined;
 let bacon = undefined;
 let dino = undefined;
-let orthoCamera, orthoScene, logoMesh;
+let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
+
+let count = 1
+let dierction = 1
+const initialState = {
+  pageState: PageState.Loading,
+  isArModeOn: false,
+  modelData: undefined,
+  arLib: undefined,
+  musicStarted: false,
+  playAuth:false,
+  detect: 0,
+  targetFind: false,
+  imageData: undefined,
+  videoData: undefined,
+  lastPage: undefined,
+  helpPop: true,
+  target: undefined
+}
 export const AppState = {
   state: {
-    pageState: PageState.Loading,
-    isArModeOn: false,
-    modelData: undefined,
-    arLib: undefined,
-    targetFind: false,
-    imageData: undefined,
-    videoData: undefined,
-    lastPage: undefined,
-    helpPop: true,
-    target: undefined,
+    ...initialState
   },
   reducers: {
     changePageState: (state, payload) => {
@@ -64,9 +73,36 @@ export const AppState = {
     setHelpPop: (state, payload) => {
       return { ...state, helpPop: payload }
     },
+    setMusicStarted: (state, payload) => {
+      return { ...state, musicStarted: payload }
+    },
+    setDetect: (state, payload) => {
+      return { ...state, detect: payload }
+    },
+    setPlayAuth: (state, payload) => {
+      return { ...state, playAuth: payload }
+    },
+    setReset: () => {
+      modelData = undefined;
+      burger = undefined;
+      drinks = undefined;
+      rice = undefined;
+      bacon = undefined;
+      dino = undefined;
+      orthoCamera = undefined
+      orthoScene = undefined
+      logoMesh = undefined
+      grassMesh = undefined
+      crabMesh = undefined
+      egretMesh = undefined
+      count = 1
+      dierction = 1
+      return { ...initialState }
+    }
   },
   effects: (dispatch) => ({
-    async loadModelFile(onTargetFound, onTargetLost) {
+
+    async loadModelFile(reload) {
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
@@ -78,28 +114,56 @@ export const AppState = {
         uiLoading: false,
         uiScanning: false
       });
+     
+
       const { renderer, scene, camera } = arLib;
       const anchor = arLib.addAnchor(0);
       const anchorSec = arLib.addAnchor(1);
       const anchorThird = arLib.addAnchor(2);
       const anchorFour = arLib.addAnchor(3);
       modelData = anchor.group;
-      if (onTargetFound) {
 
-        anchor.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchor.group);
-          dispatch.AppState.setModelData(anchor.group)
-        }
-        anchorSec.onTargetFound = async () => {
-          dispatch.AppState.setHelpPop(false);
-          onTargetFound(anchorSec.group);
-          dispatch.AppState.setModelData(anchorSec.group)
-        }
+      function changeState (value) {
+      
+        dispatch.AppState.setDetect(value)
+        dispatch.AppState.setHelpPop(false);
+        dispatch.AppState.setMusicStarted(true);
       }
-      // if(onTargetLost){
-      //   anchor.onTargetLost = onTargetLost
-      // }
+      anchor.onTargetFound = async () => {
+        dispatch.AppState.setModelData(anchor.group)
+        changeState(1)
+      }
+      anchorSec.onTargetFound = async () => {
+         changeState(2)
+        dispatch.AppState.setModelData(anchorSec.group)
+      }
+      anchorThird.onTargetFound = async () => {
+        changeState(3)
+        dispatch.AppState.setModelData(anchorThird.group)
+      }
+      anchorFour.onTargetFound = async () => {
+        changeState(4)
+        dispatch.AppState.setModelData(anchorFour.group)
+      }
+
+      anchor.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
+      }
+      anchorSec.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
+      }
+      anchorThird.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
+      }
+      anchorFour.onTargetLost = async () => {
+        dispatch.AppState.setMusicStarted(false)
+        dispatch.AppState.setHelpPop(true);
+      }
+
+   
       const loader = new GLTFLoader()
       Promise.all([
         //下載場景檔
@@ -107,118 +171,104 @@ export const AppState = {
         fetch("/model/J-Burger.json").then(result => result.json()),
         fetch("/model/Bacon_sub_0326.json").then(result => result.json()),
         fetch("/model/dinotest_0326.json").then(result => result.json()),
+        fetch("/model/billboard_jburger.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arSceneR, arSceneB,arSceneBac,arSceneDino, arLibResult]) => {
+      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, boardBuger, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
-       
+
         //設置3D場景
-        setScene(anchorFour.group, scene, arSceneR, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          renderer.setAnimationLoop(() => {
-            renderer.autoClear = false;
+        if(reload===false){
+          setScene(anchorFour.group, scene, arSceneR, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+            renderer.setAnimationLoop(() => {
+              renderer.autoClear = false;
+              camera.layers.set(2);
+              renderer.render(scene, camera);
+              camera.layers.set(0);
+              renderer.render(scene, camera);
+              renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+              if (orthoCamera && orthoScene) {
+                renderer.render(orthoScene, orthoCamera);
+  
+              }
+              let mixerUpdateDelta = clock.getDelta();
+              Object.keys(mixer).forEach(name => {
+                mixer[name].update(mixerUpdateDelta)
+              })
+              if (drinks) {
+                drinks.rotation.x += 2
+                drinks.rotation.y += 0.01;
+                drinks.rotation.y %= Math.PI * 2;
+                drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+              }
+              if (rice) {
+                // rice.rotation.x += 2
+                rice.rotation.y += 0.01;
+                rice.rotation.y %= Math.PI * 2;
+                // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
+              }
+              if (burger) {
+                burger.scale.set(20, 20, 20)
+                burger.rotation.y += 0.01;
+                burger.rotation.y %= Math.PI * 2;
+              }
+              if (bacon) {
+                bacon.scale.set(10, 10, 10)
+                bacon.rotation.y += 0.01;
+                bacon.rotation.y %= Math.PI * 2;
+              }
+              //外面設定一個參數紀錄時間
+              //direction 來設定現在是要變大變小或是往上往下
+              count += 1 * dierction
+              if (crabMesh && egretMesh) {
+                //設定參數
+            
+                crabMesh.position.y += 0.8 * dierction
+                egretMesh.scale.y += 0.0015 * dierction
+                egretMesh.scale.x += 0.0015 * dierction
+                egretMesh.scale.z += 0.0015 * dierction
+              }
+  
+            
+              //峰值設定
+              if (count === 50 || count > 50) {
+                dierction = -1
+  
+              }
+              if (count === 0 || count < 0) {
+                dierction = 1
+              }
+  
+  
+            });
+          })
+          setScene(anchorSec.group, scene, arSceneB, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardBuger)
+          setScene(anchor.group, scene, arSceneDino, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+  
+          })
+          setScene(anchorThird.group, scene, arSceneBac, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          })
+        }
+       
 
-            camera.layers.set(2);
-            renderer.render(scene, camera);
-            camera.layers.set(0);
-            renderer.render(scene, camera);
-            renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-            renderer.render(orthoScene, orthoCamera);
-            // renderer.autoClear = true; // 渲染完毕后重置autoClear
-            // console.log(mixer)
-            let mixerUpdateDelta = clock.getDelta();
-            Object.keys(mixer).forEach(name => {
-              mixer[name].update(mixerUpdateDelta)
-            })
-            if (drinks) {
-              drinks.rotation.x += 2
-              drinks.rotation.y += 0.01;
-              drinks.rotation.y %= Math.PI * 2;
-              drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-            }
-            if (rice) {
-              // rice.rotation.x += 2
-              rice.rotation.y += 0.01;
-              rice.rotation.y %= Math.PI * 2;
-              // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
-            }
-            if (burger) {
-              burger.scale.set(20,20,20)
-              burger.rotation.y += 0.01;
-              burger.rotation.y %= Math.PI * 2;
-            }
-            if (bacon) {
-              bacon.scale.set(10,10,10)
-              bacon.rotation.y += 0.01;
-              bacon.rotation.y %= Math.PI * 2;
-            }
-          
-          });
-        })
 
-
-        setScene(anchorSec.group, scene, arSceneB, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          // renderer.setAnimationLoop(() => {
-          //   renderer.autoClear = false;
-
-          //   camera.layers.set(2);
-          //   renderer.render(scene, camera);
-          //   camera.layers.set(0);
-          //   renderer.render(scene, camera);
-          //   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-          //   renderer.render(orthoScene, orthoCamera);
-          //   renderer.autoClear = true; // 渲染完毕后重置autoClear
-
-          //   let mixerUpdateDelta = clock.getDelta();
-          //   Object.keys(mixer).forEach(name => {
-          //     mixer[name].update(mixerUpdateDelta)
-          //   })
-          
-          // });
-        })
-        setScene(anchor.group, scene, arSceneDino, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-        
-        })
-        setScene(anchorThird.group, scene, arSceneBac, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          // renderer.setAnimationLoop(() => {
-          //   renderer.autoClear = false;
-
-          //   camera.layers.set(2);
-          //   renderer.render(scene, camera);
-          //   camera.layers.set(0);
-          //   renderer.render(scene, camera);
-
-          //   // 渲染2D场景（logo）
-          //   // 目前因為時序問題,由最後一個函式渲染
-          //   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-          //   renderer.render(orthoScene, orthoCamera);
-          //   renderer.autoClear = true; // 渲染完毕后重置autoClear
-
-          //   let mixerUpdateDelta = clock.getDelta();
-          //   Object.keys(mixer).forEach(name => {
-          //     mixer[name].update(mixerUpdateDelta)
-          //   })
-          //   if (burger) {
-          //     burger.rotation.y += 0.01;
-          //     burger.rotation.y %= Math.PI * 2;
-          //     burger.rotation.y = Math.max(burger.rotation.y, -Math.PI / 2);
-          //   }
-          // });
-        })
+    
 
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
@@ -229,15 +279,17 @@ export const AppState = {
     setImage(imageData) {
       dispatch.AppState.setImageData(imageData);
       dispatch.AppState.changePageState(PageState.ViewPhoto);
+      dispatch.AppState.setLastPage(PageState.ViewPhoto);
     },
     setVideo(videoData) {
       dispatch.AppState.setVideoData(videoData);
       dispatch.AppState.changePageState(PageState.ViewVideo);
+      dispatch.AppState.setLastPage(PageState.ViewVideo);
     },
-    showDiscard(page) {
-      dispatch.AppState.setLastPage(page);
+    showDiscard() {
       dispatch.AppState.changePageState(PageState.Discard);
     }
+ 
   })
 }
 
@@ -263,15 +315,15 @@ function connectWebCam(mindarThree) {
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
   videoTex.maxFilter = THREE.LinearFilter;
-  requestMicrophonePermission()
+  requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(video.clientWidth+200, video.clientHeight),
+    new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
   //設定大小及位置
-  let scale = 13;
+  let scale = 12.5;
   let position_y = 0;
   mesh.renderOrder = 2
 
@@ -293,34 +345,88 @@ function connectWebCam(mindarThree) {
   const loader = new THREE.TextureLoader();
   loader.load('/image/guanduLogo.png', (texture) => {
     const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-    const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
     logoMesh = new THREE.Mesh(logoGeometry, logoMaterial);
-    logoMesh.scale.set(0.4, 0.4, 0.4)
-    // 调整位置以放置在左上角
-    logoMesh.position.set(window.innerWidth / 4 - 20, window.innerHeight - 50, 1);
+    if (window.innerWidth > 600) {
+      logoMesh.scale.set(0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width, 0.22 * window.innerWidth / texture.image.width)
+      // 调整位置以放置在左上角
+      // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
+      logoMesh.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight * 0.95, 1);
+    } else {
+      logoMesh.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
+      // 调整位置以放置在左上角
+      logoMesh.position.set(window.innerWidth / 4 - 0, window.innerHeight - 50, 1);
+    }
     orthoScene.add(logoMesh);
-    // scene.render(orthoScene, orthoCamera);
+  });
+  // 加载grass并添加到2D场景
+  loader.load('/image/Grass.png', (texture) => {
+    
+    const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true  , toneMapped: false});
+    
+    grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
+    // 設定大小
+    grassMesh.scale.set(1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在左上角
+    grassMesh.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    //新增到2D場景
+    orthoScene.add(grassMesh);
   });
 
+  // 加载crab并添加到2D场景
+  loader.load('/image/crab.png', (texture) => {
+    const crabGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const crabMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    crabMesh = new THREE.Mesh(crabGeometry, crabMaterial);
+
+    // 設定大小
+    crabMesh.scale.set(0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width, 0.18 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    crabMesh.position.set(window.innerWidth - texture.image.width * 0.18 * 1.5, window.innerWidth / 1444 * texture.image.height, 2);
+    //新增到2D場景
+    orthoScene.add(crabMesh);
+
+
+  });
+ 
+  // 加载egret并添加到2D场景
+  loader.load('/image/egret.png', (texture) => {
+    const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    egretMesh = new THREE.Mesh(egretGeometry, egretMaterial);
+
+    // 設定大小
+    egretMesh.scale.set(0.15 * window.innerWidth / texture.image.width, 0.15 * window.innerWidth / texture.image.width, 0.15 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    egretMesh.position.set(texture.image.width * 0.18 + window.innerWidth * 0.05, window.innerWidth / 1444 * texture.image.height / 2, 1);
+    //新增到2D場景
+    orthoScene.add(egretMesh);
+
+
+  });
 }
 //麥克風權限
-function requestMicrophonePermission() {
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-      // 麦克风权限已授予
+export function requestMicrophonePermission(value) {
+  navigator.mediaDevices.getUserMedia({ audio: value })
+    .then(function (stream) {
+
+      // 麦克风权限已授予 
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.error('Failed to get microphone permission', err);
     });
 }
 
 //設置場景
-async function setScene(anchorGroup, scene, sceneData, callback) {
+async function setScene(anchorGroup, scene, sceneData, callback, board) {
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
-  console.log(scene)
+
+
+  // console.log(scene)
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
@@ -329,6 +435,12 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
   //設置主物件的父層級並把ThreeJS場景資訊放入
   const modelObject = new THREE.Object3D();
   modelObject.add(obj);
+  if (board) {
+    const objB = await loader.parseAsync(board ? board.scene : undefined);
+    modelObject.add(objB)
+
+  }
+
   modelObject.scale.set(0.235, 0.235, 0.235);
   modelObject.position.x = -0.2
   modelObject.position.y = -0.13
@@ -359,31 +471,31 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
     }
     if (item.name === `BaconEggBuger_240322_001.glb`) {
       bacon = item
-   
+
     }
     if (item.name === `triceratops (1).glb`) {
       dino = item
       animations.forEach(animation => {
-        console.log(animation)
+        // console.log(animation)
         mixer[animation.name] = new THREE.AnimationMixer(item);
         animationList[animation.name] = mixer[animation.name].clipAction(animation);
         animationList[animation.name].clampWhenFinished = true;
         animationList[animation.name].play();
         // if(item.name === `triceratops (1).glb`) {
-          // mixer[animation.name].addEventListener('finished', (e) => {
-          //   if(e.action._clip.name.indexOf("Animation") >=0) {
-          //     animationList["Animation"].loop = THREE.LoopRepeat;
-          //     animationList["Animation"].play();
-        
-          //   }
-          //   else if(e.action._clip.name.indexOf("left") >=0) {
-          //     animationList["left_loop"].loop = THREE.LoopRepeat;
-          //     animationList['left_loop'].play();
-          //   }
-          // });
-          // setModelAnimation(item, animations, "Animation")
+        // mixer[animation.name].addEventListener('finished', (e) => {
+        //   if(e.action._clip.name.indexOf("Animation") >=0) {
+        //     animationList["Animation"].loop = THREE.LoopRepeat;
+        //     animationList["Animation"].play();
+
+        //   }
+        //   else if(e.action._clip.name.indexOf("left") >=0) {
+        //     animationList["left_loop"].loop = THREE.LoopRepeat;
+        //     animationList['left_loop'].play();
+        //   }
+        // });
+        // setModelAnimation(item, animations, "Animation")
         // }
-  
+
       });
     }
     //設定動畫
@@ -396,7 +508,7 @@ async function setScene(anchorGroup, scene, sceneData, callback) {
     //       if(e.action._clip.name.indexOf("Animation") >=0) {
     //         animationList["Animation"].loop = THREE.LoopRepeat;
     //         animationList["Animation"].play();
-      
+
     //       }
     //       else if(e.action._clip.name.indexOf("left") >=0) {
     //         animationList["left_loop"].loop = THREE.LoopRepeat;
