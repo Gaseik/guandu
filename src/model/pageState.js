@@ -29,6 +29,7 @@ const initialState = {
   modelData: undefined,
   arLib: undefined,
   musicStarted: false,
+  playAuth:false,
   detect: 0,
   targetFind: false,
   imageData: undefined,
@@ -39,18 +40,7 @@ const initialState = {
 }
 export const AppState = {
   state: {
-    pageState: PageState.Loading,
-    isArModeOn: false,
-    modelData: undefined,
-    arLib: undefined,
-    musicStarted: false,
-    detect: 0,
-    targetFind: false,
-    imageData: undefined,
-    videoData: undefined,
-    lastPage: undefined,
-    helpPop: true,
-    target: undefined,
+    ...initialState
   },
   reducers: {
     changePageState: (state, payload) => {
@@ -88,6 +78,9 @@ export const AppState = {
     },
     setDetect: (state, payload) => {
       return { ...state, detect: payload }
+    },
+    setPlayAuth: (state, payload) => {
+      return { ...state, playAuth: payload }
     },
     setReset: () => {
       modelData = undefined;
@@ -130,30 +123,27 @@ export const AppState = {
       const anchorFour = arLib.addAnchor(3);
       modelData = anchor.group;
 
-
-      anchor.onTargetFound = async () => {
+      function changeState (value) {
+      
+        dispatch.AppState.setDetect(value)
         dispatch.AppState.setHelpPop(false);
+        dispatch.AppState.setMusicStarted(true);
+      }
+      anchor.onTargetFound = async () => {
         dispatch.AppState.setModelData(anchor.group)
-        dispatch.AppState.setDetect(0)
-        dispatch.AppState.setMusicStarted(true)
+        changeState(1)
       }
       anchorSec.onTargetFound = async () => {
-        dispatch.AppState.setHelpPop(false);
+         changeState(2)
         dispatch.AppState.setModelData(anchorSec.group)
-        dispatch.AppState.setDetect(1)
-        dispatch.AppState.setMusicStarted(true)
       }
       anchorThird.onTargetFound = async () => {
-        dispatch.AppState.setHelpPop(false);
+        changeState(3)
         dispatch.AppState.setModelData(anchorThird.group)
-        dispatch.AppState.setDetect(2)
-        dispatch.AppState.setMusicStarted(true)
       }
       anchorFour.onTargetFound = async () => {
-        dispatch.AppState.setHelpPop(false);
+        changeState(4)
         dispatch.AppState.setModelData(anchorFour.group)
-        dispatch.AppState.setDetect(3)
-        dispatch.AppState.setMusicStarted(true)
       }
 
       anchor.onTargetLost = async () => {
@@ -289,13 +279,14 @@ export const AppState = {
     setImage(imageData) {
       dispatch.AppState.setImageData(imageData);
       dispatch.AppState.changePageState(PageState.ViewPhoto);
+      dispatch.AppState.setLastPage(PageState.ViewPhoto);
     },
     setVideo(videoData) {
       dispatch.AppState.setVideoData(videoData);
       dispatch.AppState.changePageState(PageState.ViewVideo);
+      dispatch.AppState.setLastPage(PageState.ViewVideo);
     },
-    showDiscard(page) {
-      dispatch.AppState.setLastPage(page);
+    showDiscard() {
       dispatch.AppState.changePageState(PageState.Discard);
     }
  
@@ -332,7 +323,7 @@ function connectWebCam(mindarThree) {
   );
 
   //設定大小及位置
-  let scale = 12;
+  let scale = 12.5;
   let position_y = 0;
   mesh.renderOrder = 2
 
@@ -398,23 +389,7 @@ function connectWebCam(mindarThree) {
 
 
   });
-  loader.load( '/image/Grass.png', function ( texture ) {
-    texture.encoding = sRGBEncoding;
-
-    const materialB = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
-    const sprite = new THREE.Sprite( materialB );
-    sprite.position.set( 100 , 500, 10 );
-    sprite.scale.set(500, 500, 150);
-    orthoScene.add(sprite);
-  });
-  loader.load( '/image/Grass.png', function ( texture ) {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    const materialB = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
-    const sprite = new THREE.Sprite( materialB );
-    sprite.position.set( 100 , 200, 10 );
-    sprite.scale.set(500, 500, 150);
-    orthoScene.add(sprite);
-  });
+ 
   // 加载egret并添加到2D场景
   loader.load('/image/egret.png', (texture) => {
     const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);

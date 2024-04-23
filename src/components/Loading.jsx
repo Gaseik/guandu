@@ -41,6 +41,7 @@ function Loading(props) {
       dispatch.AppState.setMusicStarted(false);
       stopCameraAndMicrophone()
       dispatch.AppState.setReset();
+    
     } else {
       if (state.pageState === PageState.Loading && !first) {
         dispatch.AppState.loadModelFile(true);
@@ -49,9 +50,19 @@ function Loading(props) {
     }
   }, [isVisible]);
 
-  useEffect(()=>{
+
+  function loadModelFile() {
     dispatch.AppState.loadModelFile(false);
     setFirst(false)
+  }
+
+  useEffect(()=>{
+    const shouldLoad = window.innerWidth < 1030;
+    if(shouldLoad){
+      loadModelFile()
+    }
+  
+  
   },[])
 
   return (

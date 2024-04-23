@@ -18,10 +18,10 @@ const ViewPhoto = function () {
     link.download = "image.png";
     link.href = state.imageData;
     link.click();
-    await setPop(<p>Please find your file in the album or folder.</p>);
+    await setPop(<p className="text-[#020202] transition-all ease-in-out font-extrabold">請在相簿或資料夾中找到您的檔案</p>);
     await setTimeout(() => {
       setPop();
-    }, 1000);
+    }, 2000);
   }
 
   return (
@@ -35,7 +35,7 @@ const ViewPhoto = function () {
         <img src={"/image/frameGroup.png"} alt="frame" />
       </div> */}
       <div className="stepBtn-container">
-        <div className="info">請在相簿或資料夾中找到您的檔案</div>
+        {/* <div className="info">請在相簿或資料夾中找到您的檔案</div> */}
         <div className="stepBtn-group">
           <button
             className="text-white text-base flex items-center rounded-full py-2 px-6 bg-main"
@@ -44,7 +44,7 @@ const ViewPhoto = function () {
             儲存 <MdSaveAlt className="text-xl ml-2 mb-1" />
           </button>
         </div>
-        <div className="btn-pop">{pop}</div>
+        <div className="btn-pop text-black">{pop}</div>
       </div>
     </>
   );

@@ -14,7 +14,6 @@ const ViewVideo = function () {
 
   useEffect(() => {
     if (videoDom) {
-      console.log(state.videoData);
       videoDom.current.controls = false;
       videoDom.current.src = URL.createObjectURL(state.videoData);
       // videoDom.current.src = '/test.mp4'
@@ -86,6 +85,7 @@ const ViewVideo = function () {
         style={{ display: playVideo ? "none" : "flex" }}
       >
         <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" />
+        <div className="stop"></div>
         <div className="bg"></div>
       </div>
       {/* <div className="absolute bottom-0 z-[0]">

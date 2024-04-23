@@ -38,7 +38,7 @@ const ARView = function () {
     
     ) {
       bgMusic.volume = 0.1;
-      if (state.musicStarted) {
+      if (state.musicStarted&&state.playAuth) {
         bgMusic.play();
         dispatch.AppState.setMusicStarted(true);
       } else {
@@ -46,28 +46,47 @@ const ARView = function () {
       }
     } else {
       bgMusic.pause();
+      dispatch.AppState.setPlayAuth(false)
       dispatch.AppState.setMusicStarted(false); // 否则暂停背景音乐
     }
-  }, [state.pageState, state.musicStarted]);// 依赖于页面状态和背景音乐实例
+  }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
 
 
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
-    if (state.detect > 0) {
+    if (state.detect > 1) {
       if (bgMusic.src !== bgMusicFile) {
+        console.log('s')
+        dispatch.AppState.setPlayAuth(false)
         setBgMusic(null);
         setBgMusic(new Audio(bgMusicFile));
+        if(state.playAuth){
+          dispatch.AppState.setPlayAuth(false);
+        }
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
       }
     } else {
-      setBgMusic(null);
-      setBgMusic(new Audio(bgDMusicFile));
-      setTimeout(() => {
-        dispatch.AppState.setMusicStarted(true);
-      }, 500);
+      console.log(state.detect )
+      if(bgMusic.src !== bgDMusicFile) {
+        console.log('DDD')
+        setBgMusic(null);
+        setBgMusic(new Audio(bgDMusicFile));
+        if(state.playAuth){
+          dispatch.AppState.setPlayAuth(false);
+        }
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }else{
+        console.log('P')
+        setTimeout(() => {
+          dispatch.AppState.setMusicStarted(true);
+        }, 500);
+      }
+   
     }
   }, [state.detect]);
 
@@ -193,8 +212,8 @@ const ARView = function () {
             {/* <img src="/image/icon/close-icon.svg" className="close-icon" alt="" /> */}
             <IoIosClose className="text-4xl text-[#020202]" />
           </div>
-          <img className="w-[200px]" src="/image/LOGO 2.png" alt="" />
-          <p className="help-large-scale font-bold">請將相機對準此圖標</p>
+          <img className="w-[180px]" src="/image/show.gif" alt="" />
+          <p className="help-large-scale font-bold mt-4">請將相機對準此圖標</p>
           <p className="help-small-scale">
             為了獲得最佳的 AR 體驗
             <br /> 請將相機鏡頭與現場的辨識圖標保持平行

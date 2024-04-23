@@ -5,10 +5,12 @@ import ARView from "./components/ARView";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "./model/pageState";
 import { Intro,Loading } from "./components";
+import { UseMobile } from "./components";
 import './scss/app.scss'
 
 export function usePageVisibility() {
   const [isVisible, setIsVisible] = useState(true);
+  
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -26,7 +28,6 @@ export function usePageVisibility() {
 }
 // 這一段是在抓取手機頁面可視高度
 // 參考文章:https://blog.jasonzhuang.com/blog/2023/02/19/mobile-viewport-height-unit/
-const ThemeContext = createContext(null);
 let vh = window.innerHeight * 0.01;
 document.documentElement.style.setProperty('--vh', `${vh}px`);
 
@@ -36,7 +37,7 @@ window.addEventListener('resize', () => {
 });
 
 
-
+const ThemeContext = createContext(null);
 function App() {
   const [theme, setTheme] = useState("");
   const state = useSelector((state) => state.AppState);
@@ -52,6 +53,7 @@ function App() {
             state.pageState <= PageState.Loading ? "" : "hidden"
           }
         />
+        <UseMobile/>
         {/* <Intro
           style={state.pageState === PageState.Intro ? {} : { display: "none" }}
         /> */}

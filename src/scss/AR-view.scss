@@ -20,6 +20,38 @@
             color: #{$btn-color};
             font-size: 18px;
         }
+        .tip{
+            z-index: 3;
+            opacity: 1;
+        }
+        .tip::after {
+            content: '';
+            position: absolute;
+            top: -38px;
+            right: 0px;
+            z-index: 1;
+            border-width: 20px;
+            border-style: solid;
+            transform: scaleX(50%);
+            border-color:  transparent transparent #{$main} transparent;
+        }
+        .tip.gone{
+            opacity: 0;
+            animation: gone .5s  linear;
+        }
+        .tip.show{  
+            animation: breath 3s  linear;
+        }
+        @keyframes gone {
+            0%{
+                opacity: 1;
+            }
+            100%{
+                opacity: 0;
+            }
+        }
+     
+    
     }
 
     .help-pop {
