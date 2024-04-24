@@ -17,7 +17,6 @@ export function UseMobile() {
           </div>
         
         </div>
-        <img className="asus-logo" src="/image/ASUS-logo.png" alt="" />
       </div>
     </div>
   )

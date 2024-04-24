@@ -315,7 +315,7 @@ function connectWebCam(mindarThree) {
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
   videoTex.maxFilter = THREE.LinearFilter;
-  requestMicrophonePermission(true)
+  // requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
