@@ -55,9 +55,10 @@ const ARView = function () {
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
-    if (state.detect > 1) {
+    //判斷是恐龍還是食物類
+    //目前0是初始狀態,1-10是食物,11-13是恐龍類
+    if (state.detect < 11) {
       if (bgMusic.src !== bgMusicFile) {
-        console.log('s')
         dispatch.AppState.setPlayAuth(false)
         setBgMusic(null);
         setBgMusic(new Audio(bgMusicFile));
@@ -69,9 +70,7 @@ const ARView = function () {
         }, 500);
       }
     } else {
-      console.log(state.detect )
       if(bgMusic.src !== bgDMusicFile) {
-        console.log('DDD')
         setBgMusic(null);
         setBgMusic(new Audio(bgDMusicFile));
         if(state.playAuth){
@@ -81,7 +80,6 @@ const ARView = function () {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
       }else{
-        console.log('P')
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
