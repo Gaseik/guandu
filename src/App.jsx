@@ -1,12 +1,14 @@
 import { useState,useEffect } from "react";
-import Panel from "./Panel";
 import { createContext, useContext } from "react";
 import ARView from "./components/ARView";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "./model/pageState";
-import { Intro,Loading } from "./components";
+import { Loading } from "./components";
 import { DeviceOrientation } from "./components";
 import './scss/app.scss'
+import axios from "axios";
+
+axios.defaults.baseURL = 'http://192.168.1.220:8080/api'
 
 export function usePageVisibility() {
   const [isVisible, setIsVisible] = useState(true);

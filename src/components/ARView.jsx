@@ -9,6 +9,7 @@ import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/MetroCity.mp3";
+import axios from "axios";
 import bgDMusicFile from "/music/Godzila.mp3";
 import Help from "./Help";
 const viewButton = {
@@ -87,6 +88,20 @@ const ARView = function () {
    
     }
   }, [state.detect]);
+
+  useEffect(()=>{
+
+      axios.post('/AddGlobalEventCount', {
+        eventName : 'MainPageCount',
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+  },[])
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {

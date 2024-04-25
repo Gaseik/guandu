@@ -25,5 +25,6 @@ public/model
 *.njsproj
 *.sln
 *.sw?
+.env
 yarn.lock
 
