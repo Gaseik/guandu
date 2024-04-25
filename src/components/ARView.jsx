@@ -8,8 +8,8 @@ import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
 import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
-import bgMusicFile from "/music/MetroCity.mp3";
-import bgDMusicFile from "/music/Godzila.mp3";
+import bgMusicFile from "/music/audio_meals.mp3";
+import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
 const viewButton = {
   camera: "camera",
