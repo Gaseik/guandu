@@ -44,7 +44,6 @@ const Intro = function (props) {
         <p className="device-warning">*For a better experience, mobile devices produced after 2019 are recommended.</p>
         <p className="device-warning">*Suggested OS & Browser: iOS 15.0, Android 9.0, Google Chrome 76 or above.</p>
       </div>
-      <img className="asus-logo" src="/image/ASUS-logo.png" alt="" />
     </div>
   )
 }

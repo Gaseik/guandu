@@ -14,13 +14,14 @@ const mixer = [];
 export const animationList = [];
 const clock = new THREE.Clock();
 export let modelData = undefined;
-let burger = undefined;
 let drinks = undefined;
+let burger = undefined;
+let Er = undefined;
 let rice = undefined;
+let kc = undefined;
 let bacon = undefined;
-let dino = undefined;
-let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
 
+let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
 let count = 1
 let dierction = 1
 const initialState = {
@@ -29,7 +30,7 @@ const initialState = {
   modelData: undefined,
   arLib: undefined,
   musicStarted: false,
-  playAuth:false,
+  playAuth: false,
   detect: 0,
   targetFind: false,
   imageData: undefined,
@@ -88,7 +89,6 @@ export const AppState = {
       drinks = undefined;
       rice = undefined;
       bacon = undefined;
-      dino = undefined;
       orthoCamera = undefined
       orthoScene = undefined
       logoMesh = undefined
@@ -114,66 +114,85 @@ export const AppState = {
         uiLoading: false,
         uiScanning: false
       });
-     
+
 
       const { renderer, scene, camera } = arLib;
       const anchor = arLib.addAnchor(0);
       const anchorSec = arLib.addAnchor(1);
       const anchorThird = arLib.addAnchor(2);
-      const anchorFour = arLib.addAnchor(3);
       modelData = anchor.group;
 
-      function changeState (value) {
-      
+      function changeState(value) {
         dispatch.AppState.setDetect(value)
         dispatch.AppState.setHelpPop(false);
         dispatch.AppState.setMusicStarted(true);
       }
-      anchor.onTargetFound = async () => {
-        dispatch.AppState.setModelData(anchor.group)
-        changeState(1)
-      }
-      anchorSec.onTargetFound = async () => {
-         changeState(2)
-        dispatch.AppState.setModelData(anchorSec.group)
-      }
-      anchorThird.onTargetFound = async () => {
-        changeState(3)
-        dispatch.AppState.setModelData(anchorThird.group)
-      }
-      anchorFour.onTargetFound = async () => {
-        changeState(4)
-        dispatch.AppState.setModelData(anchorFour.group)
-      }
 
-      anchor.onTargetLost = async () => {
-        dispatch.AppState.setMusicStarted(false)
-        dispatch.AppState.setHelpPop(true);
+      for (let i = 0; i < 13; i++) {
+        arLib.addAnchor(i).onTargetFound = async () => {
+          dispatch.AppState.setModelData(arLib.addAnchor(i).group)
+          changeState(i + 1)
+        }
+        arLib.addAnchor(i).onTargetLost = async () => {
+          dispatch.AppState.setMusicStarted(false)
+          dispatch.AppState.setHelpPop(true);
+        }
       }
-      anchorSec.onTargetLost = async () => {
-        dispatch.AppState.setMusicStarted(false)
-        dispatch.AppState.setHelpPop(true);
-      }
-      anchorThird.onTargetLost = async () => {
-        dispatch.AppState.setMusicStarted(false)
-        dispatch.AppState.setHelpPop(true);
-      }
-      anchorFour.onTargetLost = async () => {
-        dispatch.AppState.setMusicStarted(false)
-        dispatch.AppState.setHelpPop(true);
-      }
+      // anchor.onTargetFound = async () => {
+      //   dispatch.AppState.setModelData(anchor.group)
+      //   changeState(1)
+      // }
+      // anchorSec.onTargetFound = async () => {
+      //    changeState(2)
+      //   dispatch.AppState.setModelData(anchorSec.group)
+      // }
+      // anchorThird.onTargetFound = async () => {
+      //   changeState(3)
+      //   dispatch.AppState.setModelData(anchorThird.group)
+      // }
+      // anchorFour.onTargetFound = async () => {
+      //   changeState(4)
+      //   dispatch.AppState.setModelData(anchorFour.group)
+      // }
 
-   
+      // anchor.onTargetLost = async () => {
+      //   dispatch.AppState.setMusicStarted(false)
+      //   dispatch.AppState.setHelpPop(true);
+      // }
+      // anchorSec.onTargetLost = async () => {
+      //   dispatch.AppState.setMusicStarted(false)
+      //   dispatch.AppState.setHelpPop(true);
+      // }
+      // anchorThird.onTargetLost = async () => {
+      //   dispatch.AppState.setMusicStarted(false)
+      //   dispatch.AppState.setHelpPop(true);
+      // }
+      // anchorFour.onTargetLost = async () => {
+      //   dispatch.AppState.setMusicStarted(false)
+      //   dispatch.AppState.setHelpPop(true);
+      // }
+
+
       const loader = new GLTFLoader()
       Promise.all([
         //下載場景檔
-        fetch("/model/StewedRice.json").then(result => result.json()),
-        fetch("/model/J-Burger.json").then(result => result.json()),
-        fetch("/model/Bacon_sub_0326.json").then(result => result.json()),
-        fetch("/model/dinotest_0326.json").then(result => result.json()),
+        fetch("/model/meals_drinks.json").then(result => result.json()),
+        fetch("/model/meals_jburger.json").then(result => result.json()),
+        fetch("/model/meals_er.json").then(result => result.json()),
+        fetch("/model/meals_stewed_rice.json").then(result => result.json()),
+        fetch("/model/meals_kc.json").then(result => result.json()),
+        fetch("/model/meals_beb.json").then(result => result.json()),
+        fetch("/model/container_triceratops.json").then(result => result.json()),
+        fetch("/model/container_raptor.json").then(result => result.json()),
+        fetch("/model/container_pterodactyl.json").then(result => result.json()),
+        fetch("/model/billboard_drinks.json").then(result => result.json()),
         fetch("/model/billboard_jburger.json").then(result => result.json()),
+        fetch("/model/billboard_er.json").then(result => result.json()),
+        fetch("/model/billboard_stewed_rice.json").then(result => result.json()),
+        fetch("/model/billboard_kc.json").then(result => result.json()),
+        fetch("/model/billboard_beb.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arSceneR, arSceneB, arSceneBac, arSceneDino, boardBuger, arLibResult]) => {
+      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
@@ -181,8 +200,46 @@ export const AppState = {
         arLib.scene2D = orthoScene
 
         //設置3D場景
-        if(reload===false){
-          setScene(anchorFour.group, scene, arSceneR, () => {
+        if (reload === false) {
+          setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+
+          }, boardStewedRice)
+          setScene(anchorSec.group, scene, arJBurger, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardJBuger)
+          setScene(anchor.group, scene, arDrinks, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+
+          }, boardDrinks)
+          setScene(anchorThird.group, scene, arEr, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardEr)
+          setScene(arLib.addAnchor(4).group, scene, arKC, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+
+          }, boardKC)
+          setScene(arLib.addAnchor(5).group, scene, arBeb, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardBeb)
+          setScene(arLib.addAnchor(10).group, scene, arDinoTri, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          })
+          setScene(arLib.addAnchor(11).group, scene, arDinoRaptor, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
@@ -195,17 +252,19 @@ export const AppState = {
               renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
               if (orthoCamera && orthoScene) {
                 renderer.render(orthoScene, orthoCamera);
-  
+
               }
               let mixerUpdateDelta = clock.getDelta();
               Object.keys(mixer).forEach(name => {
                 mixer[name].update(mixerUpdateDelta)
               })
+              // console.log('drinks',drinks)
+              // console.log('rice',rice)
               if (drinks) {
-                drinks.rotation.x += 2
+                // drinks.rotation.x += 2
                 drinks.rotation.y += 0.01;
                 drinks.rotation.y %= Math.PI * 2;
-                drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+                // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
               }
               if (rice) {
                 // rice.rotation.x += 2
@@ -214,61 +273,57 @@ export const AppState = {
                 // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
               }
               if (burger) {
-                burger.scale.set(20, 20, 20)
-                burger.rotation.y += 0.01;
+                burger.rotation.y += 0.02;
                 burger.rotation.y %= Math.PI * 2;
               }
               if (bacon) {
-                bacon.scale.set(10, 10, 10)
                 bacon.rotation.y += 0.01;
                 bacon.rotation.y %= Math.PI * 2;
+              }
+              if (kc) {
+                kc.rotation.y += 0.01;
+                kc.rotation.y %= Math.PI * 2;
+              }
+              if (Er) {
+                Er.rotation.y += 0.01;
+                Er.rotation.y %= Math.PI * 2;
               }
               //外面設定一個參數紀錄時間
               //direction 來設定現在是要變大變小或是往上往下
               count += 1 * dierction
               if (crabMesh && egretMesh) {
                 //設定參數
-            
+
                 crabMesh.position.y += 0.8 * dierction
                 egretMesh.scale.y += 0.0015 * dierction
                 egretMesh.scale.x += 0.0015 * dierction
                 egretMesh.scale.z += 0.0015 * dierction
               }
-  
-            
+
+
               //峰值設定
               if (count === 50 || count > 50) {
                 dierction = -1
-  
+
               }
               if (count === 0 || count < 0) {
                 dierction = 1
               }
-  
-  
+
+
             });
           })
-          setScene(anchorSec.group, scene, arSceneB, () => {
+          setScene(arLib.addAnchor(12).group, scene, arDinoPter, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
-          }, boardBuger)
-          setScene(anchor.group, scene, arSceneDino, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-  
-          })
-          setScene(anchorThird.group, scene, arSceneBac, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
+
           })
         }
-       
 
 
-    
+
+
 
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
@@ -289,7 +344,7 @@ export const AppState = {
     showDiscard() {
       dispatch.AppState.changePageState(PageState.Discard);
     }
- 
+
   })
 }
 
@@ -315,7 +370,7 @@ function connectWebCam(mindarThree) {
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
   videoTex.maxFilter = THREE.LinearFilter;
-  requestMicrophonePermission(true)
+  // requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
@@ -361,10 +416,10 @@ function connectWebCam(mindarThree) {
   });
   // 加载grass并添加到2D场景
   loader.load('/image/Grass.png', (texture) => {
-    
+
     const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true  , toneMapped: false});
-    
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
+
     grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
     // 設定大小
     grassMesh.scale.set(1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
@@ -389,7 +444,7 @@ function connectWebCam(mindarThree) {
 
 
   });
- 
+
   // 加载egret并添加到2D场景
   loader.load('/image/egret.png', (texture) => {
     const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
@@ -441,7 +496,7 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
 
   }
 
-  modelObject.scale.set(0.235, 0.235, 0.235);
+  modelObject.scale.set(1, 1, 1);
   modelObject.position.x = -0.2
   modelObject.position.y = -0.13
   anchorGroup.add(modelObject);
@@ -452,73 +507,38 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
       item.parent = scene
     }
 
-    //檢查是否是遮罩物件並設定遮罩材質球
-    // if (i-
 
 
-    let animations = item.animations;
-    // console.log(item.name)
-    //設定球體漸變動畫
-
-    if (item.name === `Cylinder_cup002`) {
+    if (item.name === `rotation_drinks`) {
       drinks = item;
     }
-    if (item.name === `Hamburger`) {
+    if (item.name === `rotation_jburger`) {
       burger = item
     }
-    if (item.name === `StewedRice.glb`) {
+    if (item.name === `rotation_stewed_rice`) {
       rice = item
     }
-    if (item.name === `BaconEggBuger_240322_001.glb`) {
+    if (item.name === `rotation_beb`) {
       bacon = item
-
     }
-    if (item.name === `triceratops (1).glb`) {
-      dino = item
+    if (item.name === `rotation_kc`) {
+      kc = item
+    }
+    if (item.name === `rotation_er`) {
+      Er = item
+    }
+    if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' || 
+    item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb' ||
+    item.name === `group_container_triceratops` || item.name === `group_container_raptor` || item.name === `group_container_pterodactyl`) {
+      let animations = item.animations;
       animations.forEach(animation => {
-        // console.log(animation)
-        mixer[animation.name] = new THREE.AnimationMixer(item);
-        animationList[animation.name] = mixer[animation.name].clipAction(animation);
-        animationList[animation.name].clampWhenFinished = true;
-        animationList[animation.name].play();
-        // if(item.name === `triceratops (1).glb`) {
-        // mixer[animation.name].addEventListener('finished', (e) => {
-        //   if(e.action._clip.name.indexOf("Animation") >=0) {
-        //     animationList["Animation"].loop = THREE.LoopRepeat;
-        //     animationList["Animation"].play();
-
-        //   }
-        //   else if(e.action._clip.name.indexOf("left") >=0) {
-        //     animationList["left_loop"].loop = THREE.LoopRepeat;
-        //     animationList['left_loop'].play();
-        //   }
-        // });
-        // setModelAnimation(item, animations, "Animation")
-        // }
-
+        let animationName = animation.name + item.name
+        mixer[animationName] = new THREE.AnimationMixer(item);
+        animationList[animationName] = mixer[animationName].clipAction(animation);
+        animationList[animationName].clampWhenFinished = true;
+        animationList[animationName].play();
       });
     }
-    //設定動畫
-    // animations.forEach(animation => {
-    //   mixer[animation.name] = new THREE.AnimationMixer(item);
-    //   animationList[animation.name] = mixer[animation.name].clipAction(animation);
-    //   animationList[animation.name].clampWhenFinished = true;
-    //   if(item.name === `triceratops (1).glb`) {
-    //     mixer[animation.name].addEventListener('finished', (e) => {
-    //       if(e.action._clip.name.indexOf("Animation") >=0) {
-    //         animationList["Animation"].loop = THREE.LoopRepeat;
-    //         animationList["Animation"].play();
-
-    //       }
-    //       else if(e.action._clip.name.indexOf("left") >=0) {
-    //         animationList["left_loop"].loop = THREE.LoopRepeat;
-    //         animationList['left_loop'].play();
-    //       }
-    //     });
-    //     setModelAnimation(item, sceneData.ballLoop, "Animation")
-    //   }
-
-    // });
   });
   callback();
 }

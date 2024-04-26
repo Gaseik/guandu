@@ -5,7 +5,7 @@ import ARView from "./components/ARView";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "./model/pageState";
 import { Intro,Loading } from "./components";
-import { UseMobile } from "./components";
+import { DeviceOrientation } from "./components";
 import './scss/app.scss'
 
 export function usePageVisibility() {
@@ -53,7 +53,7 @@ function App() {
             state.pageState <= PageState.Loading ? "" : "hidden"
           }
         />
-        <UseMobile/>
+        <DeviceOrientation/>
         {/* <Intro
           style={state.pageState === PageState.Intro ? {} : { display: "none" }}
         /> */}

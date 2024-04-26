@@ -116,7 +116,6 @@ function Loading(props) {
         </div>
       </div>
 
-      {/* <img className="asus-logo" src="/image/ASUS-logo.png" alt="" /> */}
     </div>
   );
 }
