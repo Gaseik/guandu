@@ -11,6 +11,8 @@ import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
+import axios from "axios";
+
 const viewButton = {
   camera: "camera",
   video: "video",
