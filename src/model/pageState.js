@@ -14,6 +14,8 @@ const mixer = [];
 export const animationList = [];
 const clock = new THREE.Clock();
 export let modelData = undefined;
+
+//這邊把一些需要旋轉的物件宣告
 let drinks = undefined;
 let burger = undefined;
 let Er = undefined;
@@ -103,6 +105,7 @@ export const AppState = {
   effects: (dispatch) => ({
 
     async loadModelFile(reload) {
+      //先建立一個mindar物件
       const arLib = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar_container"),
         imageTargetSrc: '/model/targets.mind',
@@ -117,17 +120,21 @@ export const AppState = {
 
 
       const { renderer, scene, camera } = arLib;
+      //這個部分只是解釋一下如何宣告出我們前面引入的物件
+      //先用compiler把圖片上傳轉換 https://hiukim.github.io/mind-ar-js-doc/tools/compile
+      //依照順序把對照物設定好
       const anchor = arLib.addAnchor(0);
       const anchorSec = arLib.addAnchor(1);
       const anchorThird = arLib.addAnchor(2);
       modelData = anchor.group;
 
+      //發現物件要做甚麼事情
       function changeState(value) {
         dispatch.AppState.setDetect(value)
         dispatch.AppState.setHelpPop(false);
         dispatch.AppState.setMusicStarted(true);
       }
-
+      //依照順序把要做的事情設定好
       for (let i = 0; i < 13; i++) {
         arLib.addAnchor(i).onTargetFound = async () => {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
@@ -138,42 +145,9 @@ export const AppState = {
           dispatch.AppState.setHelpPop(true);
         }
       }
-      // anchor.onTargetFound = async () => {
-      //   dispatch.AppState.setModelData(anchor.group)
-      //   changeState(1)
-      // }
-      // anchorSec.onTargetFound = async () => {
-      //    changeState(2)
-      //   dispatch.AppState.setModelData(anchorSec.group)
-      // }
-      // anchorThird.onTargetFound = async () => {
-      //   changeState(3)
-      //   dispatch.AppState.setModelData(anchorThird.group)
-      // }
-      // anchorFour.onTargetFound = async () => {
-      //   changeState(4)
-      //   dispatch.AppState.setModelData(anchorFour.group)
-      // }
-
-      // anchor.onTargetLost = async () => {
-      //   dispatch.AppState.setMusicStarted(false)
-      //   dispatch.AppState.setHelpPop(true);
-      // }
-      // anchorSec.onTargetLost = async () => {
-      //   dispatch.AppState.setMusicStarted(false)
-      //   dispatch.AppState.setHelpPop(true);
-      // }
-      // anchorThird.onTargetLost = async () => {
-      //   dispatch.AppState.setMusicStarted(false)
-      //   dispatch.AppState.setHelpPop(true);
-      // }
-      // anchorFour.onTargetLost = async () => {
-      //   dispatch.AppState.setMusicStarted(false)
-      //   dispatch.AppState.setHelpPop(true);
-      // }
-
 
       const loader = new GLTFLoader()
+      
       Promise.all([
         //下載場景檔
         fetch("/model/meals_drinks.json").then(result => result.json()),
@@ -243,6 +217,7 @@ export const AppState = {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
+            //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
             renderer.setAnimationLoop(() => {
               renderer.autoClear = false;
               camera.layers.set(2);
@@ -508,7 +483,8 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
     }
 
 
-
+    //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
+    //引入進來後,把對應變數配對
     if (item.name === `rotation_drinks`) {
       drinks = item;
     }
@@ -527,11 +503,14 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
     if (item.name === `rotation_er`) {
       Er = item
     }
+    // 呼叫美術做好的動畫名稱
     if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' || 
     item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb' ||
     item.name === `group_container_triceratops` || item.name === `group_container_raptor` || item.name === `group_container_pterodactyl`) {
       let animations = item.animations;
       animations.forEach(animation => {
+        //因為美術的動畫名稱都一樣,所以添加物件名稱
+        //不然最終只會讓一個被呼叫到,這不是我們要的
         let animationName = animation.name + item.name
         mixer[animationName] = new THREE.AnimationMixer(item);
         animationList[animationName] = mixer[animationName].clipAction(animation);

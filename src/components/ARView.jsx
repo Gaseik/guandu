@@ -31,6 +31,7 @@ const ARView = function () {
 
 
   useEffect(() => {
+    //判斷哪些地方需要撥放音樂
     if (
       state.pageState === PageState.Intro ||
       state.pageState === PageState.ViewPhoto ||
@@ -55,7 +56,7 @@ const ARView = function () {
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
-    //判斷是恐龍還是食物類
+    //判斷是恐龍還是食物類,判斷要撥甚麼音樂
     //目前0是初始狀態,1-10是食物,11-13是恐龍類
     if (state.detect < 11) {
       if (bgMusic.src !== bgMusicFile) {
