@@ -22,7 +22,10 @@ let Er = undefined;
 let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
-
+let textTri = undefined;
+let textRaptor = undefined;
+let textPter = undefined;
+let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
 let count = 1
 let dierction = 1
@@ -80,6 +83,7 @@ export const AppState = {
       return { ...state, musicStarted: payload }
     },
     setDetect: (state, payload) => {
+      detect = payload
       return { ...state, detect: payload }
     },
     setPlayAuth: (state, payload) => {
@@ -141,6 +145,7 @@ export const AppState = {
           changeState(i + 1)
         }
         arLib.addAnchor(i).onTargetLost = async () => {
+          dispatch.AppState.setDetect(0)
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
         }
@@ -213,6 +218,7 @@ export const AppState = {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
           })
+          // console.log(detect)
           setScene(arLib.addAnchor(11).group, scene, arDinoRaptor, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -268,14 +274,28 @@ export const AppState = {
               count += 1 * dierction
               if (crabMesh && egretMesh) {
                 //設定參數
-
                 crabMesh.position.y += 0.8 * dierction
                 egretMesh.scale.y += 0.0015 * dierction
                 egretMesh.scale.x += 0.0015 * dierction
                 egretMesh.scale.z += 0.0015 * dierction
               }
-
-
+              switch(detect) {
+                case 12 :
+                  textRaptor.visible = true;
+                  break;
+                case 11 :
+                  textTri.visible = true;
+                  break;
+                case 13 :
+                  textPter.visible = true;
+                  break;
+                default:
+                  textTri.visible = false;
+                  textRaptor.visible = false;
+                  textPter.visible = false;
+                  break;
+              }
+            
               //峰值設定
               if (count === 50 || count > 50) {
                 dierction = -1
@@ -323,18 +343,6 @@ export const AppState = {
   })
 }
 
-//設定播放動畫清單
-function setModelAnimation(glbModel, animationObject, name) {
-  animationObject.forEach(animation => {
-    console.log(animation)
-    let nameSet = animation.name
-    if (name) {
-      nameSet = name;
-    }
-    mixer[nameSet] = new THREE.AnimationMixer(glbModel);
-    animationList[nameSet] = mixer[nameSet].clipAction(animation);
-  })
-}
 
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
@@ -432,8 +440,46 @@ function connectWebCam(mindarThree) {
     egretMesh.position.set(texture.image.width * 0.18 + window.innerWidth * 0.05, window.innerWidth / 1444 * texture.image.height / 2, 1);
     //新增到2D場景
     orthoScene.add(egretMesh);
+  });
 
+  loader.load('/image/textForTri.png', (texture) => {
+    const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    textTri = new THREE.Mesh(egretGeometry, egretMaterial);
+    textTri.visible = false;
 
+    // 設定大小
+    textTri.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    textTri.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    //新增到2D場景
+    orthoScene.add(textTri);
+  });
+  loader.load('/image/textForPter.png', (texture) => {
+    const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    textPter = new THREE.Mesh(egretGeometry, egretMaterial);
+    textPter.visible = false;
+
+    // 設定大小
+    textPter.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    textPter.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    //新增到2D場景
+    orthoScene.add(textPter);
+  });
+  loader.load('/image/textForRaptor.png', (texture) => {
+    const egretGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const egretMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    textRaptor = new THREE.Mesh(egretGeometry, egretMaterial);
+    textRaptor.visible = false;
+
+    // 設定大小
+    textRaptor.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在右下角,草的原始高度是387
+    textRaptor.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    //新增到2D場景
+    orthoScene.add(textRaptor);
   });
 }
 //麥克風權限
@@ -521,17 +567,3 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
   });
   callback();
 }
-
-//設定材質球動畫
-function CreateMaterialAnimation(times, values) {
-
-  // const times = [ 0, 2.5, 5 ], values = [ 1, 0.25, 1 ];
-
-  const trackName = '.material.opacity';
-
-  const track = new THREE.NumberKeyframeTrack(trackName, times, values);
-  return new AnimationClip(null, times[times.length - 1], [track]);
-
-}
-
-const delay = ms => new Promise(res => setTimeout(res, ms));

@@ -154,12 +154,9 @@ const ARView = function () {
       }`}
     >
       <div id="ar_container" className=" h-[100%] flex " />
-      {/* <img
-        src="image/guanduLogo.png"
-        className="absolute w-[120px] top-4 left-10"
-      /> */}
+      {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
-      <div className="button-group absolute bottom-0">
+      <div className="button-group">
         <div className="circle-frame">
           <div
             className={`${
