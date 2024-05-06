@@ -101,7 +101,6 @@ const ViewVideo = function () {
             儲存 <MdSaveAlt className="text-xl ml-2 mb-1" />
           </button>
         </div>
-        <div className="btn-pop">{pop}</div>
       </div>
     </>
   );

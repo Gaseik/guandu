@@ -22,6 +22,7 @@ let Er = undefined;
 let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
+let Thai = undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -161,6 +162,7 @@ export const AppState = {
         fetch("/model/meals_stewed_rice.json").then(result => result.json()),
         fetch("/model/meals_kc.json").then(result => result.json()),
         fetch("/model/meals_beb.json").then(result => result.json()),
+        fetch("/model/meals_thai.json").then(result => result.json()),
         fetch("/model/container_triceratops.json").then(result => result.json()),
         fetch("/model/container_raptor.json").then(result => result.json()),
         fetch("/model/container_pterodactyl.json").then(result => result.json()),
@@ -170,8 +172,9 @@ export const AppState = {
         fetch("/model/billboard_stewed_rice.json").then(result => result.json()),
         fetch("/model/billboard_kc.json").then(result => result.json()),
         fetch("/model/billboard_beb.json").then(result => result.json()),
+        fetch("/model/billboard_thai.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, arLibResult]) => {
+      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai,arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb,boardThai, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
@@ -213,13 +216,18 @@ export const AppState = {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
           }, boardBeb)
-          setScene(arLib.addAnchor(10).group, scene, arDinoTri, () => {
+          setScene(arLib.addAnchor(8).group, scene, arThai, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardThai)
+          setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
           })
           // console.log(detect)
-          setScene(arLib.addAnchor(11).group, scene, arDinoRaptor, () => {
+          setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
@@ -269,6 +277,10 @@ export const AppState = {
                 Er.rotation.y += 0.01;
                 Er.rotation.y %= Math.PI * 2;
               }
+              if (Thai) {
+                Thai.rotation.y += 0.01;
+                Thai.rotation.y %= Math.PI * 2;
+              }
               //外面設定一個參數紀錄時間
               //direction 來設定現在是要變大變小或是往上往下
               count += 1 * dierction
@@ -280,13 +292,13 @@ export const AppState = {
                 egretMesh.scale.z += 0.0015 * dierction
               }
               switch(detect) {
-                case 12 :
+                case 13 :
                   textRaptor.visible = true;
                   break;
-                case 11 :
+                case 12 :
                   textTri.visible = true;
                   break;
-                case 13 :
+                case 14 :
                   textPter.visible = true;
                   break;
                 default:
@@ -308,7 +320,7 @@ export const AppState = {
 
             });
           })
-          setScene(arLib.addAnchor(12).group, scene, arDinoPter, () => {
+          setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
@@ -517,7 +529,7 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
 
   }
 
-  modelObject.scale.set(1, 1, 1);
+  modelObject.scale.set(0.5, 0.5, 0.5);
   modelObject.position.x = -0.2
   modelObject.position.y = -0.13
   anchorGroup.add(modelObject);
@@ -548,6 +560,9 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_er`) {
       Er = item
+    }
+    if (item.name === `rotation_thai`) {
+      Thai = item
     }
     // 呼叫美術做好的動畫名稱
     if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' || 
