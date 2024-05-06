@@ -56,14 +56,16 @@ const ARView = function () {
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
-    //判斷是恐龍還是食物類,判斷要撥甚麼音樂
-    //目前0是初始狀態,1-10是食物,11-13是恐龍類
+    // 判斷是恐龍還是食物類，判斷要撥放甚麼音樂
+    // 目前0是初始狀態，1-10是食物，11-13是恐龍類
     if (state.detect < 11) {
       if (bgMusic.src !== bgMusicFile) {
-        dispatch.AppState.setPlayAuth(false)
+        dispatch.AppState.setPlayAuth(false);
         setBgMusic(null);
-        setBgMusic(new Audio(bgMusicFile));
-        if(state.playAuth){
+        const newBgMusic = new Audio(bgMusicFile);
+        newBgMusic.loop = true; // 在這裡設置音樂循環播放
+        setBgMusic(newBgMusic);
+        if (state.playAuth) {
           dispatch.AppState.setPlayAuth(false);
         }
         setTimeout(() => {
@@ -71,21 +73,22 @@ const ARView = function () {
         }, 500);
       }
     } else {
-      if(bgMusic.src !== bgDMusicFile) {
+      if (bgMusic.src !== bgDMusicFile) {
         setBgMusic(null);
-        setBgMusic(new Audio(bgDMusicFile));
-        if(state.playAuth){
+        const newBgMusic = new Audio(bgDMusicFile);
+        newBgMusic.loop = true; // 在這裡設置音樂循環播放
+        setBgMusic(newBgMusic);
+        if (state.playAuth) {
           dispatch.AppState.setPlayAuth(false);
         }
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
-      }else{
+      } else {
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
       }
-   
     }
   }, [state.detect]);
 
