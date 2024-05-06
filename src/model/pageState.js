@@ -249,35 +249,35 @@ export const AppState = {
               })
               // console.log('drinks',drinks)
               // console.log('rice',rice)
-              if (drinks) {
+              if (drinks && detect ===1) {
                 // drinks.rotation.x += 2
                 drinks.rotation.y += 0.01;
                 drinks.rotation.y %= Math.PI * 2;
                 // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
               }
-              if (rice) {
+              if (rice && detect ===4) {
                 // rice.rotation.x += 2
                 rice.rotation.y += 0.01;
                 rice.rotation.y %= Math.PI * 2;
                 // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
               }
-              if (burger) {
+              if (burger && detect ===2) {
                 burger.rotation.y += 0.02;
                 burger.rotation.y %= Math.PI * 2;
               }
-              if (bacon) {
+              if (bacon && detect ===6) {
                 bacon.rotation.y += 0.01;
                 bacon.rotation.y %= Math.PI * 2;
               }
-              if (kc) {
+              if (kc  && detect ===5) {
                 kc.rotation.y += 0.01;
                 kc.rotation.y %= Math.PI * 2;
               }
-              if (Er) {
+              if (Er && detect ===3) {
                 Er.rotation.y += 0.01;
                 Er.rotation.y %= Math.PI * 2;
               }
-              if (Thai) {
+              if (Thai && detect ===9) {
                 Thai.rotation.y += 0.01;
                 Thai.rotation.y %= Math.PI * 2;
               }
@@ -576,6 +576,7 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         mixer[animationName] = new THREE.AnimationMixer(item);
         animationList[animationName] = mixer[animationName].clipAction(animation);
         animationList[animationName].clampWhenFinished = true;
+        animationList[animationName].setLoop(THREE.LoopOnce);
         animationList[animationName].play();
       });
     }
