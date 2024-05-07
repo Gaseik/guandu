@@ -99,10 +99,7 @@ export const AppState = {
     },
     setReset: () => {
       modelData = undefined;
-      burger = undefined;
-      drinks = undefined;
-      rice = undefined;
-      bacon = undefined;
+   
       orthoCamera = undefined
       orthoScene = undefined
       logoMesh = undefined
@@ -111,6 +108,18 @@ export const AppState = {
       egretMesh = undefined
       count = 1
       dierction = 1
+      drinks = undefined;
+      burger = undefined;
+      Er = undefined;
+      rice = undefined;
+      kc = undefined;
+      bacon = undefined;
+      Thai = undefined;
+      beer = undefined;
+      hotPot =  undefined;
+      textTri = undefined;
+      textRaptor = undefined;
+      textPter = undefined;
       return { ...initialState }
     }
   },
@@ -235,7 +244,7 @@ export const AppState = {
         arDinoRaptor.name = 'Raptor'
         
         //設置3D場景
-        if (reload === false) {
+      
           setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -295,6 +304,7 @@ export const AppState = {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
             //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+            
             renderer.setAnimationLoop(() => {
               renderer.autoClear = false;
               camera.layers.set(2);
@@ -307,10 +317,11 @@ export const AppState = {
 
               }
               let mixerUpdateDelta = clock.getDelta();
+             
               Object.keys(mixer).forEach(name => {
                 mixer[name].update(mixerUpdateDelta)
               })
-              if (drinks && detect === 1) {
+              if (drinks && detect === 1 ) {
                 // drinks.rotation.x += 2
                 drinks.rotation.y += 0.01;
                 drinks.rotation.y %= Math.PI * 2;
@@ -352,8 +363,9 @@ export const AppState = {
               }
               //外面設定一個參數紀錄時間
               //direction 來設定現在是要變大變小或是往上往下
-              count += 1 * dierction
-              if (crabMesh && egretMesh) {
+              
+              if (crabMesh && egretMesh && !reload) {
+                count += 1 * dierction
                 //設定參數
                 crabMesh.position.y += 0.8 * dierction
                 egretMesh.scale.y += 0.0015 * dierction
@@ -385,7 +397,7 @@ export const AppState = {
               if (count === 0 || count < 0) {
                 dierction = 1
               }
-
+        
 
             });
           })
@@ -395,7 +407,7 @@ export const AppState = {
             renderer.shadowMap.needsUpdate = true;
 
           })
-        }
+        
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -558,17 +570,7 @@ function connectWebCam(mindarThree) {
     orthoScene.add(textRaptor);
   });
 }
-//麥克風權限
-export function requestMicrophonePermission(value) {
-  navigator.mediaDevices.getUserMedia({ audio: value })
-    .then(function (stream) {
 
-      // 麦克风权限已授予 
-    })
-    .catch(function (err) {
-      console.error('Failed to get microphone permission', err);
-    });
-}
 
 //設置場景
 async function setScene(anchorGroup, scene, sceneData, callback, board) {
