@@ -24,6 +24,7 @@ let kc = undefined;
 let bacon = undefined;
 let Thai = undefined;
 let beer = undefined;
+let hotPot =  undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -207,6 +208,7 @@ export const AppState = {
         fetch("/model/meals_beb.json").then(result => result.json()),
         fetch("/model/meals_thai.json").then(result => result.json()),
         fetch("/model/meals_beer.json").then(result => result.json()),
+        fetch("/model/meals_hot_pot.json").then(result => result.json()),
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
@@ -218,8 +220,9 @@ export const AppState = {
         fetch("/model/billboard_beb.json").then(result => result.json()),
         fetch("/model/billboard_thai.json").then(result => result.json()),
         fetch("/model/billboard_beer.json").then(result => result.json()),
+        fetch("/model/billboard_hot_pot.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, arLibResult]) => {
+      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer,arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer,boardHotPot, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
@@ -271,6 +274,11 @@ export const AppState = {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
           }, boardThai)
+          setScene(arLib.addAnchor(7).group, scene, arHotPot, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardHotPot)
           setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -333,6 +341,10 @@ export const AppState = {
               if (Thai && detect === 9) {
                 Thai.rotation.y += 0.01;
                 Thai.rotation.y %= Math.PI * 2;
+              }
+              if (hotPot && detect === 8) {
+                hotPot.rotation.y += 0.01;
+                hotPot.rotation.y %= Math.PI * 2;
               }
               if (beer && detect === 10) {
                 beer.rotation.y += 0.01;
@@ -698,8 +710,10 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
       Thai = item
     }
     if (item.name === `rotation_beer`) {
-    
       beer = item
+    }
+    if (item.name === `rotation_hot_pot`) {
+      hotPot = item
     }
 
    
