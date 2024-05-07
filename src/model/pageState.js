@@ -23,9 +23,15 @@ let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
 let Thai = undefined;
+let beer = undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
+//宣告恐龍,因為恐龍比較複雜,美術將動畫拆成恐龍本身加上柵欄
+//然後動畫又需要在掃瞄到目標圖片的時候才開始跑動畫
+let DinoPter = new Object();
+let DinoTri = new Object();
+let DinoRaptor = new Object();
 let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh;
 let count = 1
@@ -140,20 +146,57 @@ export const AppState = {
         dispatch.AppState.setMusicStarted(true);
       }
       //依照順序把要做的事情設定好
-      for (let i = 0; i < 13; i++) {
+      let Dinos = [DinoTri,DinoRaptor,DinoPter]
+      for (let i = 0; i < 14; i++) {
         arLib.addAnchor(i).onTargetFound = async () => {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
+          //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
+          switch (i){
+            case 11:
+              DinoTri.animations.forEach(an => {
+                animationList[an].play()
+              })
+            case 12:
+              DinoRaptor.animations.forEach(an => {
+                animationList[an].play()
+              })
+            case 13:
+              DinoPter.animations.forEach(an => {
+                animationList[an].play()
+              })
+          }
+         
         }
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
+          //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
+          switch (i){
+            case 11:
+              DinoTri.animations.forEach(an => {
+                animationList[an].stop()
+                DinoTri.door1.visible = true
+                DinoTri.door2.visible = true
+              })
+            case 12:
+              DinoRaptor.animations.forEach(an => {
+                animationList[an].stop()
+                DinoRaptor.door1.visible = true
+                DinoRaptor.door2.visible = true
+              })
+            case 13:
+              DinoPter.animations.forEach(an => {
+                animationList[an].stop()
+                DinoPter.door1.visible = true
+                DinoPter.door2.visible = true
+              })
+          }
         }
       }
 
-      const loader = new GLTFLoader()
-      
+
       Promise.all([
         //下載場景檔
         fetch("/model/meals_drinks.json").then(result => result.json()),
@@ -163,9 +206,10 @@ export const AppState = {
         fetch("/model/meals_kc.json").then(result => result.json()),
         fetch("/model/meals_beb.json").then(result => result.json()),
         fetch("/model/meals_thai.json").then(result => result.json()),
-        fetch("/model/container_triceratops.json").then(result => result.json()),
-        fetch("/model/container_raptor.json").then(result => result.json()),
-        fetch("/model/container_pterodactyl.json").then(result => result.json()),
+        fetch("/model/meals_beer.json").then(result => result.json()),
+        fetch("/model/triceratops.json").then(result => result.json()),
+        fetch("/model/raptor.json").then(result => result.json()),
+        fetch("/model/pterodactyl.json").then(result => result.json()),
         fetch("/model/billboard_drinks.json").then(result => result.json()),
         fetch("/model/billboard_jburger.json").then(result => result.json()),
         fetch("/model/billboard_er.json").then(result => result.json()),
@@ -173,14 +217,20 @@ export const AppState = {
         fetch("/model/billboard_kc.json").then(result => result.json()),
         fetch("/model/billboard_beb.json").then(result => result.json()),
         fetch("/model/billboard_thai.json").then(result => result.json()),
+        fetch("/model/billboard_beer.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai,arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb,boardThai, arLibResult]) => {
+      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, arLibResult]) => {
 
         //設置攝影機的畫面
         connectWebCam(arLib)
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
 
+        //設定物件名稱,讓函式可以判斷名稱
+        arDinoPter.name = 'Pter'
+        arDinoTri.name = 'Tri'
+        arDinoRaptor.name = 'Raptor'
+        
         //設置3D場景
         if (reload === false) {
           setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
@@ -221,6 +271,11 @@ export const AppState = {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.shadowMap.needsUpdate = true;
           }, boardThai)
+          setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.shadowMap.needsUpdate = true;
+          }, boardBeer)
           setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -247,39 +302,41 @@ export const AppState = {
               Object.keys(mixer).forEach(name => {
                 mixer[name].update(mixerUpdateDelta)
               })
-              // console.log('drinks',drinks)
-              // console.log('rice',rice)
-              if (drinks && detect ===1) {
+              if (drinks && detect === 1) {
                 // drinks.rotation.x += 2
                 drinks.rotation.y += 0.01;
                 drinks.rotation.y %= Math.PI * 2;
                 // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
               }
-              if (rice && detect ===4) {
+              if (rice && detect === 4) {
                 // rice.rotation.x += 2
                 rice.rotation.y += 0.01;
                 rice.rotation.y %= Math.PI * 2;
                 // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
               }
-              if (burger && detect ===2) {
+              if (burger && detect === 2) {
                 burger.rotation.y += 0.02;
                 burger.rotation.y %= Math.PI * 2;
               }
-              if (bacon && detect ===6) {
+              if (bacon && detect === 6) {
                 bacon.rotation.y += 0.01;
                 bacon.rotation.y %= Math.PI * 2;
               }
-              if (kc  && detect ===5) {
+              if (kc && detect === 5) {
                 kc.rotation.y += 0.01;
                 kc.rotation.y %= Math.PI * 2;
               }
-              if (Er && detect ===3) {
+              if (Er && detect === 3) {
                 Er.rotation.y += 0.01;
                 Er.rotation.y %= Math.PI * 2;
               }
-              if (Thai && detect ===9) {
+              if (Thai && detect === 9) {
                 Thai.rotation.y += 0.01;
                 Thai.rotation.y %= Math.PI * 2;
+              }
+              if (beer && detect === 10) {
+                beer.rotation.y += 0.01;
+                beer.rotation.y %= Math.PI * 2;
               }
               //外面設定一個參數紀錄時間
               //direction 來設定現在是要變大變小或是往上往下
@@ -291,14 +348,14 @@ export const AppState = {
                 egretMesh.scale.x += 0.0015 * dierction
                 egretMesh.scale.z += 0.0015 * dierction
               }
-              switch(detect) {
-                case 13 :
+              switch (detect) {
+                case 13:
                   textRaptor.visible = true;
                   break;
-                case 12 :
+                case 12:
                   textTri.visible = true;
                   break;
-                case 14 :
+                case 14:
                   textPter.visible = true;
                   break;
                 default:
@@ -307,7 +364,7 @@ export const AppState = {
                   textPter.visible = false;
                   break;
               }
-            
+
               //峰值設定
               if (count === 50 || count > 50) {
                 dierction = -1
@@ -327,11 +384,6 @@ export const AppState = {
 
           })
         }
-
-
-
-
-
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -463,7 +515,7 @@ function connectWebCam(mindarThree) {
     // 設定大小
     textTri.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
     // 调整位置以放置在右下角,草的原始高度是387
-    textTri.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    textTri.position.set(window.innerWidth / 3 * 2, window.innerHeight / 4, 3);
     //新增到2D場景
     orthoScene.add(textTri);
   });
@@ -476,7 +528,7 @@ function connectWebCam(mindarThree) {
     // 設定大小
     textPter.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
     // 调整位置以放置在右下角,草的原始高度是387
-    textPter.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    textPter.position.set(window.innerWidth / 3 * 2, window.innerHeight / 4, 3);
     //新增到2D場景
     orthoScene.add(textPter);
   });
@@ -489,7 +541,7 @@ function connectWebCam(mindarThree) {
     // 設定大小
     textRaptor.scale.set(0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width, 0.5 * window.innerWidth / texture.image.width)
     // 调整位置以放置在右下角,草的原始高度是387
-    textRaptor.position.set(window.innerWidth / 3 * 2 , window.innerHeight / 4, 3);
+    textRaptor.position.set(window.innerWidth / 3 * 2, window.innerHeight / 4, 3);
     //新增到2D場景
     orthoScene.add(textRaptor);
   });
@@ -529,10 +581,91 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
 
   }
 
+
   modelObject.scale.set(0.5, 0.5, 0.5);
-  modelObject.position.x = -0.2
-  modelObject.position.y = -0.13
+  // modelObject.position.x = -0.2
+  // modelObject.position.y = -0.13
   anchorGroup.add(modelObject);
+
+  if (sceneData.name === 'Pter' || sceneData.name === 'Raptor' || sceneData.name === 'Tri') {
+    //左邊和前方的柵欄
+    let door
+    let door2
+    //恐龍本身
+    let Dino
+    //整個外部柵欄整體(用於動畫)
+    let fense
+    //全部的物件
+    let DinoObj = new Object();
+
+
+    DinoObj.animations = []
+    // modelObject.scale.set(0.1, 0.1, 0.1);
+    //依序尋找需要的物件
+    modelObject.traverse((item) => {
+      if (item.name === `Dummy001`) {
+        door = item;
+        DinoObj.door1 = door;
+      }
+      if (item.name === `Dummy002`) {
+        door2 = item;
+        DinoObj.door2 = door2;
+      }
+      if (item.name === 'pterodactyl-container.glb'||item.name === 'raptor-container.glb'||item.name === 'triceratops-container.glb') {
+        fense = item;
+        DinoObj.fense = fense;
+      }
+      if (item.name === 'pterodactyl.glb'|| item.name === 'raptor.glb'|| item.name === 'triceratops.glb') {
+        Dino = item;
+        DinoObj.Dino = Dino;
+      }
+    })
+    //設定好恐龍本身的動畫
+    if (Dino) {
+      let animations = Dino.animations;
+      let animationName = sceneData.name
+      mixer[animationName] = new THREE.AnimationMixer(Dino);
+      //把恐龍本身的動畫放進animationList
+      animationList[animationName] = mixer[animationName].clipAction(animations[0]);
+      animationList[animationName].clampWhenFinished = true;
+      //也把動畫要撥的部分放進去DinoObj裡面
+      DinoObj.animations.push(animationName)
+    }
+    if (fense) {
+      let animations = fense.animations;
+      animations.forEach(animation => {
+        //因為美術的動畫名稱都一樣,所以添加物件名稱
+        //不然最終只會讓一個被呼叫到,這不是我們要的
+        let animationName = animation.name + sceneData.name
+        mixer[animationName] = new THREE.AnimationMixer(fense);
+        animationList[animationName] = mixer[animationName].clipAction(animation);
+        animationList[animationName].clampWhenFinished = true;
+        DinoObj.animations.push(animationName)
+        //柵欄的部分只撥放一次
+        animationList[animationName].setLoop(THREE.LoopOnce);
+        mixer[animationName].addEventListener('finished', function (e) {
+          //柵欄動畫本身結束的時候要把兩個門板消失
+          door.visible = false
+          door2.visible = false
+        });
+      });
+    }
+    switch (sceneData.name) {
+      case 'Pter':
+        DinoPter = DinoObj;
+        break;
+      case 'Raptor':
+        DinoRaptor = DinoObj;
+        break;
+      case 'Tri':
+        DinoTri = DinoObj;
+        break;
+      default:    
+        DinoPter = DinoObj;
+        break;
+
+    }
+  }
   //掃描ThreeJS的物件並做處理
   modelObject.traverse((item) => {
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
@@ -564,10 +697,15 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
     if (item.name === `rotation_thai`) {
       Thai = item
     }
-    // 呼叫美術做好的動畫名稱
-    if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' || 
-    item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb' ||
-    item.name === `group_container_triceratops` || item.name === `group_container_raptor` || item.name === `group_container_pterodactyl`) {
+    if (item.name === `rotation_beer`) {
+    
+      beer = item
+    }
+
+   
+    // 呼叫美術做好的動畫名稱,這邊只先處理板子,恐龍在上面處理
+    if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' ||
+      item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
       let animations = item.animations;
       animations.forEach(animation => {
         //因為美術的動畫名稱都一樣,所以添加物件名稱
@@ -576,10 +714,18 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         mixer[animationName] = new THREE.AnimationMixer(item);
         animationList[animationName] = mixer[animationName].clipAction(animation);
         animationList[animationName].clampWhenFinished = true;
-        animationList[animationName].setLoop(THREE.LoopOnce);
+        //柵欄的部分只撥放一次
+        // if (item.name === 'pterodactyl-container.glb') {
+        //   animationList[animationName].setLoop(THREE.LoopOnce);
+        //   mixer[animationName].addEventListener('finished', function (e) {
+        //     gone()
+        //     console.log('end')
+        //   });
+        // }
         animationList[animationName].play();
       });
     }
   });
   callback();
+
 }
