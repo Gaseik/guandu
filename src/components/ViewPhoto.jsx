@@ -1,23 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PageState } from "../model/pageState";
-import { shareImage } from "../helper/shareImage";
 import { MdSaveAlt } from "react-icons/md";
 import Help from "./Help";
+import {saveApi} from '../helper/api';
+
 
 const ViewPhoto = function () {
   const [pop, setPop] = useState();
+  const [type , setType] = useState(0);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-  function onClickClose() {
-    dispatch.AppState.showDiscard(PageState.ViewPhoto);
-  }
+
+  useEffect(()=>{
+    setType(state.detect)
+  },[])
 
   async function savePop() {
     const link = document.createElement("a");
     link.download = "image.png";
     link.href = state.imageData;
     link.click();
+    saveApi(type)
     await setPop(<p className="text-[#020202] transition-all ease-in-out font-extrabold">請在相簿或資料夾中找到您的檔案</p>);
     await setTimeout(() => {
       setPop();

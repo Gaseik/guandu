@@ -13,6 +13,7 @@
     "@rematch/core": "^2.2.0",
     "@rematch/loading": "^2.1.2",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "axios": "^1.6.8",
     "mind-ar": "^1.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
