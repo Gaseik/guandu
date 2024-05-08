@@ -10,6 +10,7 @@ import axios from "axios";
 
 axios.defaults.baseURL = 'https://192.168.1.220:8081/api'
 axios.defaults.headers.common['authorization'] = "5e5e06e0-a991-4e06-99fb-068367a8e513";
+axios.defaults.headers.common['Content-Type'] = "multipart/form-data";
 
 export function usePageVisibility() {
   const [isVisible, setIsVisible] = useState(true);

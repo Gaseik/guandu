@@ -11,7 +11,7 @@ import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
-import axios from "axios";
+import { enterPageApi,themeDetect } from "../helper/api";
 
 const viewButton = {
   camera: "camera",
@@ -95,18 +95,15 @@ const ARView = function () {
   }, [state.detect]);
 
   useEffect(()=>{
-
-      axios.post('/AddGlobalEventCount', {
-        eventName : 'MainPageCount',
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
+    //進佔就打一次API
+    enterPageApi()
   },[])
+
+  useEffect(()=>{
+    if(state.detect>0){
+    themeDetect(state.detect)
+    }
+  },[state.detect])
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
