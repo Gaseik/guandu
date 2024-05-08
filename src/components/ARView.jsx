@@ -5,13 +5,13 @@ import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
 import "mind-ar/dist/mindar-image-three.prod";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
-import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
+import {  IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
-import { enterPageApi,themeDetect } from "../helper/api";
+import { enterPageApi,photoTakenApi,recordApi,themeDetect } from "../helper/api";
 
 const viewButton = {
   camera: "camera",
@@ -112,6 +112,7 @@ const ARView = function () {
       const imageUrl = captureImage(state.arLib);
       // console.log(imageUrl)
       dispatch.AppState.setImage(imageUrl);
+      photoTakenApi(state.detect)
     } else {
       setChangeBtn(viewButton.camera);
       setVideoBtn(false);
@@ -161,6 +162,7 @@ const ARView = function () {
         console.log(blob);
         if(!changeBtn){
           dispatch.AppState.setVideo(blob);
+          recordApi(state.detect)
         }
        
       });

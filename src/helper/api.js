@@ -13,6 +13,7 @@ export function enterPageApi() {
 }
 
 const types = {
+    0: 'none',
     1: 'drinks',
     2: 'jburger',
     3: 'er',
@@ -32,7 +33,7 @@ const types = {
 export function themeDetect(type) {
     axios.post('/AddThemeEventCount', {
         themeType: types[type],
-        eventName : 'ThemePageCount'
+        eventName: 'ThemePageCount'
     })
         .then(function (response) {
             // console.log(response);
@@ -43,9 +44,10 @@ export function themeDetect(type) {
 }
 
 export function recordApi(type) {
+
     axios.post('/AddThemeEventCount', {
         themeType: types[type],
-        eventName : 'RecordCount'
+        eventName: 'RecordCount'
     })
         .then(function (response) {
             // console.log(response);
@@ -53,12 +55,29 @@ export function recordApi(type) {
         .catch(function (error) {
             console.log(error);
         });
+
 }
 
 export function photoTakenApi(type) {
+
     axios.post('/AddThemeEventCount', {
         themeType: types[type],
-        eventName : 'PictureCount'
+        eventName: 'PictureCount'
+    })
+        .then(function (response) {
+            // console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+}
+
+export function saveApi(type) {
+    axios.post('/AddThemeEventCount', {
+        themeType: types[type],
+        eventName : 'SaveCount'
     })
         .then(function (response) {
             // console.log(response);
@@ -67,16 +86,3 @@ export function photoTakenApi(type) {
             console.log(error);
         });
 }
-
-// export function saveApi(type) {
-//     axios.post('/AddThemeEventCount', {
-//         themeType: types[type],
-//         eventName : 'RecordCount'
-//     })
-//         .then(function (response) {
-//             // console.log(response);
-//         })
-//         .catch(function (error) {
-//             console.log(error);
-//         });
-// }
