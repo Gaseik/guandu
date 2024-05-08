@@ -1,6 +1,4 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { AnimationClip, NumberKeyframeTrack } from "three";
 
 export const PageState = {
   Loading: 0x00000,
@@ -24,7 +22,7 @@ let kc = undefined;
 let bacon = undefined;
 let Thai = undefined;
 let beer = undefined;
-let hotPot =  undefined;
+let hotPot = undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -99,7 +97,7 @@ export const AppState = {
     },
     setReset: () => {
       modelData = undefined;
-   
+
       orthoCamera = undefined
       orthoScene = undefined
       logoMesh = undefined
@@ -116,7 +114,7 @@ export const AppState = {
       bacon = undefined;
       Thai = undefined;
       beer = undefined;
-      hotPot =  undefined;
+      hotPot = undefined;
       textTri = undefined;
       textRaptor = undefined;
       textPter = undefined;
@@ -141,6 +139,12 @@ export const AppState = {
 
 
       const { renderer, scene, camera } = arLib;
+    //   const customRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    //   const containerWidth = document.querySelector("#ar_container").clientWidth;
+    // const containerHeight = document.querySelector("#ar_container").clientHeight;
+    // customRenderer.setSize(containerWidth, containerHeight);
+
+    //   arLib.renderer = customRenderer;
       //這個部分只是解釋一下如何宣告出我們前面引入的物件
       //先用compiler把圖片上傳轉換 https://hiukim.github.io/mind-ar-js-doc/tools/compile
       //依照順序把對照物設定好
@@ -156,13 +160,12 @@ export const AppState = {
         dispatch.AppState.setMusicStarted(true);
       }
       //依照順序把要做的事情設定好
-      let Dinos = [DinoTri,DinoRaptor,DinoPter]
       for (let i = 0; i < 14; i++) {
         arLib.addAnchor(i).onTargetFound = async () => {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
-          switch (i){
+          switch (i) {
             case 11:
               DinoTri.animations.forEach(an => {
                 animationList[an].play()
@@ -176,14 +179,14 @@ export const AppState = {
                 animationList[an].play()
               })
           }
-         
+
         }
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
-          switch (i){
+          switch (i) {
             case 11:
               DinoTri.animations.forEach(an => {
                 animationList[an].stop()
@@ -231,147 +234,150 @@ export const AppState = {
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer,arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer,boardHotPot, arLibResult]) => {
+      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arLibResult]) => {
 
-        //設置攝影機的畫面
+        // * 設置攝影機的畫面
         connectWebCam(arLib)
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
 
-        //設定物件名稱,讓函式可以判斷名稱
+        // * 設定物件名稱,讓函式可以判斷名稱
         arDinoPter.name = 'Pter'
         arDinoTri.name = 'Tri'
         arDinoRaptor.name = 'Raptor'
-        
-        //設置3D場景
-      
-          setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
 
-          }, boardStewedRice)
-          setScene(anchorSec.group, scene, arJBurger, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardJBuger)
-          setScene(anchor.group, scene, arDrinks, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
+        // * 設置3D場景
 
-          }, boardDrinks)
-          setScene(anchorThird.group, scene, arEr, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardEr)
-          setScene(arLib.addAnchor(4).group, scene, arKC, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
+        setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
 
-          }, boardKC)
-          setScene(arLib.addAnchor(5).group, scene, arBeb, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardBeb)
-          setScene(arLib.addAnchor(8).group, scene, arThai, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardThai)
-          setScene(arLib.addAnchor(7).group, scene, arHotPot, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardHotPot)
-          setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boardBeer)
-          setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          })
-          // console.log(detect)
-          setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-            //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
-            
-            renderer.setAnimationLoop(() => {
-              renderer.autoClear = false;
-              camera.layers.set(2);
-              renderer.render(scene, camera);
-              camera.layers.set(0);
-              renderer.render(scene, camera);
-              renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-              if (orthoCamera && orthoScene) {
-                renderer.render(orthoScene, orthoCamera);
+        }, boardStewedRice)
+        setScene(anchorSec.group, scene, arJBurger, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardJBuger)
+        setScene(anchor.group, scene, arDrinks, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
 
-              }
-              let mixerUpdateDelta = clock.getDelta();
-             
-              Object.keys(mixer).forEach(name => {
-                mixer[name].update(mixerUpdateDelta)
-              })
-              if (drinks && detect === 1 ) {
-                // drinks.rotation.x += 2
-                drinks.rotation.y += 0.01;
-                drinks.rotation.y %= Math.PI * 2;
-                // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-              }
-              if (rice && detect === 4) {
-                // rice.rotation.x += 2
-                rice.rotation.y += 0.01;
-                rice.rotation.y %= Math.PI * 2;
-                // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
-              }
-              if (burger && detect === 2) {
-                burger.rotation.y += 0.02;
-                burger.rotation.y %= Math.PI * 2;
-              }
-              if (bacon && detect === 6) {
-                bacon.rotation.y += 0.01;
-                bacon.rotation.y %= Math.PI * 2;
-              }
-              if (kc && detect === 5) {
-                kc.rotation.y += 0.01;
-                kc.rotation.y %= Math.PI * 2;
-              }
-              if (Er && detect === 3) {
-                Er.rotation.y += 0.01;
-                Er.rotation.y %= Math.PI * 2;
-              }
-              if (Thai && detect === 9) {
-                Thai.rotation.y += 0.01;
-                Thai.rotation.y %= Math.PI * 2;
-              }
-              if (hotPot && detect === 8) {
-                hotPot.rotation.y += 0.01;
-                hotPot.rotation.y %= Math.PI * 2;
-              }
-              if (beer && detect === 10) {
-                beer.rotation.y += 0.01;
-                beer.rotation.y %= Math.PI * 2;
-              }
+        }, boardDrinks)
+        setScene(anchorThird.group, scene, arEr, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardEr)
+        setScene(arLib.addAnchor(4).group, scene, arKC, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+
+        }, boardKC)
+        setScene(arLib.addAnchor(5).group, scene, arBeb, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardBeb)
+        setScene(arLib.addAnchor(8).group, scene, arThai, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardThai)
+        setScene(arLib.addAnchor(7).group, scene, arHotPot, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardHotPot)
+        setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardBeer)
+        setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        })
+        // console.log(detect)
+        setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+          //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+
+          renderer.setAnimationLoop(() => {
+            renderer.autoClear = false;
+            camera.layers.set(2);
+            renderer.render(scene, camera);
+            camera.layers.set(0);
+            renderer.render(scene, camera);
+            renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+            if (orthoCamera && orthoScene) {
+              renderer.render(orthoScene, orthoCamera);
+
+            }
+            let mixerUpdateDelta = clock.getDelta();
+
+            Object.keys(mixer).forEach(name => {
+              mixer[name].update(mixerUpdateDelta)
+            })
+            if (drinks && detect === 1) {
+              // drinks.rotation.x += 2
+              drinks.rotation.y += 0.01;
+              drinks.rotation.y %= Math.PI * 2;
+              // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+            }
+            if (rice && detect === 4) {
+              // rice.rotation.x += 2
+              rice.rotation.y += 0.01;
+              rice.rotation.y %= Math.PI * 2;
+              // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
+            }
+            if (burger && detect === 2) {
+              burger.rotation.y += 0.02;
+              burger.rotation.y %= Math.PI * 2;
+            }
+            if (bacon && detect === 6) {
+              bacon.rotation.y += 0.01;
+              bacon.rotation.y %= Math.PI * 2;
+            }
+            if (kc && detect === 5) {
+              kc.rotation.y += 0.01;
+              kc.rotation.y %= Math.PI * 2;
+            }
+            if (Er && detect === 3) {
+              Er.rotation.y += 0.01;
+              Er.rotation.y %= Math.PI * 2;
+            }
+            if (Thai && detect === 9) {
+              Thai.rotation.y += 0.01;
+              Thai.rotation.y %= Math.PI * 2;
+            }
+            if (hotPot && detect === 8) {
+              hotPot.rotation.y += 0.01;
+              hotPot.rotation.y %= Math.PI * 2;
+            }
+            if (beer && detect === 10) {
+              beer.rotation.y += 0.01;
+              beer.rotation.y %= Math.PI * 2;
+            }
+          
+            //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
+            //* 動畫會變得超級快
+            if (crabMesh && egretMesh && !reload) {
               //外面設定一個參數紀錄時間
               //direction 來設定現在是要變大變小或是往上往下
-              
-              if (crabMesh && egretMesh && !reload) {
-                count += 1 * dierction
-                //設定參數
-                crabMesh.position.y += 0.8 * dierction
-                egretMesh.scale.y += 0.0015 * dierction
-                egretMesh.scale.x += 0.0015 * dierction
-                egretMesh.scale.z += 0.0015 * dierction
-              }
+              count += 1 * dierction
+              //設定參數
+              crabMesh.position.y += 0.8 * dierction
+              egretMesh.scale.y += 0.0015 * dierction
+              egretMesh.scale.x += 0.0015 * dierction
+              egretMesh.scale.z += 0.0015 * dierction
+            }
+            if (textPter && textRaptor && textTri) {
               switch (detect) {
                 case 13:
                   textRaptor.visible = true;
@@ -388,26 +394,28 @@ export const AppState = {
                   textPter.visible = false;
                   break;
               }
+            }
 
-              //峰值設定
-              if (count === 50 || count > 50) {
-                dierction = -1
 
-              }
-              if (count === 0 || count < 0) {
-                dierction = 1
-              }
-        
+            //峰值設定
+            if (count === 50 || count > 50) {
+              dierction = -1
 
-            });
-          })
-          setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
+            }
+            if (count === 0 || count < 0) {
+              dierction = 1
+            }
 
-          })
-        
+
+          });
+        })
+        setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+
+        })
+
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -625,11 +633,11 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         door2 = item;
         DinoObj.door2 = door2;
       }
-      if (item.name === 'pterodactyl-container.glb'||item.name === 'raptor-container.glb'||item.name === 'triceratops-container.glb') {
+      if (item.name === 'pterodactyl-container.glb' || item.name === 'raptor-container.glb' || item.name === 'triceratops-container.glb') {
         fense = item;
         DinoObj.fense = fense;
       }
-      if (item.name === 'pterodactyl.glb'|| item.name === 'raptor.glb'|| item.name === 'triceratops.glb') {
+      if (item.name === 'pterodactyl.glb' || item.name === 'raptor.glb' || item.name === 'triceratops.glb') {
         Dino = item;
         DinoObj.Dino = Dino;
       }
@@ -674,7 +682,7 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
       case 'Tri':
         DinoTri = DinoObj;
         break;
-      default:    
+      default:
         DinoPter = DinoObj;
         break;
 
@@ -718,7 +726,7 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
       hotPot = item
     }
 
-   
+
     // 呼叫美術做好的動畫名稱,這邊只先處理板子,恐龍在上面處理
     if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' ||
       item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
