@@ -102,6 +102,7 @@ const ARView = function () {
     } else {
       setChangeBtn(viewButton.camera);
       setVideoBtn(false);
+      stopRecord(true)
     }
   }
 
@@ -125,16 +126,16 @@ const ARView = function () {
           const timer = new Date(sec * 1000).toISOString().substring(17, 19);
           setRecordingTime((sec / 15) * 100);
           if (Math.round(timer) === 15) {
-            stopRecord();
+            stopRecord(false);
           }
         }, 100);
       } else {
-        stopRecord();
+        stopRecord(false);
       }
     }
   }
 
-  function stopRecord() {
+  function stopRecord(changeBtn) {
     if (counter) {
       clearInterval(counter);
       setRecordingTime(0);
@@ -145,7 +146,10 @@ const ARView = function () {
           return;
         }
         console.log(blob);
-        dispatch.AppState.setVideo(blob);
+        if(!changeBtn){
+          dispatch.AppState.setVideo(blob);
+        }
+       
       });
     }
   }
