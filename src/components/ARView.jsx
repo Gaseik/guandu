@@ -33,6 +33,7 @@ const ARView = function () {
 
 
   useEffect(() => {
+    //判斷哪些地方需要撥放音樂
     if (
       state.pageState === PageState.Intro ||
       state.pageState === PageState.ViewPhoto ||
@@ -57,14 +58,16 @@ const ARView = function () {
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
-    //判斷是恐龍還是食物類
-    //目前0是初始狀態,1-10是食物,11-13是恐龍類
+    // 判斷是恐龍還是食物類，判斷要撥放甚麼音樂
+    // 目前0是初始狀態，1-10是食物，11-13是恐龍類
     if (state.detect < 11) {
       if (bgMusic.src !== bgMusicFile) {
-        dispatch.AppState.setPlayAuth(false)
+        dispatch.AppState.setPlayAuth(false);
         setBgMusic(null);
-        setBgMusic(new Audio(bgMusicFile));
-        if(state.playAuth){
+        const newBgMusic = new Audio(bgMusicFile);
+        newBgMusic.loop = true; // 在這裡設置音樂循環播放
+        setBgMusic(newBgMusic);
+        if (state.playAuth) {
           dispatch.AppState.setPlayAuth(false);
         }
         setTimeout(() => {
@@ -72,21 +75,22 @@ const ARView = function () {
         }, 500);
       }
     } else {
-      if(bgMusic.src !== bgDMusicFile) {
+      if (bgMusic.src !== bgDMusicFile) {
         setBgMusic(null);
-        setBgMusic(new Audio(bgDMusicFile));
-        if(state.playAuth){
+        const newBgMusic = new Audio(bgDMusicFile);
+        newBgMusic.loop = true; // 在這裡設置音樂循環播放
+        setBgMusic(newBgMusic);
+        if (state.playAuth) {
           dispatch.AppState.setPlayAuth(false);
         }
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
-      }else{
+      } else {
         setTimeout(() => {
           dispatch.AppState.setMusicStarted(true);
         }, 500);
       }
-   
     }
   }, [state.detect]);
 
@@ -169,12 +173,9 @@ const ARView = function () {
       }`}
     >
       <div id="ar_container" className=" h-[100%] flex " />
-      {/* <img
-        src="image/guanduLogo.png"
-        className="absolute w-[120px] top-4 left-10"
-      /> */}
+      {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
-      <div className="button-group absolute bottom-0">
+      <div className="button-group">
         <div className="circle-frame">
           <div
             className={`${

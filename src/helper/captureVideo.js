@@ -2,37 +2,39 @@ let mediaRecorder;
 let recordedChunks = [];
 let audioStream;
 
-export function startCaptureVideo(canvasDom) {
+export async function startCaptureVideo(canvasDom) {
   // 获取视频流
   const videoStream = canvasDom.captureStream();
+  try {
+    let options
+    if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
+      options = { mimeType: 'video/webm; codecs=vp9' };
+      mediaRecorder = new MediaRecorder(videoStream, options);
 
-  // 获取音频流
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-      audioStream = stream;
-      const combinedStream = new MediaStream([...videoStream.getTracks(), ...stream.getAudioTracks()]);
+    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+      options = { mimeType: 'video/webm; codecs=vp8' };
+      mediaRecorder = new MediaRecorder(videoStream, options);
 
-      // 创建 MediaRecorder 实例
-      mediaRecorder = new MediaRecorder(combinedStream);
+    } else {
+      mediaRecorder = new MediaRecorder(videoStream);
+    }
 
-      // 监听录制的数据块
-      mediaRecorder.ondataavailable = function(event) {
-        if (event.data.size > 0) {
-          recordedChunks.push(event.data);
-        }
-      };
+    mediaRecorder.ondataavailable = function (event) {
+      if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+      }
+    };
 
-      // 开始录制音频和视频
-      mediaRecorder.start();
-    })
-    .catch(function(err) {
-      console.error('Failed to get audio stream', err);
-    });
+    mediaRecorder.start();
+  } catch (error) {
+    console.error('Failed to get media stream', error);
+  }
 }
+
 
 export function stopCaptureVideo(callback) {
   // 停止录制音频和视频
-  mediaRecorder.onstop = function() {
+  mediaRecorder.onstop = function () {
     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
     recordedChunks = [];
     callback(blob);
