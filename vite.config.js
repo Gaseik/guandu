@@ -1,11 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import basicSsl from "@vitejs/plugin-basic-ssl";
+import fs from 'fs';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    https: true,
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, 'cert/server.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'cert/server.crt')),
+    },
     host: '0.0.0.0'
   },
   plugins: [
@@ -26,13 +30,5 @@ export default defineConfig({
         return null;
       },
     },
-    basicSsl({
-      /** name of certification */
-      name: "test", 
-      /** custom trust domains */
-      domains: ["*.custom.com"],
-      /** custom certification directory */
-      certDir: "/Users/.../.devServer/cert",
-    }),
   ],
 });
