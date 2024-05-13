@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export const PageState = {
   Loading: 0x00000,
@@ -149,6 +150,7 @@ export const AppState = {
       console.log(arLib)
       // 
       // camera.aspect = containerWidth/containerHeight;
+      console.log(camera)
       camera.updateProjectionMatrix();
      
 
@@ -223,7 +225,7 @@ export const AppState = {
         fetch("/model/meals_drinks.json").then(result => result.json()),
         fetch("/model/meals_jburger.json").then(result => result.json()),
         fetch("/model/meals_er.json").then(result => result.json()),
-        fetch("/model/meals_stewed_rice.json").then(result => result.json()),
+        fetch("/model/meals_stewed_rice2.json").then(result => result.json()),
         fetch("/model/meals_kc.json").then(result => result.json()),
         fetch("/model/meals_beb.json").then(result => result.json()),
         fetch("/model/meals_thai.json").then(result => result.json()),
@@ -252,7 +254,7 @@ export const AppState = {
         //!這段
         const orScene = new THREE.Scene();
         const orCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-    
+        orScene.name = 'DTestScene'
         const loader = new THREE.ObjectLoader();
         const obj = await loader.parseAsync(arDrinks.scene);
         const modelObject = new THREE.Object3D();
@@ -263,16 +265,17 @@ export const AppState = {
           //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
           if (item.isLight) {
             // console.log(item)
-            item.parent = scene
+            // item.parent = scene
           }
         })
         // console.log(modelObject)
         modelObject.position.set(0  , 0,-100);
-        modelObject.scale.set(10, 10, 10);
-        console.log(arBeer,arDrinks,'lighttttt')
+        modelObject.scale.set(20, 20, 20);
+        modelObject.rotation.set(-5,0,0)
+        modelObject.name= 'DTest'
         // modelObject.layers.set(2);
         // modelObject.layers.enable(2);
-        orScene.add(modelObject)
+   
         new RGBELoader()
         .load( '/model/pedestrian_overpass_1k.hdr', function ( texture ) {
             console.log(texture);
@@ -283,7 +286,26 @@ export const AppState = {
             // orScene.background = texture;
             
         });
-        
+        var ambLight = new THREE.AmbientLight(0x404040);
+        // orScene.add(ambLight)
+        var dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        // orScene.add(dirLight)
+        // orScene.background = new THREE.Color('rgb(150,150,150)')
+  
+         new GLTFLoader().load( '/model/drinks_04.glb', function ( gltf ) {
+
+            gltf.scene.traverse( function ( child ) {
+            } );
+            var model3D = gltf.scene;
+            // model3D.position.set(1.5, -1.0, 0);
+            model3D.position.set(-10, 0, -100);
+            model3D.scale.set(10, 10, 10);
+            model3D.name = 'drinks_04';
+            console.log(scene);
+            console.log('load drink DONE.');
+            // orScene.add(model3D);
+        } );
+        // orScene.add(modelObject)
         //!這段
 
 
@@ -295,12 +317,12 @@ export const AppState = {
 
         // * 設置3D場景
         arStewedRice.name = 'StewedRice'
-        // setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
+        setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
 
-        // }, boardStewedRice)
+        }, boardStewedRice)
         // setScene(anchorSec.group, scene, arJBurger, () => {
         //   renderer.shadowMap.enabled = true;
         //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -309,6 +331,7 @@ export const AppState = {
         
 
         arDrinks.name = 'Drinks'
+        arDrinks.scene.name = 'Drinks'
         setScene(anchor.group, scene, arDrinks, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -351,123 +374,124 @@ export const AppState = {
         //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         //   renderer.shadowMap.needsUpdate = true;
         // })
-        // console.log(detect)
-        setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-          //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+        // // console.log(detect)
+        // setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
+        //   renderer.shadowMap.enabled = true;
+        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        //   renderer.shadowMap.needsUpdate = true;
+        //   //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
 
-          renderer.setAnimationLoop(() => {
-            renderer.autoClear = false;
-            camera.layers.set(2);
-            renderer.render(scene, camera);
-            camera.layers.set(0);
-            renderer.render(scene, camera);
-            // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-            if (orthoCamera && orthoScene) {
-              renderer.render(orthoScene, orthoCamera);
-            }
-            orCamera.layers.set(0)
-            // renderer.render(orScene, orCamera);
-            let mixerUpdateDelta = clock.getDelta();
+         
+        // })
+        // setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
+        //   renderer.shadowMap.enabled = true;
+        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        //   renderer.shadowMap.needsUpdate = true;
 
-            Object.keys(mixer).forEach(name => {
-              mixer[name].update(mixerUpdateDelta)
-            })
-            if (drinks && detect === 1) {
-              // drinks.rotation.x += 2
-              drinks.rotation.y += 0.01;
-              drinks.rotation.y %= Math.PI * 2;
-              // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-            }
-            if (rice && detect === 4) {
-              // rice.rotation.x += 2
-              rice.rotation.y += 0.01;
-              rice.rotation.y %= Math.PI * 2;
-              // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
-            }
-            if (burger && detect === 2) {
-              burger.rotation.y += 0.02;
-              burger.rotation.y %= Math.PI * 2;
-            }
-            if (bacon && detect === 6) {
-              bacon.rotation.y += 0.01;
-              bacon.rotation.y %= Math.PI * 2;
-            }
-            if (kc && detect === 5) {
-              kc.rotation.y += 0.01;
-              kc.rotation.y %= Math.PI * 2;
-            }
-            if (Er && detect === 3) {
-              Er.rotation.y += 0.01;
-              Er.rotation.y %= Math.PI * 2;
-            }
-            if (Thai && detect === 9) {
-              Thai.rotation.y += 0.01;
-              Thai.rotation.y %= Math.PI * 2;
-            }
-            if (hotPot && detect === 8) {
-              hotPot.rotation.y += 0.01;
-              hotPot.rotation.y %= Math.PI * 2;
-            }
-            if (beer && detect === 10) {
-              beer.rotation.y += 0.01;
-              beer.rotation.y %= Math.PI * 2;
-            }
-          
-            //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
-            //* 動畫會變得超級快
-            if (crabMesh && egretMesh && !reload) {
-              //外面設定一個參數紀錄時間
-              //direction 來設定現在是要變大變小或是往上往下
-              count += 1 * dierction
-              //設定參數
-              crabMesh.position.y += 0.8 * dierction
-              egretMesh.scale.y += 0.0015 * dierction
-              egretMesh.scale.x += 0.0015 * dierction
-              egretMesh.scale.z += 0.0015 * dierction
-            }
-            if (textPter && textRaptor && textTri) {
-              switch (detect) {
-                case 13:
-                  textRaptor.visible = true;
-                  break;
-                case 12:
-                  textTri.visible = true;
-                  break;
-                case 14:
-                  textPter.visible = true;
-                  break;
-                default:
-                  textTri.visible = false;
-                  textRaptor.visible = false;
-                  textPter.visible = false;
-                  break;
-              }
-            }
+        // })
+        renderer.setAnimationLoop(() => {
+          renderer.autoClear = false;
+          // renderer.render(scene, camera);
+          orthoCamera.layers.set(2);
+          renderer.render(scene, orthoCamera);
+          camera.layers.set(0);
+          renderer.render(scene, camera);
+          // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+          if (orthoCamera && orthoScene) {
+            orthoCamera.layers.set(0);
+            renderer.render(orthoScene, orthoCamera);
+          }
+          // orCamera.layers.set(0)
+          // renderer.render(orScene, orCamera);
+          let mixerUpdateDelta = clock.getDelta();
 
-
-            //峰值設定
-            if (count === 50 || count > 50) {
-              dierction = -1
-
-            }
-            if (count === 0 || count < 0) {
-              dierction = 1
-            }
-
-
-          });
-        })
-        setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-
-        })
-        console.log(arLib.scene)
+          Object.keys(mixer).forEach(name => {
+            mixer[name].update(mixerUpdateDelta)
+          })
+          if (drinks && detect === 1) {
+            // drinks.rotation.x += 2
+            drinks.rotation.y += 0.01;
+            drinks.rotation.y %= Math.PI * 2;
+            // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+          }
+          if (rice && detect === 4) {
+            // rice.rotation.x += 2
+            rice.rotation.y += 0.01;
+            rice.rotation.y %= Math.PI * 2;
+            // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
+          }
+          if (burger && detect === 2) {
+            burger.rotation.y += 0.02;
+            burger.rotation.y %= Math.PI * 2;
+          }
+          if (bacon && detect === 6) {
+            bacon.rotation.y += 0.01;
+            bacon.rotation.y %= Math.PI * 2;
+          }
+          if (kc && detect === 5) {
+            kc.rotation.y += 0.01;
+            kc.rotation.y %= Math.PI * 2;
+          }
+          if (Er && detect === 3) {
+            Er.rotation.y += 0.01;
+            Er.rotation.y %= Math.PI * 2;
+          }
+          if (Thai && detect === 9) {
+            Thai.rotation.y += 0.01;
+            Thai.rotation.y %= Math.PI * 2;
+          }
+          if (hotPot && detect === 8) {
+            hotPot.rotation.y += 0.01;
+            hotPot.rotation.y %= Math.PI * 2;
+          }
+          if (beer && detect === 10) {
+            beer.rotation.y += 0.01;
+            beer.rotation.y %= Math.PI * 2;
+          }
         
+          //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
+          //* 動畫會變得超級快
+          if (crabMesh && egretMesh && !reload) {
+            //外面設定一個參數紀錄時間
+            //direction 來設定現在是要變大變小或是往上往下
+            count += 1 * dierction
+            //設定參數
+            crabMesh.position.y += 0.8 * dierction
+            egretMesh.scale.y += 0.0015 * dierction
+            egretMesh.scale.x += 0.0015 * dierction
+            egretMesh.scale.z += 0.0015 * dierction
+          }
+          if (textPter && textRaptor && textTri) {
+            switch (detect) {
+              case 13:
+                textRaptor.visible = true;
+                break;
+              case 12:
+                textTri.visible = true;
+                break;
+              case 14:
+                textPter.visible = true;
+                break;
+              default:
+                textTri.visible = false;
+                textRaptor.visible = false;
+                textPter.visible = false;
+                break;
+            }
+          }
+
+
+          //峰值設定
+          if (count === 50 || count > 50) {
+            dierction = -1
+
+          }
+          if (count === 0 || count < 0) {
+            dierction = 1
+          }
+
+
+        });
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -504,20 +528,22 @@ function connectWebCam(mindarThree) {
   // requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(video.clientWidth  , video.clientHeight),
+    // new THREE.PlaneBufferGeometry(video.clientWidth  , video.clientHeight),
+    new THREE.PlaneGeometry(video.clientWidth  , video.clientHeight),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
   //設定大小及位置
-  let scale = 12.5
+  let scale = 3/2
   let position_y = 0;
   mesh.renderOrder = 2
 
-
-  mesh.position.set(0, position_y, -10000);
-  mesh.scale.set(scale, scale, 10);
+  // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
+  mesh.position.set(video.clientWidth/2, video.clientHeight/2,1);
+  mesh.scale.set(scale, scale, 1);
   mesh.layers.set(2);
   mesh.layers.enable(2);
+  // scene.environment = mesh
   scene.add(mesh);
 
 
@@ -646,19 +672,23 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
   if (obj.environment !== null) {
     scene.environment = obj.environment;
   }
+  // console.log(obj)
+  let textureDrink
+  //嘗試貼上飲料杯上的材質,但目前失敗
   if(sceneData.name === 'Drinks'){
-    console.log(obj)
+    // console.log(obj)
     new RGBELoader()
     .load( '/model/pedestrian_overpass_1k.hdr', function ( texture ) {
-        console.log(texture);
+        // console.log(texture);
+        texture.name = 'drinks'
+        textureDrink = texture
         texture.matrixAutoUpdate = false;
         texture.mapping = THREE.EquirectangularReflectionMapping;
         // obj.environment = texture;
-        obj.background = texture;
-        // scene.environment.needsUpdate = true;
+        // obj.background = texture;
         console.log(obj)
         // scene.environment = texture
-        // scene.background = texture;
+        // scene.background = new THREE.Color('rgba(225,225,225,125)');
         scene.environment.needsUpdate = true;
         
     });
@@ -764,14 +794,18 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
   //掃描ThreeJS的物件並做處理
   modelObject.traverse((item) => {
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
-    if (item.isLight) {
+    if (item.isLight&& sceneData.name === 'Drinks') {
       // mScene.add(item)
-      console.log(item)
+      // console.log(item)
       item.parent = scene
     }
     if (item.isLight && sceneData.name === 'StewedRice') {
       console.log(item.name)
       // item.parent = scene
+    }
+    if(sceneData.name === "Drinks" && item.name.includes('Cylinder_')) {
+      // console.log(item.name)
+      item.texture = textureDrink
     }
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
