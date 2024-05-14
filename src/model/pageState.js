@@ -465,6 +465,7 @@ export const AppState = {
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
+
   video.style.opacity = 0;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
@@ -473,16 +474,23 @@ function connectWebCam(mindarThree) {
   videoTex.maxFilter = THREE.LinearFilter;
   // requestMicrophonePermission(true)
   //建立 mesh
+  let ratio = video.width / video.height
+
   const mesh = new THREE.Mesh(
     // new THREE.PlaneBufferGeometry(video.clientWidth  , video.clientHeight),
-    new THREE.PlaneGeometry(video.clientWidth  , video.clientHeight),
+    new THREE.PlaneGeometry(video.width  , video.height),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
+
   //設定大小及位置
-  let scale = 3/2
+  let scale = video.clientHeight / video.height
   let position_y = 0;
   mesh.renderOrder = 2
+  console.log(video.width,video.height)
+  console.log(window.innerWidth,window.innerHeight)
+  console.log(video.clientWidth,video.clientHeight)
+
 
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
   mesh.position.set(video.clientWidth/2, video.clientHeight/2,-100);
