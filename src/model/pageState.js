@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export const PageState = {
   Loading: 0x00000,
@@ -139,19 +141,15 @@ export const AppState = {
 
 
       const { renderer, scene, camera } = arLib;
-    //   const customRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-    //   const containerWidth = document.querySelector("#ar_container").clientWidth;
-    // const containerHeight = document.querySelector("#ar_container").clientHeight;
-    // customRenderer.setSize(containerWidth, containerHeight);
+      camera.updateProjectionMatrix();
+     
 
-    //   arLib.renderer = customRenderer;
+
       //這個部分只是解釋一下如何宣告出我們前面引入的物件
       //先用compiler把圖片上傳轉換 https://hiukim.github.io/mind-ar-js-doc/tools/compile
       //依照順序把對照物設定好
-      const anchor = arLib.addAnchor(0);
-      const anchorSec = arLib.addAnchor(1);
-      const anchorThird = arLib.addAnchor(2);
-      modelData = anchor.group;
+
+      modelData = arLib.addAnchor(0).group;
 
       //發現物件要做甚麼事情
       function changeState(value) {
@@ -181,6 +179,7 @@ export const AppState = {
           }
 
         }
+        arLib.addAnchor(i).group.layers.set(i+1)
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           dispatch.AppState.setMusicStarted(false)
@@ -234,12 +233,16 @@ export const AppState = {
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
         arLib.start()
-      ]).then(([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arLibResult]) => {
+      ]).then(async([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
+
+        
+
+
 
         // * 設定物件名稱,讓函式可以判斷名稱
         arDinoPter.name = 'Pter'
@@ -247,175 +250,194 @@ export const AppState = {
         arDinoRaptor.name = 'Raptor'
 
         // * 設置3D場景
-
-        setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
+        arStewedRice.name = 'StewedRice'
+     
+        setScene(arLib.addAnchor(3), scene, arStewedRice, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
 
         }, boardStewedRice)
-        setScene(anchorSec.group, scene, arJBurger, () => {
+        setScene(arLib.addAnchor(1), scene, arJBurger, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardJBuger)
-        setScene(anchor.group, scene, arDrinks, () => {
+        
+
+        arDrinks.name = 'Drinks'
+        arDrinks.scene.name = 'Drinks'
+        setScene(arLib.addAnchor(0), scene, arDrinks, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
 
         }, boardDrinks)
-        setScene(anchorThird.group, scene, arEr, () => {
+        setScene(arLib.addAnchor(2), scene, arEr, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardEr)
-        setScene(arLib.addAnchor(4).group, scene, arKC, () => {
+        setScene(arLib.addAnchor(4), scene, arKC, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
 
         }, boardKC)
-        setScene(arLib.addAnchor(5).group, scene, arBeb, () => {
+        setScene(arLib.addAnchor(5), scene, arBeb, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardBeb)
-        setScene(arLib.addAnchor(8).group, scene, arThai, () => {
+        setScene(arLib.addAnchor(8), scene, arThai, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardThai)
-        setScene(arLib.addAnchor(7).group, scene, arHotPot, () => {
+        setScene(arLib.addAnchor(7), scene, arHotPot, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardHotPot)
-        setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
+        setScene(arLib.addAnchor(9), scene, arBeer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardBeer)
-        setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
+        setScene(arLib.addAnchor(11), scene, arDinoTri, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         })
-        // console.log(detect)
-        setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
+        setScene(arLib.addAnchor(12), scene, arDinoRaptor, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
-          //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+   
 
-          renderer.setAnimationLoop(() => {
-            renderer.autoClear = false;
-            camera.layers.set(2);
+         
+        })
+        setScene(arLib.addAnchor(13), scene, arDinoPter, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+
+        })
+
+        //* loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+        renderer.setAnimationLoop(() => {
+          renderer.autoClear = false;
+
+          // * 畫出2D場景(視訊畫面)
+          orthoCamera.layers.set(20);
+          renderer.render(scene, orthoCamera);
+
+          //!有掃到物件
+          if(detect>0){
+            //! 渲染出對應layer
+            camera.layers.set(detect);
             renderer.render(scene, camera);
-            camera.layers.set(0);
-            renderer.render(scene, camera);
-            renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
-            if (orthoCamera && orthoScene) {
-              renderer.render(orthoScene, orthoCamera);
-
-            }
-            let mixerUpdateDelta = clock.getDelta();
-
-            Object.keys(mixer).forEach(name => {
-              mixer[name].update(mixerUpdateDelta)
-            })
-            if (drinks && detect === 1) {
-              // drinks.rotation.x += 2
-              drinks.rotation.y += 0.01;
-              drinks.rotation.y %= Math.PI * 2;
-              // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-            }
-            if (rice && detect === 4) {
-              // rice.rotation.x += 2
-              rice.rotation.y += 0.01;
-              rice.rotation.y %= Math.PI * 2;
-              // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
-            }
-            if (burger && detect === 2) {
-              burger.rotation.y += 0.02;
-              burger.rotation.y %= Math.PI * 2;
-            }
-            if (bacon && detect === 6) {
-              bacon.rotation.y += 0.01;
-              bacon.rotation.y %= Math.PI * 2;
-            }
-            if (kc && detect === 5) {
-              kc.rotation.y += 0.01;
-              kc.rotation.y %= Math.PI * 2;
-            }
-            if (Er && detect === 3) {
-              Er.rotation.y += 0.01;
-              Er.rotation.y %= Math.PI * 2;
-            }
-            if (Thai && detect === 9) {
-              Thai.rotation.y += 0.01;
-              Thai.rotation.y %= Math.PI * 2;
-            }
-            if (hotPot && detect === 8) {
-              hotPot.rotation.y += 0.01;
-              hotPot.rotation.y %= Math.PI * 2;
-            }
-            if (beer && detect === 10) {
-              beer.rotation.y += 0.01;
-              beer.rotation.y %= Math.PI * 2;
-            }
+          }
           
-            //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
-            //* 動畫會變得超級快
-            if (crabMesh && egretMesh && !reload) {
-              //外面設定一個參數紀錄時間
-              //direction 來設定現在是要變大變小或是往上往下
-              count += 1 * dierction
-              //設定參數
-              crabMesh.position.y += 0.8 * dierction
-              egretMesh.scale.y += 0.0015 * dierction
-              egretMesh.scale.x += 0.0015 * dierction
-              egretMesh.scale.z += 0.0015 * dierction
+          camera.layers.set(0);
+          renderer.render(scene, camera);
+          // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+          if (orthoCamera && orthoScene) {
+             // * 畫出2D場景(圖框)
+            orthoCamera.layers.set(0);
+            renderer.render(orthoScene, orthoCamera);
+          }
+          // orCamera.layers.set(0)
+          // renderer.render(orScene, orCamera);
+          let mixerUpdateDelta = clock.getDelta();
+
+          Object.keys(mixer).forEach(name => {
+            mixer[name].update(mixerUpdateDelta)
+          })
+          if (drinks && detect === 1) {
+            // drinks.rotation.x += 2
+            drinks.rotation.y += 0.01;
+            drinks.rotation.y %= Math.PI * 2;
+            // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
+          }
+          if (rice && detect === 4) {
+            // rice.rotation.x += 2
+            rice.rotation.y += 0.01;
+            rice.rotation.y %= Math.PI * 2;
+            // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
+          }
+          if (burger && detect === 2) {
+            burger.rotation.y += 0.02;
+            burger.rotation.y %= Math.PI * 2;
+          }
+          if (bacon && detect === 6) {
+            bacon.rotation.y += 0.01;
+            bacon.rotation.y %= Math.PI * 2;
+          }
+          if (kc && detect === 5) {
+            kc.rotation.y += 0.01;
+            kc.rotation.y %= Math.PI * 2;
+          }
+          if (Er && detect === 3) {
+            Er.rotation.y += 0.01;
+            Er.rotation.y %= Math.PI * 2;
+          }
+          if (Thai && detect === 9) {
+            Thai.rotation.y += 0.01;
+            Thai.rotation.y %= Math.PI * 2;
+          }
+          if (hotPot && detect === 8) {
+            hotPot.rotation.y += 0.01;
+            hotPot.rotation.y %= Math.PI * 2;
+          }
+          if (beer && detect === 10) {
+            beer.rotation.y += 0.01;
+            beer.rotation.y %= Math.PI * 2;
+          }
+        
+          //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
+          //* 動畫會變得超級快
+          if (crabMesh && egretMesh && !reload) {
+            //外面設定一個參數紀錄時間
+            //direction 來設定現在是要變大變小或是往上往下
+            count += 1 * dierction
+            //設定參數
+            crabMesh.position.y += 0.8 * dierction
+            egretMesh.scale.y += 0.0015 * dierction
+            egretMesh.scale.x += 0.0015 * dierction
+            egretMesh.scale.z += 0.0015 * dierction
+          }
+          if (textPter && textRaptor && textTri) {
+            switch (detect) {
+              case 13:
+                textRaptor.visible = true;
+                break;
+              case 12:
+                textTri.visible = true;
+                break;
+              case 14:
+                textPter.visible = true;
+                break;
+              default:
+                textTri.visible = false;
+                textRaptor.visible = false;
+                textPter.visible = false;
+                break;
             }
-            if (textPter && textRaptor && textTri) {
-              switch (detect) {
-                case 13:
-                  textRaptor.visible = true;
-                  break;
-                case 12:
-                  textTri.visible = true;
-                  break;
-                case 14:
-                  textPter.visible = true;
-                  break;
-                default:
-                  textTri.visible = false;
-                  textRaptor.visible = false;
-                  textPter.visible = false;
-                  break;
-              }
-            }
+          }
 
 
-            //峰值設定
-            if (count === 50 || count > 50) {
-              dierction = -1
+          //峰值設定
+          if (count === 50 || count > 50) {
+            dierction = -1
 
-            }
-            if (count === 0 || count < 0) {
-              dierction = 1
-            }
+          }
+          if (count === 0 || count < 0) {
+            dierction = 1
+          }
 
 
-          });
-        })
-        setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
-          renderer.shadowMap.enabled = true;
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-          renderer.shadowMap.needsUpdate = true;
-
-        })
-
+        });
         dispatch.AppState.changePageState(PageState.ARView);
         dispatch.AppState.setArLib(arLib);
         dispatch.AppState.setIsArModeOn(true)
@@ -452,20 +474,22 @@ function connectWebCam(mindarThree) {
   // requestMicrophonePermission(true)
   //建立 mesh
   const mesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(video.clientWidth + 200, video.clientHeight),
+    // new THREE.PlaneBufferGeometry(video.clientWidth  , video.clientHeight),
+    new THREE.PlaneGeometry(video.clientWidth  , video.clientHeight),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
   //設定大小及位置
-  let scale = 12.5;
+  let scale = 3/2
   let position_y = 0;
   mesh.renderOrder = 2
 
-
-  mesh.position.set(0, position_y, -10000);
+  // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
+  mesh.position.set(video.clientWidth/2, video.clientHeight/2,-100);
   mesh.scale.set(scale, scale, 1);
-  mesh.layers.set(2);
-  mesh.layers.enable(2);
+  mesh.layers.set(20);
+  mesh.layers.enable(20);
+  // scene.environment = mesh
   scene.add(mesh);
 
 
@@ -473,7 +497,7 @@ function connectWebCam(mindarThree) {
 
   // 创建2D场景和相机
   orthoScene = new THREE.Scene();
-  orthoCamera = new THREE.OrthographicCamera(0, window.innerWidth, window.innerHeight, 0, -10, 10);
+  orthoCamera = new THREE.OrthographicCamera(0, window.innerWidth, window.innerHeight, 0, -100, 100);
 
   // 加载Logo并添加到2D场景
   const loader = new THREE.TextureLoader();
@@ -581,22 +605,44 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setScene(anchorGroup, scene, sceneData, callback, board) {
+async function setScene(anchor, scene, sceneData, callback, board) {
+  let anchorGroup = anchor.group
+  let targetIndex = anchor.targetIndex
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
 
 
-  // console.log(scene)
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
+  }
+  let textureDrink
+  //嘗試貼上飲料杯上的材質,但目前失敗
+  if(sceneData.name === 'Drinks'){
+    // console.log(obj)
+    new RGBELoader()
+    .load( '/model/royal_esplanade_1k.hdr', function ( texture ) {
+        // console.log(texture);
+        texture.name = 'drinks'
+        textureDrink = texture
+        texture.matrixAutoUpdate = false;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        // obj.environment = texture;
+        // obj.background = texture;
+        console.log(texture)
+        scene.environment = texture
+        // scene.background = new THREE.Color('rgba(225,225,225,125)');
+        scene.environment.needsUpdate = true;
+        
+    });
   }
 
   //設置主物件的父層級並把ThreeJS場景資訊放入
   const modelObject = new THREE.Object3D();
   modelObject.add(obj);
+
   if (board) {
     const objB = await loader.parseAsync(board ? board.scene : undefined);
     modelObject.add(objB)
@@ -604,10 +650,10 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
   }
 
 
+
   modelObject.scale.set(0.5, 0.5, 0.5);
   // modelObject.position.x = -0.2
   // modelObject.position.y = -0.13
-  anchorGroup.add(modelObject);
 
   if (sceneData.name === 'Pter' || sceneData.name === 'Raptor' || sceneData.name === 'Tri') {
     //左邊和前方的柵欄
@@ -688,13 +734,29 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
 
     }
   }
+
+ 
   //掃描ThreeJS的物件並做處理
   modelObject.traverse((item) => {
+
+    //* 把物件放進對應的layer
+    item.layers.set(targetIndex+1)
+    item.layers.enable(targetIndex+1);
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
+    if (item.isLight&& sceneData.name === 'Drinks') {
+      // mScene.add(item)
+      // console.log(item)
+      // item.parent = mScene
+    }
+    if (item.isLight && sceneData.name === 'StewedRice') {
+    }
     if (item.isLight) {
       item.parent = scene
     }
-
+    if(sceneData.name === "Drinks" && item.name.includes('Cylinder_')) {
+      item.texture = textureDrink
+      item.needsUpdate = true;
+    }
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
     //引入進來後,把對應變數配對
@@ -738,17 +800,11 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         mixer[animationName] = new THREE.AnimationMixer(item);
         animationList[animationName] = mixer[animationName].clipAction(animation);
         animationList[animationName].clampWhenFinished = true;
-        //柵欄的部分只撥放一次
-        // if (item.name === 'pterodactyl-container.glb') {
-        //   animationList[animationName].setLoop(THREE.LoopOnce);
-        //   mixer[animationName].addEventListener('finished', function (e) {
-        //     gone()
-        //     console.log('end')
-        //   });
-        // }
         animationList[animationName].play();
       });
     }
+    modelObject.layers.set(targetIndex+1)
+    anchorGroup.add(modelObject);
   });
   callback();
 
