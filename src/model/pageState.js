@@ -162,6 +162,7 @@ export const AppState = {
         arLib.addAnchor(i).onTargetFound = async () => {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
+          arLib.detect = i + 1
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           switch (i) {
             case 11:
@@ -182,6 +183,7 @@ export const AppState = {
         arLib.addAnchor(i).group.layers.set(i+1)
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
+          arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束

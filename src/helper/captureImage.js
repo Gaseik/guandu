@@ -1,5 +1,5 @@
 export function captureImage(arLib) {
-  const { video, renderer, scene, camera,camera2D,scene2D } = arLib;
+  const { video, renderer, scene, camera,camera2D,scene2D,detect } = arLib;
   const renderCanvas = renderer.domElement;
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
@@ -10,23 +10,29 @@ export function captureImage(arLib) {
   // console.log('canvasW = ',canvas.width)
   // console.log('canvasH = ',canvas.height)
   // console.log(renderCanvas.clientWidth)
+  let scale = video.clientHeight / video.height
+ 
   const sx =
     (((video.clientWidth - renderCanvas.clientWidth) / 2) * video.videoWidth) /
     video.clientWidth;
-  const sy =
-    (((video.clientHeight - renderCanvas.clientHeight) / 2) *
-      video.videoHeight) /
-    video.clientHeight;
+
+
+  const sy =canvas.height - video.height * scale;
   const sw = video.videoWidth - sx * 2;
   const sh = video.videoHeight - sy * 2;
-
+  console.log('canvesHeight', canvas.height)
+  console.log('videoHeight', video.height)
+  console.log('videoclientHeight', video.clientHeight)
+  console.log(scale )
+  console.log('result' ,sy )
   context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
   renderer.preserveDrawingBuffer = true;
   camera.layers.set(0);
   renderer.render(scene, camera);
-  // camera.layers.set(0);
-  // renderer.render(scene, camera);
+  
+  camera.layers.set(detect);
+  renderer.render(scene, camera);
   
   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
   renderer.render(scene2D, camera2D);
