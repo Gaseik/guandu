@@ -141,16 +141,6 @@ export const AppState = {
 
 
       const { renderer, scene, camera } = arLib;
-      const customRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: false });
-      // const customRenderer = new THREE.WebGLRenderer({ antialias: true });
-      const containerWidth = document.querySelector("#ar_container").clientWidth;
-      const containerHeight = document.querySelector("#ar_container").clientHeight;
-      // customRenderer.setSize(containerWidth, containerHeight);
-      // renderer.setPixelRatio(window.devicePixelRatio)
-      console.log(arLib)
-      // 
-      // camera.aspect = containerWidth/containerHeight;
-      console.log(camera)
       camera.updateProjectionMatrix();
      
 
@@ -158,10 +148,8 @@ export const AppState = {
       //這個部分只是解釋一下如何宣告出我們前面引入的物件
       //先用compiler把圖片上傳轉換 https://hiukim.github.io/mind-ar-js-doc/tools/compile
       //依照順序把對照物設定好
-      const anchor = arLib.addAnchor(0);
-      const anchorSec = arLib.addAnchor(1);
-      const anchorThird = arLib.addAnchor(2);
-      modelData = anchor.group;
+
+      modelData = arLib.addAnchor(0).group;
 
       //發現物件要做甚麼事情
       function changeState(value) {
@@ -191,6 +179,7 @@ export const AppState = {
           }
 
         }
+        arLib.addAnchor(i).group.layers.set(i+1)
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           dispatch.AppState.setMusicStarted(false)
@@ -225,7 +214,7 @@ export const AppState = {
         fetch("/model/meals_drinks.json").then(result => result.json()),
         fetch("/model/meals_jburger.json").then(result => result.json()),
         fetch("/model/meals_er.json").then(result => result.json()),
-        fetch("/model/meals_stewed_rice2.json").then(result => result.json()),
+        fetch("/model/meals_stewed_rice.json").then(result => result.json()),
         fetch("/model/meals_kc.json").then(result => result.json()),
         fetch("/model/meals_beb.json").then(result => result.json()),
         fetch("/model/meals_thai.json").then(result => result.json()),
@@ -251,62 +240,7 @@ export const AppState = {
         arLib.camera2D = orthoCamera
         arLib.scene2D = orthoScene
 
-        //!這段
-        const orScene = new THREE.Scene();
-        const orCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-        orScene.name = 'DTestScene'
-        const loader = new THREE.ObjectLoader();
-        const obj = await loader.parseAsync(arDrinks.scene);
-        const modelObject = new THREE.Object3D();
         
-     
-        modelObject.add(obj)
-        modelObject.traverse((item) => {
-          //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
-          if (item.isLight) {
-            // console.log(item)
-            // item.parent = scene
-          }
-        })
-        // console.log(modelObject)
-        modelObject.position.set(0  , 0,-100);
-        modelObject.scale.set(20, 20, 20);
-        modelObject.rotation.set(-5,0,0)
-        modelObject.name= 'DTest'
-        // modelObject.layers.set(2);
-        // modelObject.layers.enable(2);
-   
-        new RGBELoader()
-        .load( '/model/pedestrian_overpass_1k.hdr', function ( texture ) {
-            console.log(texture);
-            texture.matrixAutoUpdate = false;
-            texture.mapping = THREE.EquirectangularReflectionMapping;
-            
-            orScene.environment = texture;
-            // orScene.background = texture;
-            
-        });
-        var ambLight = new THREE.AmbientLight(0x404040);
-        // orScene.add(ambLight)
-        var dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        // orScene.add(dirLight)
-        // orScene.background = new THREE.Color('rgb(150,150,150)')
-  
-         new GLTFLoader().load( '/model/drinks_04.glb', function ( gltf ) {
-
-            gltf.scene.traverse( function ( child ) {
-            } );
-            var model3D = gltf.scene;
-            // model3D.position.set(1.5, -1.0, 0);
-            model3D.position.set(-10, 0, -100);
-            model3D.scale.set(10, 10, 10);
-            model3D.name = 'drinks_04';
-            console.log(scene);
-            console.log('load drink DONE.');
-            // orScene.add(model3D);
-        } );
-        // orScene.add(modelObject)
-        //!這段
 
 
 
@@ -317,87 +251,99 @@ export const AppState = {
 
         // * 設置3D場景
         arStewedRice.name = 'StewedRice'
-        setScene(arLib.addAnchor(3).group, scene, arStewedRice, () => {
+     
+        setScene(arLib.addAnchor(3), scene, arStewedRice, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
 
         }, boardStewedRice)
-        // setScene(anchorSec.group, scene, arJBurger, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardJBuger)
+        setScene(arLib.addAnchor(1), scene, arJBurger, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardJBuger)
         
 
         arDrinks.name = 'Drinks'
         arDrinks.scene.name = 'Drinks'
-        setScene(anchor.group, scene, arDrinks, () => {
+        setScene(arLib.addAnchor(0), scene, arDrinks, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
 
         }, boardDrinks)
-        // setScene(anchorThird.group, scene, arEr, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardEr)
-        // setScene(arLib.addAnchor(4).group, scene, arKC, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
+        setScene(arLib.addAnchor(2), scene, arEr, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardEr)
+        setScene(arLib.addAnchor(4), scene, arKC, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
 
-        // }, boardKC)
-        // setScene(arLib.addAnchor(5).group, scene, arBeb, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardBeb)
-        // setScene(arLib.addAnchor(8).group, scene, arThai, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardThai)
-        // setScene(arLib.addAnchor(7).group, scene, arHotPot, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardHotPot)
-        // setScene(arLib.addAnchor(9).group, scene, arBeer, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // }, boardBeer)
-        // setScene(arLib.addAnchor(11).group, scene, arDinoTri, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        // })
-        // // console.log(detect)
-        // setScene(arLib.addAnchor(12).group, scene, arDinoRaptor, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
-        //   //loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
+        }, boardKC)
+        setScene(arLib.addAnchor(5), scene, arBeb, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardBeb)
+        setScene(arLib.addAnchor(8), scene, arThai, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardThai)
+        setScene(arLib.addAnchor(7), scene, arHotPot, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardHotPot)
+        setScene(arLib.addAnchor(9), scene, arBeer, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardBeer)
+        setScene(arLib.addAnchor(11), scene, arDinoTri, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        })
+        setScene(arLib.addAnchor(12), scene, arDinoRaptor, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+   
 
          
-        // })
-        // setScene(arLib.addAnchor(13).group, scene, arDinoPter, () => {
-        //   renderer.shadowMap.enabled = true;
-        //   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        //   renderer.shadowMap.needsUpdate = true;
+        })
+        setScene(arLib.addAnchor(13), scene, arDinoPter, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
 
-        // })
+        })
+
+        //* loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
         renderer.setAnimationLoop(() => {
           renderer.autoClear = false;
-          // renderer.render(scene, camera);
-          orthoCamera.layers.set(2);
+
+          // * 畫出2D場景(視訊畫面)
+          orthoCamera.layers.set(20);
           renderer.render(scene, orthoCamera);
+
+          //!有掃到物件
+          if(detect>0){
+            //! 渲染出對應layer
+            camera.layers.set(detect);
+            renderer.render(scene, camera);
+          }
+          
           camera.layers.set(0);
           renderer.render(scene, camera);
           // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
           if (orthoCamera && orthoScene) {
+             // * 畫出2D場景(圖框)
             orthoCamera.layers.set(0);
             renderer.render(orthoScene, orthoCamera);
           }
@@ -539,10 +485,10 @@ function connectWebCam(mindarThree) {
   mesh.renderOrder = 2
 
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
-  mesh.position.set(video.clientWidth/2, video.clientHeight/2,1);
+  mesh.position.set(video.clientWidth/2, video.clientHeight/2,-100);
   mesh.scale.set(scale, scale, 1);
-  mesh.layers.set(2);
-  mesh.layers.enable(2);
+  mesh.layers.set(20);
+  mesh.layers.enable(20);
   // scene.environment = mesh
   scene.add(mesh);
 
@@ -551,7 +497,7 @@ function connectWebCam(mindarThree) {
 
   // 创建2D场景和相机
   orthoScene = new THREE.Scene();
-  orthoCamera = new THREE.OrthographicCamera(0, window.innerWidth, window.innerHeight, 0, -10, 10);
+  orthoCamera = new THREE.OrthographicCamera(0, window.innerWidth, window.innerHeight, 0, -100, 100);
 
   // 加载Logo并添加到2D场景
   const loader = new THREE.TextureLoader();
@@ -659,26 +605,25 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setScene(anchorGroup, scene, sceneData, callback, board) {
+async function setScene(anchor, scene, sceneData, callback, board) {
+  let anchorGroup = anchor.group
+  let targetIndex = anchor.targetIndex
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
 
-  const mScene = new THREE.Scene();
 
-  // console.log(scene)
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
   }
-  // console.log(obj)
   let textureDrink
   //嘗試貼上飲料杯上的材質,但目前失敗
   if(sceneData.name === 'Drinks'){
     // console.log(obj)
     new RGBELoader()
-    .load( '/model/pedestrian_overpass_1k.hdr', function ( texture ) {
+    .load( '/model/royal_esplanade_1k.hdr', function ( texture ) {
         // console.log(texture);
         texture.name = 'drinks'
         textureDrink = texture
@@ -686,8 +631,8 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         // obj.environment = texture;
         // obj.background = texture;
-        console.log(obj)
-        // scene.environment = texture
+        console.log(texture)
+        scene.environment = texture
         // scene.background = new THREE.Color('rgba(225,225,225,125)');
         scene.environment.needsUpdate = true;
         
@@ -793,19 +738,24 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
  
   //掃描ThreeJS的物件並做處理
   modelObject.traverse((item) => {
+
+    //* 把物件放進對應的layer
+    item.layers.set(targetIndex+1)
+    item.layers.enable(targetIndex+1);
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
     if (item.isLight&& sceneData.name === 'Drinks') {
       // mScene.add(item)
       // console.log(item)
-      item.parent = scene
+      // item.parent = mScene
     }
     if (item.isLight && sceneData.name === 'StewedRice') {
-      console.log(item.name)
-      // item.parent = scene
+    }
+    if (item.isLight) {
+      item.parent = scene
     }
     if(sceneData.name === "Drinks" && item.name.includes('Cylinder_')) {
-      // console.log(item.name)
       item.texture = textureDrink
+      item.needsUpdate = true;
     }
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
@@ -850,23 +800,11 @@ async function setScene(anchorGroup, scene, sceneData, callback, board) {
         mixer[animationName] = new THREE.AnimationMixer(item);
         animationList[animationName] = mixer[animationName].clipAction(animation);
         animationList[animationName].clampWhenFinished = true;
-        //柵欄的部分只撥放一次
-        // if (item.name === 'pterodactyl-container.glb') {
-        //   animationList[animationName].setLoop(THREE.LoopOnce);
-        //   mixer[animationName].addEventListener('finished', function (e) {
-        //     gone()
-        //     console.log('end')
-        //   });
-        // }
         animationList[animationName].play();
       });
     }
-   
-      
-    mScene.add(modelObject);
-    // console.log(mScene)
-    anchorGroup.add(mScene);
-    // console.log(modelObject)
+    modelObject.layers.set(targetIndex+1)
+    anchorGroup.add(modelObject);
   });
   callback();
 
