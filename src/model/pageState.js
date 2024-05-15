@@ -162,6 +162,7 @@ export const AppState = {
         arLib.addAnchor(i).onTargetFound = async () => {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
+          arLib.detect = i + 1
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           switch (i) {
             case 11:
@@ -182,6 +183,7 @@ export const AppState = {
         arLib.addAnchor(i).group.layers.set(i+1)
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
+          arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
@@ -328,9 +330,7 @@ export const AppState = {
         renderer.setAnimationLoop(() => {
           renderer.autoClear = false;
 
-          // * 畫出2D場景(視訊畫面)
-          orthoCamera.layers.set(20);
-          renderer.render(scene, orthoCamera);
+        
 
           //!有掃到物件
           if(detect>0){
@@ -343,7 +343,10 @@ export const AppState = {
           renderer.render(scene, camera);
           // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
           if (orthoCamera && orthoScene) {
-             // * 畫出2D場景(圖框)
+            // * 畫出2D場景(視訊畫面)
+            orthoCamera.layers.set(20);
+            renderer.render(scene, orthoCamera);
+            // * 畫出2D場景(圖框)
             orthoCamera.layers.set(0);
             renderer.render(orthoScene, orthoCamera);
           }
@@ -465,6 +468,7 @@ export const AppState = {
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
+
   video.style.opacity = 0;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
@@ -473,16 +477,23 @@ function connectWebCam(mindarThree) {
   videoTex.maxFilter = THREE.LinearFilter;
   // requestMicrophonePermission(true)
   //建立 mesh
+  let ratio = video.width / video.height
+
   const mesh = new THREE.Mesh(
     // new THREE.PlaneBufferGeometry(video.clientWidth  , video.clientHeight),
-    new THREE.PlaneGeometry(video.clientWidth  , video.clientHeight),
+    new THREE.PlaneGeometry(video.width  , video.height),
     new THREE.MeshBasicMaterial({ color: 0xffffff, map: videoTex, side: THREE.DoubleSide })
   );
 
+
   //設定大小及位置
-  let scale = 3/2
+  let scale = video.clientHeight / video.height
   let position_y = 0;
   mesh.renderOrder = 2
+  console.log(video.width,video.height)
+  console.log(window.innerWidth,window.innerHeight)
+  console.log(video.clientWidth,video.clientHeight)
+
 
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
   mesh.position.set(video.clientWidth/2, video.clientHeight/2,-100);
