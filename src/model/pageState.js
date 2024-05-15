@@ -330,9 +330,7 @@ export const AppState = {
         renderer.setAnimationLoop(() => {
           renderer.autoClear = false;
 
-          // * 畫出2D場景(視訊畫面)
-          orthoCamera.layers.set(20);
-          renderer.render(scene, orthoCamera);
+        
 
           //!有掃到物件
           if(detect>0){
@@ -345,7 +343,10 @@ export const AppState = {
           renderer.render(scene, camera);
           // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
           if (orthoCamera && orthoScene) {
-             // * 畫出2D場景(圖框)
+            // * 畫出2D場景(視訊畫面)
+            orthoCamera.layers.set(20);
+            renderer.render(scene, orthoCamera);
+            // * 畫出2D場景(圖框)
             orthoCamera.layers.set(0);
             renderer.render(orthoScene, orthoCamera);
           }
