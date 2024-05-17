@@ -204,10 +204,22 @@ export const AppState = {
         function handleDino(anchorNum, modelObject) {
           switch (anchorNum) {
             case 11:
-            case 12:
-            case 13:
-              modelObject.rotation.y = -30;
+              console.log(modelObject)
+            
               break;
+            case 12:
+              DinoRaptor.Dino.rotation.y = Math.PI / 2;
+              DinoRaptor.fense.rotation.y = Math.PI / 2;
+              break;
+            case 13:
+              DinoPter.Dino.rotation.y = Math.PI / 2;
+              DinoPter.fense.rotation.y = Math.PI / 2;
+              break;
+            // case 11:
+            // case 12:
+            // case 13:
+            //   modelObject.rotation.y = Math.PI / 2;
+            //   break;
             case 14:
             case 15:
             case 16:
@@ -475,14 +487,14 @@ export const AppState = {
           if (textPter && textRaptor && textTri) {
             switch (detect) {
               case 13:
+              case 16:
                 textRaptor.visible = true;
                 break;
               case 12:
-              case 16:
-              case 17:
+              case 15:
                 textTri.visible = true;
                 break;
-
+              case 17:
               case 14:
                 textPter.visible = true;
                 break;
@@ -560,7 +572,7 @@ function connectWebCam(mindarThree) {
 
 
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
-  mesh.position.set(video.clientWidth / 2, video.clientHeight / 2, -100);
+  mesh.position.set(video.clientWidth / 2, video.clientHeight / 2, -99.8);
   mesh.scale.set(scale, scale, 1);
   mesh.layers.set(20);
   mesh.layers.enable(20);
@@ -703,15 +715,18 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
 
   //設置主物件的父層級並把ThreeJS場景資訊放入
   const modelObject = new THREE.Object3D();
+  modelObject.position.set(0,0,0)
+
+
+
+  obj.rotation.y = Math.PI / 2;
+  objCon.rotation.y = Math.PI / 2;
+  obj.position.z = -1;
+  objCon.position.z = -1;
   modelObject.add(obj);
   modelObject.add(objCon);
+  modelObject.scale.set(4.5, 4.5, 4.5);
 
-
-
-  // modelObject.scale.set(2, 2, 2);
-
-  //其中一個箱子實體,為了要換texture顏色用的
-  let box
   //左邊和前方的柵欄
   let door
   let door2
@@ -730,6 +745,8 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
 
     item.layers.set(shortSide.targetIndex + 1)
 
+     
+    // 放進去箱子是會換texture
     if (item.name === `Box001`) {
       DinoObj.box = item
     }
