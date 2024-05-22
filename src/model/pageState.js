@@ -164,79 +164,70 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
-          console.log(DinoTri)
-          console.log(i)
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
-          switch (i) {
-            case 11:
-            case 14:
-            // case 15:
-              DinoTri.animations.forEach(an => {
-                animationList[an].play()
-              })
-              DinoTri.box.material.map = textureYellow
-              handleDino(i, DinoTri.modelObject)
-              arLib.addAnchor(i).group.add(DinoTri.modelObject)
-              break;
-            case 12:
-            case 15:
-            // case 17:
-              DinoRaptor.animations.forEach(an => {
-                animationList[an].play()
-              })
-              handleDino(i, DinoRaptor.modelObject)
-              DinoRaptor.box.material.map = textureBlue
-              arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
-              break;
-            case 13:
-            // case 19:
-            case 16:
-              DinoPter.animations.forEach(an => {
-                animationList[an].play()
-              })
-              handleDino(i, DinoPter.modelObject)
-              arLib.addAnchor(i).group.add(DinoPter.modelObject)
-              break;
+          if(DinoPter.animations && DinoRaptor.animations && DinoTri.animations){
+            switch (i) {
+              case 11:
+              case 14:
+                DinoTri.animations.forEach(an => {
+                  animationList[an].play()
+                })
+                DinoTri.box.material.map = textureYellow
+                handleDino(i, DinoTri)
+                arLib.addAnchor(i).group.add(DinoTri.modelObject)
+                break;
+              case 12:
+              case 15:
+                DinoRaptor.animations.forEach(an => {
+                +  animationList[an].play()
+                })
+                handleDino(i, DinoRaptor)
+                DinoRaptor.box.material.map = textureBlue
+                arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
+                break;
+              case 13:
+              case 16:
+                DinoPter.animations.forEach(an => {
+                  animationList[an].play()
+                })
+                handleDino(i, DinoPter)
+                arLib.addAnchor(i).group.add(DinoPter.modelObject)
+                break;
+            }
           }
+          
 
         }
         //*這邊處理各種轉向和位置
-        function handleDino(anchorNum, modelObject) {
+        function handleDino(anchorNum, Dino) {
           switch (anchorNum) {
+            // * 短邊的恐龍
             case 11:
-              console.log(modelObject)
-            
-              break;
             case 12:
-              DinoRaptor.Dino.rotation.y = Math.PI / 2;
-              DinoRaptor.fense.rotation.y = Math.PI / 2;
-              break;
             case 13:
-              DinoPter.Dino.rotation.y = Math.PI / 2;
-              DinoPter.fense.rotation.y = Math.PI / 2;
+              Dino.nodeNarrow.position.set(0,0,0)
+              Dino.nodeNarrow.rotation.y = Math.PI / 2;
+              Dino.nodeNarrowContainer.position.set(0,0,0)
+              Dino.nodeNarrowContainer.rotation.y = Math.PI / 2;
               break;
-            // case 11:
-            // case 12:
-            // case 13:
-            //   modelObject.rotation.y = Math.PI / 2;
-            //   break;
+             // * 長邊的恐龍
             case 14:
             case 15:
             case 16:
-              modelObject.position.x = -0.2;
+              let p = Dino.nodeNarrow.initialPosition
+              Dino.nodeNarrow.position.set(p.x,p.y,p.z)
+              Dino.nodeNarrow.rotation.y = Dino.nodeNarrow.initialRotation.y;
+              let pc = Dino.nodeNarrowContainer.initialPosition
+              Dino.nodeNarrowContainer.position.set(pc.x,pc.y,pc.z)
+              Dino.nodeNarrowContainer.rotation.y = Dino.nodeNarrowContainer.initialRotation.y;
+              // modelObject.position.x = -0.2;
               break;
-            // case 15:
-            // case 17:
-            // case 19:
-            //   modelObject.position.x = 0.2;
-            // break;
             default:
-              modelObject.position.x = 0;
-              modelObject.rotation.y = 0;
+              // modelObject.position.x = 0;
+              // modelObject.rotation.y = 0;
               break;
           }
         }
-        // arLib.addAnchor(i).group.layers.set(i + 1)
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           arLib.detect = 0
@@ -290,9 +281,9 @@ export const AppState = {
         fetch("/model/meals_thai.json").then(result => result.json()),
         fetch("/model/meals_beer.json").then(result => result.json()),
         fetch("/model/meals_hot_pot.json").then(result => result.json()),
-        fetch("/model/triceratopsT.json").then(result => result.json()),
-        fetch("/model/raptorT.json").then(result => result.json()),
-        fetch("/model/pterodactylT.json").then(result => result.json()),
+        fetch("/model/triceratops.json").then(result => result.json()),
+        fetch("/model/raptor.json").then(result => result.json()),
+        fetch("/model/pterodactyl.json").then(result => result.json()),
         fetch("/model/billboard_drinks.json").then(result => result.json()),
         fetch("/model/billboard_jburger.json").then(result => result.json()),
         fetch("/model/billboard_er.json").then(result => result.json()),
@@ -375,14 +366,42 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardBeer)
-        let TriArray = [arLib.addAnchor(11), arLib.addAnchor(14), arLib.addAnchor(15)]
-        setDionScene(TriArray, scene, arDinoTri, arContainer, () => { })
-        let RaptorArray = [arLib.addAnchor(12), arLib.addAnchor(16), arLib.addAnchor(17)]
-        setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
+        let TriArray = [arLib.addAnchor(11), arLib.addAnchor(14), ]
+        setDionScene(TriArray, scene, arDinoTri, arContainer, () => { 
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+          if(DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino){
+            dispatch.AppState.changePageState(PageState.ARView);
+            // console.log(DinoPter,DinoRaptor,DinoTri)
+            dispatch.AppState.setIsArModeOn(true)
+            dispatch.AppState.setArLib(arLib);
+          }
         })
-        let Pterrray = [arLib.addAnchor(13), arLib.addAnchor(18), arLib.addAnchor(19)]
+        let RaptorArray = [arLib.addAnchor(12), arLib.addAnchor(15)]
+        setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+          if(DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino){
+            dispatch.AppState.changePageState(PageState.ARView);
+            // console.log(DinoPter,DinoRaptor,DinoTri)
+            dispatch.AppState.setIsArModeOn(true)
+            dispatch.AppState.setArLib(arLib);
+          }
+        })
+        let Pterrray = [arLib.addAnchor(13), arLib.addAnchor(16)]
         setDionScene(Pterrray, scene, arDinoPter, arContainer, () => {
-          dispatch.AppState.changePageState(PageState.ARView);
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+          if(DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino){
+            dispatch.AppState.changePageState(PageState.ARView);
+            // console.log(DinoPter,DinoRaptor,DinoTri)
+            dispatch.AppState.setIsArModeOn(true)
+            dispatch.AppState.setArLib(arLib);
+          }
+       
         })
 
 
@@ -518,8 +537,8 @@ export const AppState = {
 
 
         });
-        dispatch.AppState.setArLib(arLib);
-        dispatch.AppState.setIsArModeOn(true)
+   
+     
       }).catch((e) => {
       });
     },
@@ -566,9 +585,9 @@ function connectWebCam(mindarThree) {
   let scale = video.clientHeight / video.height
   let position_y = 0;
   mesh.renderOrder = 2
-  console.log(video.width, video.height)
-  console.log(window.innerWidth, window.innerHeight)
-  console.log(video.clientWidth, video.clientHeight)
+  // console.log(video.width, video.height)
+  // console.log(window.innerWidth, window.innerHeight)
+  // console.log(video.clientWidth, video.clientHeight)
 
 
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
@@ -698,15 +717,15 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setDionScene(anchors, scene, sceneData, container, callback) {
+async function setDionScene(anchors, scene, sceneData, container, callback,test) {
   let shortSide = anchors[0]
   let longSide = anchors[1]
-  let longSide2 = anchors[2]
   const loader = new THREE.ObjectLoader();
   //打場景資料轉成 ThreeJS場景資訊
 
   const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
   const objCon = await loader.parseAsync(container.scene ? container.scene : container.Scene)
+
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
@@ -719,13 +738,19 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
 
 
 
-  obj.rotation.y = Math.PI / 2;
-  objCon.rotation.y = Math.PI / 2;
-  obj.position.z = -1;
-  objCon.position.z = -1;
+  // obj.rotation.y = Math.PI / 2;
+  // objCon.rotation.y = Math.PI / 2;
+  // obj.position.set(-0.25,-0.25,-1)
+  // objCon.position.set(-0.25,-0.25,-1)
   modelObject.add(obj);
   modelObject.add(objCon);
-  modelObject.scale.set(4.5, 4.5, 4.5);
+  if(test){
+    
+    const obT = await loader.parseAsync(test.scene ? test.scene : test.Scene)
+
+    modelObject.add(obT);
+    }
+  // modelObject.scale.set(2, 2, 2);
 
   //左邊和前方的柵欄
   let door
@@ -749,6 +774,16 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
     // 放進去箱子是會換texture
     if (item.name === `Box001`) {
       DinoObj.box = item
+    }
+    if (item.name === `Node_Narrow_Container`) {
+      DinoObj.nodeNarrowContainer = item
+      DinoObj.nodeNarrowContainer.initialPosition = DinoObj.nodeNarrowContainer.position.clone()
+      DinoObj.nodeNarrowContainer.initialRotation = DinoObj.nodeNarrowContainer.rotation.clone()
+    }
+    if (item.name === `Node_Narrow`) {
+      DinoObj.nodeNarrow = item
+      DinoObj.nodeNarrow.initialPosition = DinoObj.nodeNarrow.position.clone()
+      DinoObj.nodeNarrow.initialRotation = DinoObj.nodeNarrow.rotation.clone()
     }
 
     if (item.name === `Dummy001`) {
@@ -799,7 +834,6 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
     });
     DinoObj.modelObject = modelObject
 
-    console.log(sceneData.name)
     switch (sceneData.name) {
       case 'Pter':
         DinoPter = DinoObj;
@@ -819,6 +853,10 @@ async function setDionScene(anchors, scene, sceneData, container, callback) {
 
 
   callback();
+
+  anchors.forEach(function (anchor) {
+    anchor.group.add(modelObject)
+  })
 
 }
 
