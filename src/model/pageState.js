@@ -53,6 +53,97 @@ const initialState = {
   helpPop: true,
   target: undefined
 }
+
+
+let containerSetup = {
+ widedRight:{
+  wide:{
+    position:{
+      x: -0.195,
+      y:0.004,
+      z: 0
+    },
+    scale:{
+      x: 3.010,
+      y: 3.070,
+      z: 3.66
+    }
+  },
+  narrow:{
+    position:{
+      x: -0.610,
+      y: 0.016,
+      z: -0.164
+    },
+    rotation:{
+      y:0
+    },
+    scale:{
+      x:1,
+      y:1,
+      z:1
+    }
+  }
+ },
+ widedLeft:{
+  wide:{
+    position:{
+      x: 0.860,
+      y:0.004,
+      z: 0
+    },
+    scale:{
+      x: 3.010,
+      y: 3.070,
+      z: 3.66
+    }
+  },
+  narrow:{
+    position:{
+      x: -0.610,
+      y: 0.016,
+      z: -0.164
+    },
+    rotation:{
+      y:0
+    },
+    scale:{
+      x:1,
+      y:1,
+      z:1
+    }
+  }
+ },
+ narrow:{
+  wide:{
+    position:{
+      x: -0.195,
+      y:0.004,
+      z: 0
+    },
+    scale:{
+      x: 3.690,
+      y: 3.070,
+      z: 3.020
+    }
+  },
+  narrow:{
+    position:{
+      x: 0.153,
+      y: -0.129,
+      z: 0
+    },
+    rotation:{
+      y:Math.PI / 2
+    },
+    scale:{
+      x:2,
+      y:2,
+      z:2
+    }
+  }
+ }
+}
 export const AppState = {
   state: {
     ...initialState
@@ -196,30 +287,64 @@ export const AppState = {
             }
           }
           
-
+          // let show = new Dino(DinoRaptor)
+          // show.changeToNarrow()
         }
         //*這邊處理各種轉向和位置
         function handleDino(anchorNum, Dino) {
+          console.log(Dino)
+          let wp = Dino.nodeWide.initialPosition
+          let np = Dino.nodeNarrow.initialPosition
+          let wpc = Dino.nodeWideContainer.initialPosition
+          let npc = Dino.nodeNarrowContainer.initialPosition
+          let wsc = Dino.nodeWideContainer.initialScale
+          let nsc = Dino.nodeNarrowContainer.initialScale
           switch (anchorNum) {
             // * 短邊的恐龍
+
             case 11:
             case 12:
             case 13:
+              Dino.nodeWide.position.set(wp.x,wp.y,wp.z)
+              Dino.nodeWide.rotation.y = Dino.nodeWide.initialRotation.y;
               Dino.nodeNarrow.position.set(0,0,0)
               Dino.nodeNarrow.rotation.y = Math.PI / 2;
-              Dino.nodeNarrowContainer.position.set(0,0,0)
-              Dino.nodeNarrowContainer.rotation.y = Math.PI / 2;
+              Dino.nodeNarrowContainer.position.set(npc.x,npc.y,npc.z)
+              Dino.nodeNarrowContainer.rotation.y = Dino.nodeNarrowContainer.initialRotation.y;
+              Dino.nodeNarrowContainer.scale.set(nsc.x,nsc.y,nsc.z);
+              Dino.nodeWideContainer.position.set(wpc.x,wpc.y,wpc.z)
+              Dino.nodeWideContainer.rotation.y = Dino.nodeWideContainer.initialRotation.y;
+              Dino.nodeWideContainer.scale.set(wsc.x,wsc.y,wsc.z);
               break;
              // * 長邊的恐龍
             case 14:
+              Dino.nodeWide.position.set(0,0,0)
+              Dino.nodeNarrow.position.set(np.x,np.y,np.z)
+              Dino.nodeNarrow.rotation.y = Dino.nodeNarrow.initialRotation.y;
+              let NarrowLPosition = containerSetup.widedLeft.narrow.position
+              let NarrowLScale = containerSetup.widedLeft.narrow.scale
+              Dino.nodeNarrowContainer.position.set(NarrowLPosition.x,NarrowLPosition.y,NarrowLPosition.z)
+              Dino.nodeNarrowContainer.rotation.y =  containerSetup.widedLeft.narrow.rotation.y;
+              Dino.nodeNarrowContainer.scale.set(NarrowLScale.x,NarrowLScale.y,NarrowLScale.z)
+              let WideLPosition = containerSetup.widedLeft.wide.position
+              let WideLScale = containerSetup.widedLeft.wide.scale
+              Dino.nodeWideContainer.position.set(WideLPosition.x,WideLPosition.y,WideLPosition.z)
+              Dino.nodeWideContainer.scale.set(WideLScale.x,WideLScale.y,WideLScale.z)
+              break;
             case 15:
             case 16:
-              let p = Dino.nodeNarrow.initialPosition
-              Dino.nodeNarrow.position.set(p.x,p.y,p.z)
+              Dino.nodeWide.position.set(0,0,0)
+              Dino.nodeNarrow.position.set(np.x,np.y,np.z)
               Dino.nodeNarrow.rotation.y = Dino.nodeNarrow.initialRotation.y;
-              let pc = Dino.nodeNarrowContainer.initialPosition
-              Dino.nodeNarrowContainer.position.set(pc.x,pc.y,pc.z)
-              Dino.nodeNarrowContainer.rotation.y = Dino.nodeNarrowContainer.initialRotation.y;
+              let NarrowPosition = containerSetup.widedRight.narrow.position
+              let NarrowScale = containerSetup.widedRight.narrow.scale
+              Dino.nodeNarrowContainer.position.set(NarrowPosition.x,NarrowPosition.y,NarrowPosition.z)
+              Dino.nodeNarrowContainer.rotation.y =  containerSetup.widedRight.narrow.rotation.y;
+              Dino.nodeNarrowContainer.scale.set(NarrowScale.x,NarrowScale.y,NarrowScale.z)
+              let WidePosition = containerSetup.widedRight.wide.position
+              let WideScale = containerSetup.widedRight.wide.scale
+              Dino.nodeWideContainer.position.set(WidePosition.x,WidePosition.y,WidePosition.z)
+              Dino.nodeWideContainer.scale.set(WideScale.x,WideScale.y,WideScale.z)
               // modelObject.position.x = -0.2;
               break;
             default:
@@ -238,7 +363,7 @@ export const AppState = {
           switch (i) {
             case 11:
             case 14:
-              handleDino(0, DinoTri.modelObject)
+              handleDino(0, DinoTri)
               DinoTri.animations.forEach(an => {
                 animationList[an].stop()
                 DinoTri.door1.visible = true
@@ -247,7 +372,7 @@ export const AppState = {
               break;
             case 12:
             case 15:
-              handleDino(0, DinoRaptor.modelObject)
+              handleDino(0, DinoRaptor)
               DinoRaptor.animations.forEach(an => {
                 animationList[an].stop()
                 DinoRaptor.door1.visible = true
@@ -256,7 +381,7 @@ export const AppState = {
               break;
             case 13:
             case 16:
-              handleDino(0, DinoPter.modelObject)
+              handleDino(0, DinoPter)
               DinoPter.animations.forEach(an => {
                 animationList[an].stop()
                 DinoPter.door1.visible = true
@@ -272,6 +397,7 @@ export const AppState = {
 
       //載入JSON場景檔
       Promise.all([
+        fetch("/model/testAN.json").then(result => result.json()),
         fetch("/model/meals_drinks.json").then(result => result.json()),
         fetch("/model/meals_jburger.json").then(result => result.json()),
         fetch("/model/meals_er.json").then(result => result.json()),
@@ -293,9 +419,9 @@ export const AppState = {
         fetch("/model/billboard_thai.json").then(result => result.json()),
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
-        fetch("/model/container.json").then(result => result.json()),
+        fetch("/model/container2.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
+      ]).then(async ([arTest,arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -377,7 +503,7 @@ export const AppState = {
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
-        })
+        },arTest)
         let RaptorArray = [arLib.addAnchor(12), arLib.addAnchor(15)]
         setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
           renderer.shadowMap.enabled = true;
@@ -389,7 +515,7 @@ export const AppState = {
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
-        })
+        },arTest)
         let Pterrray = [arLib.addAnchor(13), arLib.addAnchor(16)]
         setDionScene(Pterrray, scene, arDinoPter, arContainer, () => {
           renderer.shadowMap.enabled = true;
@@ -402,7 +528,7 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
        
-        })
+        },arTest)
 
 
         //* loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
@@ -775,10 +901,27 @@ async function setDionScene(anchors, scene, sceneData, container, callback,test)
     if (item.name === `Box001`) {
       DinoObj.box = item
     }
+    if (item.name === `Node_Wide_Container`) {
+      DinoObj.nodeWideContainer = item
+      DinoObj.nodeWideContainer.initialPosition = DinoObj.nodeWideContainer.position.clone()
+      DinoObj.nodeWideContainer.initialRotation = DinoObj.nodeWideContainer.rotation.clone()
+      DinoObj.nodeWideContainer.initialScale = DinoObj.nodeWideContainer.scale.clone()
+      console.log('Wide',DinoObj.nodeWideContainer)
+
+    }
+    if (item.name === `Node_Wide`) {
+      DinoObj.nodeWide = item
+      DinoObj.nodeWide.initialPosition = DinoObj.nodeWide.position.clone()
+      DinoObj.nodeWide.initialRotation = DinoObj.nodeWide.rotation.clone()
+      // console.log('Wide',DinoObj.nodeWide)
+    }
+ 
     if (item.name === `Node_Narrow_Container`) {
       DinoObj.nodeNarrowContainer = item
       DinoObj.nodeNarrowContainer.initialPosition = DinoObj.nodeNarrowContainer.position.clone()
       DinoObj.nodeNarrowContainer.initialRotation = DinoObj.nodeNarrowContainer.rotation.clone()
+      DinoObj.nodeNarrowContainer.initialScale = DinoObj.nodeNarrowContainer.scale.clone()
+      // console.log('Narrow',DinoObj.nodeNarrowContainer)
     }
     if (item.name === `Node_Narrow`) {
       DinoObj.nodeNarrow = item
