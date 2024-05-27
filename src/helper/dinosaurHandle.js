@@ -384,7 +384,7 @@ function handleObject (type , position,Dino) {
 
  //*這邊處理各種轉向和位置
 export function handleDino(anchorNum, Dino) {
-  switch (anchorNum) {
+  switch (anchorNum-3) {
     case 11:
       handleObject(triceraptopsSetup,'narrow',Dino)
       break;
@@ -406,7 +406,7 @@ export function handleDino(anchorNum, Dino) {
     default:
       break;
   }
-  switch (anchorNum) {
+  switch (anchorNum-3) {
     // * 短邊的箱子
     case 11:
     case 12:

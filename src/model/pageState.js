@@ -27,6 +27,7 @@ let bacon = undefined;
 let Thai = undefined;
 let beer = undefined;
 let hotPot = undefined;
+let giki = undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -173,8 +174,8 @@ export const AppState = {
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           if (DinoPter.animations && DinoRaptor.animations && DinoTri.animations) {
             switch (i) {
-              case 11:
               case 14:
+              case 17:
                 DinoTri.animations.forEach(an => {
                   animationList[an].play()
                 })
@@ -182,8 +183,8 @@ export const AppState = {
                 handleDino(i, DinoTri)
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
-              case 12:
               case 15:
+              case 18:
                 DinoRaptor.animations.forEach(an => {
                   +  animationList[an].play()
                 })
@@ -191,8 +192,8 @@ export const AppState = {
                 DinoRaptor.box.material.map = textureBlue
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
-              case 13:
               case 16:
+              case 19:
                 DinoPter.animations.forEach(an => {
                   animationList[an].play()
                 })
@@ -214,8 +215,8 @@ export const AppState = {
 
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
           switch (i) {
-            case 11:
             case 14:
+            case 17:
               handleDino(0, DinoTri)
               DinoTri.animations.forEach(an => {
                 animationList[an].stop()
@@ -223,8 +224,8 @@ export const AppState = {
                 DinoTri.door2.visible = true
               })
               break;
-            case 12:
             case 15:
+            case 18:
               handleDino(0, DinoRaptor)
               DinoRaptor.animations.forEach(an => {
                 animationList[an].stop()
@@ -232,8 +233,8 @@ export const AppState = {
                 DinoRaptor.door2.visible = true
               })
               break;
-            case 13:
             case 16:
+            case 19:
               handleDino(0, DinoPter)
               DinoPter.animations.forEach(an => {
                 animationList[an].stop()
@@ -259,6 +260,7 @@ export const AppState = {
         fetch("/model/meals_thai.json").then(result => result.json()),
         fetch("/model/meals_beer.json").then(result => result.json()),
         fetch("/model/meals_hot_pot.json").then(result => result.json()),
+        fetch("/model/meals_giki.json").then(result => result.json()),
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
@@ -271,9 +273,10 @@ export const AppState = {
         fetch("/model/billboard_thai.json").then(result => result.json()),
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
+        fetch("/model/billboard_giki.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
+      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot,arGiki, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -344,7 +347,12 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardBeer)
-        let TriArray = [arLib.addAnchor(11), arLib.addAnchor(14),]
+        setScene(arLib.addAnchor(10), scene, arGiki, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardGiki)
+        let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
         setDionScene(TriArray, scene, arDinoTri, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -356,7 +364,7 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
         })
-        let RaptorArray = [arLib.addAnchor(12), arLib.addAnchor(15)]
+        let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
         setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -368,7 +376,7 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
         })
-        let Pterrray = [arLib.addAnchor(13), arLib.addAnchor(16)]
+        let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
         setDionScene(Pterrray, scene, arDinoPter, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -394,17 +402,17 @@ export const AppState = {
             //! 渲染出對應layer
             console.log(detect)
             switch (detect) {
-              case 12:
               case 15:
-                camera.layers.set(12);
+              case 18:
+                camera.layers.set(15);
                 break;
-              case 13:
               case 16:
-                camera.layers.set(13);
+              case 19:
+                camera.layers.set(16);
                 break;
-              case 14:
               case 17:
-                camera.layers.set(14);
+              case 20:
+                camera.layers.set(17);
                 break;
               default:
                 camera.layers.set(detect);
@@ -468,6 +476,10 @@ export const AppState = {
             beer.rotation.y += 0.01;
             beer.rotation.y %= Math.PI * 2;
           }
+          if (giki && detect === 11) {
+            giki.rotation.y += 0.01;
+            giki.rotation.y %= Math.PI * 2;
+          }
 
           //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
           //* 動畫會變得超級快
@@ -483,16 +495,16 @@ export const AppState = {
           }
           if (textPter && textRaptor && textTri) {
             switch (detect) {
-              case 13:
               case 16:
+              case 19:
                 textRaptor.visible = true;
                 break;
-              case 12:
               case 15:
+              case 18:
                 textTri.visible = true;
                 break;
+              case 20:
               case 17:
-              case 14:
                 textPter.visible = true;
                 break;
               default:
@@ -952,6 +964,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_hot_pot`) {
       hotPot = item
+    }
+    if (item.name === `rotation_giki`) {
+      giki = item
     }
 
 
