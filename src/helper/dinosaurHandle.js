@@ -366,44 +366,42 @@ export const pterodactylSetup = {
   }
 };
 
-function handleDinoObject (type , position,Dino) {
+function handleObject (type , position,Dino) {
+  let nodeWide = type === containerSetup ? 'nodeWideContainer': 'nodeWide'
+  let nodeNarrow = type === containerSetup ? 'nodeNarrowContainer': 'nodeNarrow'
   
   let wideT = type[position].wide
-  let wideRotationY = wideT.rotation ? wideT.rotation.y : Dino.nodeWide.initialRotation.y
-  let wideScale = wideT.scale ? wideT.scale :  Dino.nodeWide.initialScale
+  let wideRotationY = wideT.rotation ? wideT.rotation.y : Dino[nodeWide].initialRotation.y
+  let wideScale = wideT.scale ? wideT.scale :  Dino[nodeWide].initialScale
   let narrowT = type[position].narrow
-  Dino.nodeNarrow.position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
-  Dino.nodeNarrow.rotation.y = narrowT.rotation.y;
-  Dino.nodeNarrow.scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
-  Dino.nodeWide.position.set(wideT.position.x, wideT.position.y, wideT.position.z)
-  Dino.nodeWide.rotation.y = wideRotationY;
-  Dino.nodeWide.scale.set(wideScale.x, wideScale.y, wideScale.z);
+  Dino[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
+  Dino[nodeNarrow].rotation.y = narrowT.rotation.y;
+  Dino[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
+  Dino[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
+  Dino[nodeWide].rotation.y = wideRotationY;
+  Dino[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
 }
 
  //*這邊處理各種轉向和位置
 export function handleDino(anchorNum, Dino) {
-  let wpc = Dino.nodeWideContainer.initialPosition
-  let npc = Dino.nodeNarrowContainer.initialPosition
-  let wsc = Dino.nodeWideContainer.initialScale
-  let nsc = Dino.nodeNarrowContainer.initialScale
   switch (anchorNum) {
     case 11:
-      handleDinoObject(triceraptopsSetup,'narrow',Dino)
+      handleObject(triceraptopsSetup,'narrow',Dino)
       break;
     case 12:
-      handleDinoObject(raptorSetup,'narrow',Dino)
+      handleObject(raptorSetup,'narrow',Dino)
       break;
     case 13:
-      handleDinoObject(pterodactylSetup,'narrow',Dino)
+      handleObject(pterodactylSetup,'narrow',Dino)
       break;
     case 14:
-      handleDinoObject(triceraptopsSetup,'widedLeft',Dino)
+      handleObject(triceraptopsSetup,'widedLeft',Dino)
       break;
     case 15:
-      handleDinoObject(raptorSetup,'widedRight',Dino)
+      handleObject(raptorSetup,'widedRight',Dino)
       break;
     case 16:
-      handleDinoObject(pterodactylSetup,'widedRight',Dino)
+      handleObject(pterodactylSetup,'widedRight',Dino)
       break;
     default:
       break;
@@ -413,37 +411,16 @@ export function handleDino(anchorNum, Dino) {
     case 11:
     case 12:
     case 13:
-      Dino.nodeNarrowContainer.position.set(npc.x, npc.y, npc.z)
-      Dino.nodeNarrowContainer.rotation.y = Dino.nodeNarrowContainer.initialRotation.y;
-      Dino.nodeNarrowContainer.scale.set(nsc.x, nsc.y, nsc.z);
-      Dino.nodeWideContainer.position.set(wpc.x, wpc.y, wpc.z)
-      Dino.nodeWideContainer.rotation.y = Dino.nodeWideContainer.initialRotation.y;
-      Dino.nodeWideContainer.scale.set(wsc.x, wsc.y, wsc.z);
+      handleObject(containerSetup,'narrow',Dino)
       break;
     // * 長邊左的箱子
     case 14:
-      let NarrowLPosition = containerSetup.widedLeft.narrow.position
-      let NarrowLScale = containerSetup.widedLeft.narrow.scale
-      Dino.nodeNarrowContainer.position.set(NarrowLPosition.x, NarrowLPosition.y, NarrowLPosition.z)
-      Dino.nodeNarrowContainer.rotation.y = containerSetup.widedLeft.narrow.rotation.y;
-      Dino.nodeNarrowContainer.scale.set(NarrowLScale.x, NarrowLScale.y, NarrowLScale.z)
-      let WideLPosition = containerSetup.widedLeft.wide.position
-      let WideLScale = containerSetup.widedLeft.wide.scale
-      Dino.nodeWideContainer.position.set(WideLPosition.x, WideLPosition.y, WideLPosition.z)
-      Dino.nodeWideContainer.scale.set(WideLScale.x, WideLScale.y, WideLScale.z)
+      handleObject(containerSetup,'widedLeft',Dino)
       break;
     case 15:
     case 16:
       // * 長邊右的箱子
-      let NarrowPosition = containerSetup.widedRight.narrow.position
-      let NarrowScale = containerSetup.widedRight.narrow.scale
-      Dino.nodeNarrowContainer.position.set(NarrowPosition.x, NarrowPosition.y, NarrowPosition.z)
-      Dino.nodeNarrowContainer.rotation.y = containerSetup.widedRight.narrow.rotation.y;
-      Dino.nodeNarrowContainer.scale.set(NarrowScale.x, NarrowScale.y, NarrowScale.z)
-      let WidePosition = containerSetup.widedRight.wide.position
-      let WideScale = containerSetup.widedRight.wide.scale
-      Dino.nodeWideContainer.position.set(WidePosition.x, WidePosition.y, WidePosition.z)
-      Dino.nodeWideContainer.scale.set(WideScale.x, WideScale.y, WideScale.z)
+      handleObject(containerSetup,'widedRight',Dino)
       break;
     default:
       break;
