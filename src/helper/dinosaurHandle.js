@@ -167,7 +167,7 @@ export const raptorSetup = {
     }
   }
 };
-
+ 
 export const triceraptopsSetup = {
   widedRight: {
     wide: {

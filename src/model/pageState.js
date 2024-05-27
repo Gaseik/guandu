@@ -250,7 +250,6 @@ export const AppState = {
 
       //載入JSON場景檔
       Promise.all([
-        fetch("/model/testAN.json").then(result => result.json()),
         fetch("/model/meals_drinks.json").then(result => result.json()),
         fetch("/model/meals_jburger.json").then(result => result.json()),
         fetch("/model/meals_er.json").then(result => result.json()),
@@ -274,7 +273,7 @@ export const AppState = {
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([arTest, arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
+      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -356,7 +355,7 @@ export const AppState = {
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
-        }, arTest)
+        })
         let RaptorArray = [arLib.addAnchor(12), arLib.addAnchor(15)]
         setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
           renderer.shadowMap.enabled = true;
@@ -368,7 +367,7 @@ export const AppState = {
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
-        }, arTest)
+        })
         let Pterrray = [arLib.addAnchor(13), arLib.addAnchor(16)]
         setDionScene(Pterrray, scene, arDinoPter, arContainer, () => {
           renderer.shadowMap.enabled = true;
@@ -381,7 +380,7 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
 
-        }, arTest)
+        })
 
 
         //* loop是每一禎去畫的事情,轉圈和外框的繪製都是靠這邊
@@ -748,7 +747,7 @@ async function setDionScene(anchors, scene, sceneData, container, callback, test
   modelObject.traverse((item) => {
 
     item.layers.set(shortSide.targetIndex + 1)
-
+    item.frustumCulled = false
 
     // 放進去箱子是會換texture
     if (item.name === `Box001`) {
