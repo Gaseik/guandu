@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { handleDino } from "../helper/dinosaurHandle";
 
 export const PageState = {
   Loading: 0x00000,
@@ -10,6 +11,7 @@ export const PageState = {
   ViewVideo: 0x01000,
   Discard: 0x10000,
 }
+
 const mixer = [];
 export const animationList = [];
 const clock = new THREE.Clock();
@@ -55,365 +57,7 @@ const initialState = {
 }
 
 
-let containerSetup = {
-  widedRight: {
-    wide: {
-      position: {
-        x: -0.195,
-        y: 0.004,
-        z: 0
-      },
-      scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.610,
-        y: 0.016,
-        z: -0.164
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  widedLeft: {
-    wide: {
-      position: {
-        x: 0.860,
-        y: 0.004,
-        z: 0
-      },
-      scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.610,
-        y: 0.016,
-        z: -0.164
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  narrow: {
-    wide: {
-      position: {
-        x: -0.195,
-        y: 0.004,
-        z: 0
-      },
-      scale: {
-        x: 3.690,
-        y: 3.070,
-        z: 3.020
-      }
-    },
-    narrow: {
-      position: {
-        x: 0.153,
-        y: -0.129,
-        z: 0
-      },
-      rotation: {
-        y: Math.PI / 2
-      },
-      scale: {
-        x: 2,
-        y: 2,
-        z: 2
-      }
-    }
-  }
-}
-let raptorSetup = {
-  widedRight: {
-    wide: {
-      position: {
-        x: -0.380,
-        y: 0,
-        z: 0
-      },
-    },
-    narrow: {
-      position: {
-        x: -5.020,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  widedLeft: {
-    wide: {
-      position: {
-        x: 0.7,
-        y: 0,
-        z: 0
-      },
-    },
-    narrow: {
-      position: {
-        x: -5.020,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  narrow: {
-    wide: {
-      position: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-    },
-    narrow: {
-      position: {
-        x: 1.034,
-        y: -1.886,
-        z: 2.134
-      },
-      rotation: {
-        y: Math.PI / 2
-      },
-      scale: {
-        x: 2,
-        y: 2,
-        z: 2
-      }
-    }
-  }
-};
-let TriceraptopsSetup = {
-  widedRight: {
-    wide: {
-      position: {
-        x: -0.655,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -4.5,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.9,
-        y: 0.9,
-        z: 0.9
-      }
-    }
-  },
-  widedLeft: {
-    wide: {
-      position: {
-        x: 0.455,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -4.5,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.9,
-        y: 0.9,
-        z: 0.9
-      }
-    }
-  },
-  narrow: {
-    wide: {
-      position: {
-        x: -0.655,
-        y: 0,
-        z: -0.076
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: 3.706,
-        y: -1.920,
-        z: 0.950
-      },
-      rotation: {
-        y: Math.PI / 2
-      },
-      scale: {
-        x: 1.7,
-        y: 1.7,
-        z: 1.7
-      }
-    }
-  }
-};
-let pterodactylSetup = {
-  widedRight: {
-    wide: {
-      position: {
-        x: -0.413,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -5,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  widedLeft: {
-    wide: {
-      position: {
-        x: 0.645,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -5,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  narrow: {
-    wide: {
-      position: {
-        x: -0.655,
-        y: 0,
-        z: -0.076
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.184,
-        y: -1.516,
-        z: -0.126
-      },
-      rotation: {
-        y: Math.PI / 2
-      },
-      scale: {
-        x: 2,
-        y: 2,
-        z: 2
-      }
-    }
-  }
-}
+
 
 export const AppState = {
   state: {
@@ -561,71 +205,7 @@ export const AppState = {
           // let show = new Dino(DinoRaptor)
           // show.changeToNarrow()
         }
-        //*這邊處理各種轉向和位置
-        function handleDino(anchorNum, Dino) {
-          console.log(Dino)
-          let wp = Dino.nodeWide.initialPosition
-          let np = Dino.nodeNarrow.initialPosition
-          let ws = Dino.nodeWide.initialScale
-          let ns = Dino.nodeNarrow.initialScale
-          let wpc = Dino.nodeWideContainer.initialPosition
-          let npc = Dino.nodeNarrowContainer.initialPosition
-          let wsc = Dino.nodeWideContainer.initialScale
-          let nsc = Dino.nodeNarrowContainer.initialScale
-          switch (anchorNum) {
-            // * 短邊的恐龍
-
-            case 11:
-            case 12:
-            case 13:
-              Dino.nodeWide.position.set(wp.x, wp.y, wp.z)
-              Dino.nodeWide.rotation.y = Dino.nodeWide.initialRotation.y;
-              Dino.nodeNarrow.position.set(0, 0, 0)
-              Dino.nodeNarrow.rotation.y = Math.PI / 2;
-              Dino.nodeNarrowContainer.position.set(npc.x, npc.y, npc.z)
-              Dino.nodeNarrowContainer.rotation.y = Dino.nodeNarrowContainer.initialRotation.y;
-              Dino.nodeNarrowContainer.scale.set(nsc.x, nsc.y, nsc.z);
-              Dino.nodeWideContainer.position.set(wpc.x, wpc.y, wpc.z)
-              Dino.nodeWideContainer.rotation.y = Dino.nodeWideContainer.initialRotation.y;
-              Dino.nodeWideContainer.scale.set(wsc.x, wsc.y, wsc.z);
-              break;
-            // * 長邊的恐龍
-            case 14:
-              Dino.nodeWide.position.set(0, 0, 0)
-              Dino.nodeNarrow.position.set(np.x, np.y, np.z)
-              Dino.nodeNarrow.rotation.y = Dino.nodeNarrow.initialRotation.y;
-              let NarrowLPosition = containerSetup.widedLeft.narrow.position
-              let NarrowLScale = containerSetup.widedLeft.narrow.scale
-              Dino.nodeNarrowContainer.position.set(NarrowLPosition.x, NarrowLPosition.y, NarrowLPosition.z)
-              Dino.nodeNarrowContainer.rotation.y = containerSetup.widedLeft.narrow.rotation.y;
-              Dino.nodeNarrowContainer.scale.set(NarrowLScale.x, NarrowLScale.y, NarrowLScale.z)
-              let WideLPosition = containerSetup.widedLeft.wide.position
-              let WideLScale = containerSetup.widedLeft.wide.scale
-              Dino.nodeWideContainer.position.set(WideLPosition.x, WideLPosition.y, WideLPosition.z)
-              Dino.nodeWideContainer.scale.set(WideLScale.x, WideLScale.y, WideLScale.z)
-              break;
-            case 15:
-            case 16:
-              Dino.nodeWide.position.set(0, 0, 0)
-              Dino.nodeNarrow.position.set(np.x, np.y, np.z)
-              Dino.nodeNarrow.rotation.y = Dino.nodeNarrow.initialRotation.y;
-              let NarrowPosition = containerSetup.widedRight.narrow.position
-              let NarrowScale = containerSetup.widedRight.narrow.scale
-              Dino.nodeNarrowContainer.position.set(NarrowPosition.x, NarrowPosition.y, NarrowPosition.z)
-              Dino.nodeNarrowContainer.rotation.y = containerSetup.widedRight.narrow.rotation.y;
-              Dino.nodeNarrowContainer.scale.set(NarrowScale.x, NarrowScale.y, NarrowScale.z)
-              let WidePosition = containerSetup.widedRight.wide.position
-              let WideScale = containerSetup.widedRight.wide.scale
-              Dino.nodeWideContainer.position.set(WidePosition.x, WidePosition.y, WidePosition.z)
-              Dino.nodeWideContainer.scale.set(WideScale.x, WideScale.y, WideScale.z)
-              // modelObject.position.x = -0.2;
-              break;
-            default:
-              // modelObject.position.x = 0;
-              // modelObject.rotation.y = 0;
-              break;
-          }
-        }
+       
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           arLib.detect = 0
@@ -692,7 +272,7 @@ export const AppState = {
         fetch("/model/billboard_thai.json").then(result => result.json()),
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
-        fetch("/model/container2.json").then(result => result.json()),
+        fetch("/model/container.json").then(result => result.json()),
         arLib.start()
       ]).then(async ([arTest, arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, arContainer, arLibResult]) => {
 
@@ -836,7 +416,7 @@ export const AppState = {
           // renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
           if (orthoCamera && orthoScene) {
             // * 畫出2D場景(視訊畫面)
-            orthoCamera.layers.set(20);
+            orthoCamera.layers.set(25);
             renderer.render(scene, orthoCamera);
             // * 畫出2D場景(圖框)
             orthoCamera.layers.set(0);
@@ -992,8 +572,8 @@ function connectWebCam(mindarThree) {
   // alert(`vider:${video.clientHeight}/${video.clientWidth} window:${window.innerHeight},${window.innerWidth}`)
   mesh.position.set(video.clientWidth / 2, video.clientHeight / 2, -99.8);
   mesh.scale.set(scale, scale, 1);
-  mesh.layers.set(20);
-  mesh.layers.enable(20);
+  mesh.layers.set(25);
+  mesh.layers.enable(25);
   // scene.environment = mesh
   scene.add(mesh);
 
