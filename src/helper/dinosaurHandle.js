@@ -435,6 +435,8 @@ export class DionModel {
     this.mixer = {};
     this.animationList = {};
     this.modelObject = null;
+    this.door1 = null;
+    this.door2 = null;
     this.Dino = null;
     this.fense = null;
     this.animations = []
@@ -442,7 +444,7 @@ export class DionModel {
     this.DinoObj = { animations: [] };
   }
 
-  async loadModel(sceneData, container, test) {
+  async loadModel(sceneData, container, shortSide,anchors,test) {
     const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
     const objCon = await loader.parseAsync(container.scene ? container.scene : container.Scene);
 
@@ -455,11 +457,14 @@ export class DionModel {
       const obT = await loader.parseAsync(test.scene ? test.scene : test.Scene);
       this.modelObject.add(obT);
     }
+    this.traverseModel(shortSide,sceneData)
+    let self = this.modelObject
+    anchors.forEach(function (anchor) {
+      anchor.group.add(self)
+    })
   }
 
   traverseModel(shortSide, sceneData) {
-    let door, door2, Dino, fense;
-
     this.modelObject.traverse((item) => {
       item.layers.set(shortSide.targetIndex + 1);
 
@@ -479,27 +484,26 @@ export class DionModel {
         this.setInitialTransform('nodeNarrow', item);
       }
       if (item.name === 'Dummy001') {
-        door = item;
-        this.DinoObj.door1 = door;
+        this.door = item;
+        this.DinoObj.door1 = item;
       }
       if (item.name === 'Dummy002') {
-        door2 = item;
-        this.DinoObj.door2 = door2;
+        this.door2 = item;
+        this.DinoObj.door2 = item;
       }
       if (item.name === 'container.glb') {
-        fense = item;
-        this.DinoObj.fense = fense;
+        this.fense = item;
+        this.DinoObj.fense = item;
       }
       if (['pterodactyl.glb', 'raptor.glb', 'triceratops.glb'].includes(item.name)) {
-        Dino = item;
-        this.DinoObj.Dino = Dino;
+        this.Dino = item;
+        this.DinoObj.Dino = item;
       }
     });
-
-    this.setupAnimations(Dino, fense, door, door2, sceneData);
-
-    this.DinoObj.modelObject = this.modelObject;
+    this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
   }
+
+  
 
   setInitialTransform(name, item) {
     this.DinoObj[name] = item;

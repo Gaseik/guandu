@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { handleDino } from "../helper/dinosaurHandle";
+import { handleDino, DionModel } from "../helper/dinosaurHandle";
 
 export const PageState = {
   Loading: 0x00000,
@@ -34,9 +34,9 @@ let textRaptor = undefined;
 let textPter = undefined;
 //宣告恐龍,因為恐龍比較複雜,美術將動畫拆成恐龍本身加上柵欄
 //然後動畫又需要在掃瞄到目標圖片的時候才開始跑動畫
-let DinoPter = new Object();
-let DinoTri = new Object();
-let DinoRaptor = new Object();
+let DinoPter = new DionModel();
+let DinoTri = new DionModel();
+let DinoRaptor = new DionModel();
 let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh
 let textureBlue, textureRed, textureYellow
@@ -207,7 +207,7 @@ export const AppState = {
           // let show = new Dino(DinoRaptor)
           // show.changeToNarrow()
         }
-       
+
         arLib.addAnchor(i).onTargetLost = async () => {
           dispatch.AppState.setDetect(0)
           arLib.detect = 0
@@ -279,7 +279,7 @@ export const AppState = {
         fetch("/model/billboard_latte.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot,arGiki,arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki,boardLatte, arContainer, arLibResult]) => {
+      ]).then(async ([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arGiki, arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, boardLatte, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -360,11 +360,13 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardLatte)
+        arDinoTri.name = 'Tri'
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
-        setDionScene(TriArray, scene, arDinoTri, arContainer, () => {
+        setDionScene(TriArray,  arDinoTri, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
+          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -372,11 +374,13 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
         })
+        arDinoRaptor.name = 'Raptor'
         let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
-        setDionScene(RaptorArray, scene, arDinoRaptor, arContainer, () => {
+        setDionScene(RaptorArray,  arDinoRaptor, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
+          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -384,11 +388,13 @@ export const AppState = {
             dispatch.AppState.setArLib(arLib);
           }
         })
+        arDinoPter.name = 'Pter';
         let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
-        setDionScene(Pterrray, scene, arDinoPter, arContainer, () => {
+        setDionScene(Pterrray,  arDinoPter, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
+          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -719,165 +725,27 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setDionScene(anchors, scene, sceneData, container, callback, test) {
+async function setDionScene(anchors,  sceneData, container, callback, test) {
   let shortSide = anchors[0]
-  let longSide = anchors[1]
-  const loader = new THREE.ObjectLoader();
-  //打場景資料轉成 ThreeJS場景資訊
 
-  const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
-  const objCon = await loader.parseAsync(container.scene ? container.scene : container.Scene)
-
-  //設置環境貼圖
-  if (obj.environment !== null) {
-    scene.environment = obj.environment;
+  let DD
+  switch (sceneData.name) {
+    case 'Tri':
+      DD = DinoTri
+      break
+    case "Raptor":
+      DD = DinoRaptor
+      break
+    case "Pter":
+      DD = DinoPter
+      break
   }
 
 
-  //設置主物件的父層級並把ThreeJS場景資訊放入
-  const modelObject = new THREE.Object3D();
-  modelObject.position.set(0, 0, 0)
-
-
-
-  // obj.rotation.y = Math.PI / 2;
-  // objCon.rotation.y = Math.PI / 2;
-  // obj.position.set(-0.25,-0.25,-1)
-  // objCon.position.set(-0.25,-0.25,-1)
-  modelObject.add(obj);
-  modelObject.add(objCon);
-  if (test) {
-
-    const obT = await loader.parseAsync(test.scene ? test.scene : test.Scene)
-
-    modelObject.add(obT);
-  }
-  // modelObject.scale.set(2, 2, 2);
-
-  //左邊和前方的柵欄
-  let door
-  let door2
-  //恐龍本身
-  let Dino
-  //整個外部柵欄整體(用於動畫)
-  let fense
-  //全部的物件
-  let DinoObj = new Object();
-
-
-  DinoObj.animations = []
-  // modelObject.scale.set(0.1, 0.1, 0.1);
-  //依序尋找需要的物件
-  modelObject.traverse((item) => {
-
-    item.layers.set(shortSide.targetIndex + 1)
-    item.frustumCulled = false
-
-    // 放進去箱子是會換texture
-    if (item.name === `Box001`) {
-      DinoObj.box = item
-    }
-    if (item.name === `Node_Wide_Container`) {
-      DinoObj.nodeWideContainer = item
-      DinoObj.nodeWideContainer.initialPosition = DinoObj.nodeWideContainer.position.clone()
-      DinoObj.nodeWideContainer.initialRotation = DinoObj.nodeWideContainer.rotation.clone()
-      DinoObj.nodeWideContainer.initialScale = DinoObj.nodeWideContainer.scale.clone()
-
-    }
-    if (item.name === `Node_Wide`) {
-      DinoObj.nodeWide = item
-      DinoObj.nodeWide.initialPosition = DinoObj.nodeWide.position.clone()
-      DinoObj.nodeWide.initialRotation = DinoObj.nodeWide.rotation.clone()
-      DinoObj.nodeWide.initialScale = DinoObj.nodeWide.scale.clone()
-      // console.log('Wide',DinoObj.nodeWide)
-    }
-
-    if (item.name === `Node_Narrow_Container`) {
-      DinoObj.nodeNarrowContainer = item
-      DinoObj.nodeNarrowContainer.initialPosition = DinoObj.nodeNarrowContainer.position.clone()
-      DinoObj.nodeNarrowContainer.initialRotation = DinoObj.nodeNarrowContainer.rotation.clone()
-      DinoObj.nodeNarrowContainer.initialScale = DinoObj.nodeNarrowContainer.scale.clone()
-      // console.log('Narrow',DinoObj.nodeNarrowContainer)
-    }
-    if (item.name === `Node_Narrow`) {
-      DinoObj.nodeNarrow = item
-      DinoObj.nodeNarrow.initialPosition = DinoObj.nodeNarrow.position.clone()
-      DinoObj.nodeNarrow.initialRotation = DinoObj.nodeNarrow.rotation.clone()
-      DinoObj.nodeNarrow.initialScale = DinoObj.nodeNarrow.scale.clone()
-    }
-
-    if (item.name === `Dummy001`) {
-      door = item;
-      DinoObj.door1 = door;
-    }
-    if (item.name === `Dummy002`) {
-
-      door2 = item;
-      DinoObj.door2 = door2;
-    }
-    if (item.name === 'container.glb') {
-
-      fense = item;
-      DinoObj.fense = fense;
-    }
-    if (item.name === 'pterodactyl.glb' || item.name === 'raptor.glb' || item.name === 'triceratops.glb') {
-      Dino = item;
-      DinoObj.Dino = Dino;
-    }
-  })
-  //設定好恐龍本身的動畫
-  if (Dino) {
-    let animations = Dino.animations;
-    let animationName = sceneData.name
-    mixer[animationName] = new THREE.AnimationMixer(Dino);
-    animationList[animationName] = mixer[animationName].clipAction(animations[0]);
-    animationList[animationName].clampWhenFinished = true;
-    DinoObj.animations.push(animationName)
-  }
-  if (fense) {
-    let animations = fense.animations;
-    animations.forEach(animation => {
-      //因為美術的動畫名稱都一樣,所以添加物件名稱
-      //不然最終只會讓一個被呼叫到,這不是我們要的
-      let animationName = animation.name + sceneData.name
-      mixer[animationName] = new THREE.AnimationMixer(fense);
-      animationList[animationName] = mixer[animationName].clipAction(animation);
-      animationList[animationName].clampWhenFinished = true;
-      DinoObj.animations.push(animationName)
-      //柵欄的部分只撥放一次
-      animationList[animationName].setLoop(THREE.LoopOnce);
-      mixer[animationName].addEventListener('finished', function (e) {
-        //柵欄動畫本身結束的時候要把兩個門板消失
-        door.visible = false
-        door2.visible = false
-      });
-    });
-    DinoObj.modelObject = modelObject
-
-    switch (sceneData.name) {
-      case 'Pter':
-        DinoPter = DinoObj;
-        break;
-      case 'Raptor':
-        DinoRaptor = DinoObj;
-        break;
-      case 'Tri':
-        DinoTri = DinoObj;
-        break;
-      default:
-        DinoPter = DinoObj;
-        break;
-
-    }
-  }
+  await DD.loadModel(sceneData,container,shortSide,anchors,test)
 
 
   callback();
-
-  anchors.forEach(function (anchor) {
-    anchor.group.add(modelObject)
-  })
-
 }
 
 //設置場景
