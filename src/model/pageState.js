@@ -28,6 +28,7 @@ let Thai = undefined;
 let beer = undefined;
 let hotPot = undefined;
 let giki = undefined;
+let latte = undefined;
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -261,6 +262,7 @@ export const AppState = {
         fetch("/model/meals_beer.json").then(result => result.json()),
         fetch("/model/meals_hot_pot.json").then(result => result.json()),
         fetch("/model/meals_giki.json").then(result => result.json()),
+        fetch("/model/meals_latte.json").then(result => result.json()),
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
@@ -274,9 +276,10 @@ export const AppState = {
         fetch("/model/billboard_beer.json").then(result => result.json()),
         fetch("/model/billboard_hot_pot.json").then(result => result.json()),
         fetch("/model/billboard_giki.json").then(result => result.json()),
+        fetch("/model/billboard_latte.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot,arGiki, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, arContainer, arLibResult]) => {
+      ]).then(async ([ arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot,arGiki,arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki,boardLatte, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -352,6 +355,11 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
         }, boardGiki)
+        setScene(arLib.addAnchor(12), scene, arLatte, () => {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.shadowMap.needsUpdate = true;
+        }, boardLatte)
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
         setDionScene(TriArray, scene, arDinoTri, arContainer, () => {
           renderer.shadowMap.enabled = true;
@@ -479,6 +487,10 @@ export const AppState = {
           if (giki && detect === 11) {
             giki.rotation.y += 0.01;
             giki.rotation.y %= Math.PI * 2;
+          }
+          if (latte && detect === 13) {
+            latte.rotation.y += 0.01;
+            latte.rotation.y %= Math.PI * 2;
           }
 
           //* 需要這個reload的參數是因為,假如跳出視窗重新載入的話,count += 1 功能會疊加兩次
@@ -967,6 +979,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_giki`) {
       giki = item
+    }
+    if (item.name === `rotation_latte`) {
+      latte = item
     }
 
 

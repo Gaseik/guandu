@@ -406,7 +406,7 @@ export function handleDino(anchorNum, Dino) {
     default:
       break;
   }
-  switch (anchorNum-3) {
+  switch (anchorNum-3)   {
     // * 短邊的箱子
     case 11:
     case 12:
