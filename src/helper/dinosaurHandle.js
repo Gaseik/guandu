@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export const containerSetup = {
-  widedRight: {
+  1: {
     wide: {
       position: {
         x: -0.195,
@@ -30,7 +30,7 @@ export const containerSetup = {
       }
     }
   },
-  widedLeft: {
+  2: {
     wide: {
       position: {
         x: 0.860,
@@ -59,7 +59,7 @@ export const containerSetup = {
       }
     }
   },
-  narrow: {
+  3: {
     wide: {
       position: {
         x: -0.195,
@@ -91,7 +91,7 @@ export const containerSetup = {
 };
 
 export const raptorSetup = {
-  widedRight: {
+  1: {
     wide: {
       position: {
         x: -0.380,
@@ -117,7 +117,7 @@ export const raptorSetup = {
       }
     }
   },
-  widedLeft: {
+  2: {
     wide: {
       position: {
         x: 0.7,
@@ -142,7 +142,7 @@ export const raptorSetup = {
       }
     }
   },
-  narrow: {
+  3: {
     wide: {
       position: {
         x: 0,
@@ -168,8 +168,8 @@ export const raptorSetup = {
   }
 };
  
-export const triceraptopsSetup = {
-  widedRight: {
+export const triceratopsSetup = {
+  1: {
     wide: {
       position: {
         x: -0.655,
@@ -201,7 +201,7 @@ export const triceraptopsSetup = {
       }
     }
   },
-  widedLeft: {
+  2: {
     wide: {
       position: {
         x: 0.455,
@@ -233,7 +233,7 @@ export const triceraptopsSetup = {
       }
     }
   },
-  narrow: {
+  3: {
     wide: {
       position: {
         x: -0.655,
@@ -268,7 +268,7 @@ export const triceraptopsSetup = {
 };
 
 export const pterodactylSetup = {
-  widedRight: {
+  1: {
     wide: {
       position: {
         x: -0.413,
@@ -300,7 +300,7 @@ export const pterodactylSetup = {
       }
     }
   },
-  widedLeft: {
+  2: {
     wide: {
       position: {
         x: 0.645,
@@ -332,7 +332,7 @@ export const pterodactylSetup = {
       }
     }
   },
-  narrow: {
+  3: {
     wide: {
       position: {
         x: 0.655,
@@ -369,70 +369,8 @@ export const pterodactylSetup = {
 const setups = {
   pterodactyl:pterodactylSetup,
   raptor:raptorSetup,
-  triceraptops:triceraptopsSetup,
+  triceratops:triceratopsSetup,
   container:containerSetup
-}
-
-function handleObject (type , position,Dino) {
-  let nodeWide = type === containerSetup ? 'nodeWideContainer': 'nodeWide'
-  let nodeNarrow = type === containerSetup ? 'nodeNarrowContainer': 'nodeNarrow'
-  
-  let wideT = type[position].wide
-  let wideRotationY = wideT.rotation ? wideT.rotation.y : Dino[nodeWide].initialRotation.y
-  let wideScale = wideT.scale ? wideT.scale :  Dino[nodeWide].initialScale
-  let narrowT = type[position].narrow
-  Dino[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
-  Dino[nodeNarrow].rotation.y = narrowT.rotation.y;
-  Dino[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
-  Dino[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
-  Dino[nodeWide].rotation.y = wideRotationY;
-  Dino[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
-}
-
- //*這邊處理各種轉向和位置
-export function handleDino(anchorNum, Dinos) {
-  let Dino = Dinos.DinoObj
-  switch (anchorNum-3) {
-    case 11:
-      handleObject(triceraptopsSetup,'narrow',Dino)
-      break;
-    case 12:
-      handleObject(raptorSetup,'narrow',Dino)
-      break;
-    case 13:
-      handleObject(pterodactylSetup,'narrow',Dino)
-      break;
-    case 14:
-      handleObject(triceraptopsSetup,'widedLeft',Dino)
-      break;
-    case 15:
-      handleObject(raptorSetup,'widedRight',Dino)
-      break;
-    case 16:
-      handleObject(pterodactylSetup,'widedRight',Dino)
-      break;
-    default:
-      break;
-  }
-  switch (anchorNum-3)   {
-    // * 短邊的箱子
-    case 11:
-    case 12:
-    case 13:
-      handleObject(containerSetup,'narrow',Dino)
-      break;
-    // * 長邊左的箱子
-    case 14:
-      handleObject(containerSetup,'widedLeft',Dino)
-      break;
-    case 15:
-    case 16:
-      // * 長邊右的箱子
-      handleObject(containerSetup,'widedRight',Dino)
-      break;
-    default:
-      break;
-  }
 }
 
 
@@ -478,6 +416,7 @@ export class DionModel {
   async traverseModel(shortSide, sceneData) {
     this.modelObject.traverse((item) => {
       item.layers.set(shortSide.targetIndex + 1);
+      item.frustumCulled = false
 
       if (item.name === 'Box001') {
         this.box = item;
@@ -515,17 +454,26 @@ export class DionModel {
     this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
   }
 
-  rotateToNarrow(){
-    this.rotate('narrow',this.name)
-    this.rotate('narrow','container')
-
+  rotateToThirdType(){
+    this.rotate(3,this.name)
+    this.rotate(3,'container')
+  }
+  rotateToFirstType(){
+    this.rotate(1,this.name)
+    this.rotate(1,'container')
+  }
+  rotateToSecondType(){
+    this.rotate(2,this.name)
+    this.rotate(2,'container')
   }
 
-  rotate(position,type){
-    let type = setups[type]
-    let nodeWide = type === 'container' ? 'nodeWideContainer': 'nodeWide'
-    let nodeNarrow = type === 'container' ? 'nodeNarrowContainer': 'nodeNarrow'
-    
+
+  rotate(position,typeString){
+    // console.log(typeString,this.name);
+    let type = setups[typeString]
+    let nodeWide = typeString === 'container' ? 'nodeWideContainer': 'nodeWide'
+    let nodeNarrow = typeString === 'container' ? 'nodeNarrowContainer': 'nodeNarrow'
+    // console.log(type)
     let wideT = type[position].wide
     let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
     let wideScale = wideT.scale ? wideT.scale :  this.DinoObj[nodeWide].initialScale
