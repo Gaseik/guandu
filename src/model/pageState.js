@@ -173,39 +173,30 @@ export const AppState = {
           changeState(i + 1)
           arLib.detect = i + 1
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
-          if (DinoPter.animations && DinoRaptor.animations && DinoTri.animations) {
+          if (DinoPter.animationList && DinoRaptor.animationList && DinoTri.animationList) {
             switch (i) {
               case 14:
               case 17:
-                DinoTri.animations.forEach(an => {
-                  animationList[an].play()
-                })
-                DinoTri.box.material.map = textureYellow
+                DinoTri.playAnimations()
+                DinoTri.changeBoxTexture(textureYellow)
                 handleDino(i, DinoTri)
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
               case 15:
               case 18:
-                DinoRaptor.animations.forEach(an => {
-                  +  animationList[an].play()
-                })
+                DinoRaptor.playAnimations()
                 handleDino(i, DinoRaptor)
-                DinoRaptor.box.material.map = textureBlue
+                DinoRaptor.changeBoxTexture(textureBlue)
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
               case 16:
               case 19:
-                DinoPter.animations.forEach(an => {
-                  animationList[an].play()
-                })
+                DinoPter.playAnimations()
                 handleDino(i, DinoPter)
                 arLib.addAnchor(i).group.add(DinoPter.modelObject)
                 break;
             }
           }
-
-          // let show = new Dino(DinoRaptor)
-          // show.changeToNarrow()
         }
 
         arLib.addAnchor(i).onTargetLost = async () => {
@@ -218,30 +209,14 @@ export const AppState = {
           switch (i) {
             case 14:
             case 17:
-              handleDino(0, DinoTri)
-              DinoTri.animations.forEach(an => {
-                animationList[an].stop()
-                DinoTri.door1.visible = true
-                DinoTri.door2.visible = true
-              })
-              break;
+              DinoTri.stopAnimations()
             case 15:
             case 18:
-              handleDino(0, DinoRaptor)
-              DinoRaptor.animations.forEach(an => {
-                animationList[an].stop()
-                DinoRaptor.door1.visible = true
-                DinoRaptor.door2.visible = true
-              })
+              DinoRaptor.stopAnimations()
               break;
             case 16:
             case 19:
-              handleDino(0, DinoPter)
-              DinoPter.animations.forEach(an => {
-                animationList[an].stop()
-                DinoPter.door1.visible = true
-                DinoPter.door2.visible = true
-              })
+              DinoPter.stopAnimations()
               break;
           }
         }
@@ -366,7 +341,6 @@ export const AppState = {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
-          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -380,7 +354,6 @@ export const AppState = {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
-          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -394,7 +367,6 @@ export const AppState = {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
-          console.log(DinoTri.Dino,DinoRaptor,DinoPter)
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
             // console.log(DinoPter,DinoRaptor,DinoTri)
@@ -449,6 +421,16 @@ export const AppState = {
 
           Object.keys(mixer).forEach(name => {
             mixer[name].update(mixerUpdateDelta)
+          })
+          // 原本食物和恐龍的mixer是共用同一個,但是現在拆開了
+          Object.keys(DinoRaptor.mixer).forEach(name => {
+            DinoRaptor.mixer[name].update(mixerUpdateDelta)
+          })
+          Object.keys(DinoPter.mixer).forEach(name => {
+            DinoPter.mixer[name].update(mixerUpdateDelta)
+          })
+          Object.keys(DinoTri.mixer).forEach(name => {
+            DinoTri.mixer[name].update(mixerUpdateDelta)
           })
           if (drinks && detect === 1) {
             // drinks.rotation.x += 2

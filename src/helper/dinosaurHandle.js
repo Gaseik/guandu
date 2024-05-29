@@ -366,6 +366,13 @@ export const pterodactylSetup = {
   }
 };
 
+const setups = {
+  pterodactyl:pterodactylSetup,
+  raptor:raptorSetup,
+  triceraptops:triceraptopsSetup,
+  container:containerSetup
+}
+
 function handleObject (type , position,Dino) {
   let nodeWide = type === containerSetup ? 'nodeWideContainer': 'nodeWide'
   let nodeNarrow = type === containerSetup ? 'nodeNarrowContainer': 'nodeNarrow'
@@ -383,7 +390,8 @@ function handleObject (type , position,Dino) {
 }
 
  //*這邊處理各種轉向和位置
-export function handleDino(anchorNum, Dino) {
+export function handleDino(anchorNum, Dinos) {
+  let Dino = Dinos.DinoObj
   switch (anchorNum-3) {
     case 11:
       handleObject(triceraptopsSetup,'narrow',Dino)
@@ -438,7 +446,9 @@ export class DionModel {
     this.door1 = null;
     this.door2 = null;
     this.Dino = null;
+    this.box = null;
     this.fense = null;
+    this.name = null;
     this.animations = []
     this.Node_Narrow = null
     this.DinoObj = { animations: [] };
@@ -459,17 +469,18 @@ export class DionModel {
     }
     this.traverseModel(shortSide,sceneData)
     let self = this.modelObject
+    console.log(self)
     anchors.forEach(function (anchor) {
       anchor.group.add(self)
     })
   }
 
-  traverseModel(shortSide, sceneData) {
+  async traverseModel(shortSide, sceneData) {
     this.modelObject.traverse((item) => {
       item.layers.set(shortSide.targetIndex + 1);
 
       if (item.name === 'Box001') {
-        this.DinoObj.box = item;
+        this.box = item;
       }
       if (item.name === 'Node_Wide_Container') {
         this.setInitialTransform('nodeWideContainer', item);
@@ -498,12 +509,38 @@ export class DionModel {
       if (['pterodactyl.glb', 'raptor.glb', 'triceratops.glb'].includes(item.name)) {
         this.Dino = item;
         this.DinoObj.Dino = item;
+        this.name = item.name.replace('.glb','');
       }
     });
     this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
   }
 
-  
+  rotateToNarrow(){
+    this.rotate('narrow',this.name)
+    this.rotate('narrow','container')
+
+  }
+
+  rotate(position,type){
+    let type = setups[type]
+    let nodeWide = type === 'container' ? 'nodeWideContainer': 'nodeWide'
+    let nodeNarrow = type === 'container' ? 'nodeNarrowContainer': 'nodeNarrow'
+    
+    let wideT = type[position].wide
+    let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
+    let wideScale = wideT.scale ? wideT.scale :  this.DinoObj[nodeWide].initialScale
+    let narrowT = type[position].narrow
+    this.DinoObj[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
+    this.DinoObj[nodeNarrow].rotation.y = narrowT.rotation.y;
+    this.DinoObj[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
+    this.DinoObj[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
+    this.DinoObj[nodeWide].rotation.y = wideRotationY;
+    this.DinoObj[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
+  }
+
+  changeBoxTexture(texture){
+    this.box.material.map = texture
+  }
 
   setInitialTransform(name, item) {
     this.DinoObj[name] = item;
@@ -525,6 +562,20 @@ export class DionModel {
     if (fense) {
       this.setupFenseAnimations(fense, door, door2, sceneData);
     }
+  }
+
+  playAnimations () {
+    this.DinoObj.animations.forEach(an => {
+      this.animationList[an].play()
+    })
+  }
+
+  stopAnimations () {
+    this.DinoObj.animations.forEach(an => {
+      this.animationList[an].stop()
+    })
+    this.door.visible = true
+    this.door2.visible = true
   }
 
   setupDinoAnimations(Dino, sceneData) {
@@ -552,3 +603,5 @@ export class DionModel {
     });
   }
 }
+
+
