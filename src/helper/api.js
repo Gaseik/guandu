@@ -14,20 +14,26 @@ export function enterPageApi() {
 
 const types = {
     0: 'none',
-    1: 'drinks',
-    2: 'jburger',
-    3: 'er',
-    4: 'stewed_rice',
-    5: 'kc',
-    6: 'beb',
-    7: 'latte',
-    8: 'hot_pot',
-    9: 'thai',
-    10: 'beer',
-    11: 'giki',
-    12: 'triceratops',
-    13: 'raptor',
-    14: 'pterodactyl'
+    1: 'MK Pizza Bar',
+    2: 'J-BURGER',
+    3: 'No Worries Café',
+    4: '隱樓',
+    5: '德魯納韓式',
+    6: '甘答門',
+    7: '打卡咖啡',
+    8: '餉賀',
+    9: '泰雁',
+    10: '金色三麥',
+    11: 'GIKI',
+    12: "_",
+    13: "_",
+    14: "_",
+    15: 'triceratops_1',
+    16: 'raptor_1',
+    17: 'pterodactyl_1',
+    18: 'triceratops_2',
+    19: 'raptor_2',
+    20: 'pterodactyl_2'
 }
 
 export function themeDetect(type) {
@@ -77,7 +83,7 @@ export function photoTakenApi(type) {
 export function saveApi(type) {
     axios.post('/AddThemeEventCount', {
         themeType: types[type],
-        eventName : 'SaveCount'
+        eventName: 'SaveCount'
     })
         .then(function (response) {
             // console.log(response);
