@@ -1,7 +1,6 @@
 import * as THREE from "three";
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { DionModel } from "../helper/dinosaurHandle";
-
+import 'mind-ar/dist/mindar-image-three.prod'
 export const PageState = {
   Loading: 0x00000,
   Intro: 0x00001,
@@ -278,11 +277,14 @@ export const AppState = {
         let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
         for (let i = 0; i < 11; i++) {
-          setScene(arLib.addAnchor(i), scene, foods[i], () => {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.shadowMap.needsUpdate = true;
-          }, boards[i])
+          if(i !== 0 && i !== 2){
+            setScene(arLib.addAnchor(i), scene, foods[i], () => {
+              renderer.shadowMap.enabled = true;
+              renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+              renderer.shadowMap.needsUpdate = true;
+            }, boards[i])
+          }
+         
         }
 
 
@@ -293,7 +295,6 @@ export const AppState = {
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
-            // console.log(DinoPter,DinoRaptor,DinoTri)
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
@@ -305,7 +306,6 @@ export const AppState = {
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
-            // console.log(DinoPter,DinoRaptor,DinoTri)
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }
@@ -317,7 +317,6 @@ export const AppState = {
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
             dispatch.AppState.changePageState(PageState.ARView);
-            // console.log(DinoPter,DinoRaptor,DinoTri)
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
           }

@@ -2,10 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
-import "mind-ar/dist/mindar-image-three.prod";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
-import { IoIosInformationCircle, IoIosClose, IoMdCamera } from "react-icons/io";
+import {  IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
@@ -57,39 +56,43 @@ const ARView = function () {
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
     // 判斷是恐龍還是食物類，判斷要撥放甚麼音樂
-    // 目前0是初始狀態，1-10是食物，11-13是恐龍類
-    if (state.detect < 11) {
-      if (bgMusic.src !== bgMusicFile) {
-        dispatch.AppState.setPlayAuth(false);
-        setBgMusic(null);
-        const newBgMusic = new Audio(bgMusicFile);
-        newBgMusic.loop = true; // 在這裡設置音樂循環播放
-        setBgMusic(newBgMusic);
-        if (state.playAuth) {
+    // 目前0是初始狀態，1-14是食物，15-20是恐龍類
+    if(state.detect > 0 ){
+      if (state.detect < 15) {
+        if (bgMusic.src !== bgMusicFile) {
           dispatch.AppState.setPlayAuth(false);
+          setBgMusic(null);
+          const newBgMusic = new Audio(bgMusicFile);
+          newBgMusic.loop = true; // 在這裡設置音樂循環播放
+          setBgMusic(newBgMusic);
+          if (state.playAuth) {
+            dispatch.AppState.setPlayAuth(false);
+          }
+          setTimeout(() => {
+            console.log('play')
+            dispatch.AppState.setMusicStarted(true);
+          }, 500);
         }
-        setTimeout(() => {
-          dispatch.AppState.setMusicStarted(true);
-        }, 500);
-      }
-    } else {
-      if (bgMusic.src !== bgDMusicFile) {
-        setBgMusic(null);
-        const newBgMusic = new Audio(bgDMusicFile);
-        newBgMusic.loop = true; // 在這裡設置音樂循環播放
-        setBgMusic(newBgMusic);
-        if (state.playAuth) {
-          dispatch.AppState.setPlayAuth(false);
-        }
-        setTimeout(() => {
-          dispatch.AppState.setMusicStarted(true);
-        }, 500);
       } else {
-        setTimeout(() => {
-          dispatch.AppState.setMusicStarted(true);
-        }, 500);
+        if (bgMusic.src !== bgDMusicFile) {
+          setBgMusic(null);
+          const newBgMusic = new Audio(bgDMusicFile);
+          newBgMusic.loop = true; // 在這裡設置音樂循環播放
+          setBgMusic(newBgMusic);
+          if (state.playAuth) {
+            dispatch.AppState.setPlayAuth(false);
+          }
+          setTimeout(() => {
+            dispatch.AppState.setMusicStarted(true);
+          }, 500);
+        } else {
+          setTimeout(() => {
+            dispatch.AppState.setMusicStarted(true);
+          }, 500);
+        }
       }
     }
+    
   }, [state.detect]);
 
   function onClickTakePhoto() {
