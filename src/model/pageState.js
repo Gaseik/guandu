@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import {  DionModel } from "../helper/dinosaurHandle";
+import { DionModel } from "../helper/dinosaurHandle";
 
 export const PageState = {
   Loading: 0x00000,
@@ -17,9 +17,7 @@ const clock = new THREE.Clock();
 export let modelData = undefined;
 
 //這邊把一些需要旋轉的物件宣告
-let drinks = undefined;
 let burger = undefined;
-let Er = undefined;
 let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
@@ -116,9 +114,7 @@ export const AppState = {
       egretMesh = undefined
       count = 1
       dierction = 1
-      drinks = undefined;
       burger = undefined;
-      Er = undefined;
       rice = undefined;
       kc = undefined;
       bacon = undefined;
@@ -239,9 +235,7 @@ export const AppState = {
 
       //載入JSON場景檔
       Promise.all([
-        fetch("/model/meals_drinks.json").then(result => result.json()),
         fetch("/model/meals_jburger.json").then(result => result.json()),
-        fetch("/model/meals_er.json").then(result => result.json()),
         fetch("/model/meals_stewed_rice.json").then(result => result.json()),
         fetch("/model/meals_kc.json").then(result => result.json()),
         fetch("/model/meals_beb.json").then(result => result.json()),
@@ -253,9 +247,7 @@ export const AppState = {
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
-        fetch("/model/billboard_drinks.json").then(result => result.json()),
         fetch("/model/billboard_jburger.json").then(result => result.json()),
-        fetch("/model/billboard_er.json").then(result => result.json()),
         fetch("/model/billboard_stewed_rice.json").then(result => result.json()),
         fetch("/model/billboard_kc.json").then(result => result.json()),
         fetch("/model/billboard_beb.json").then(result => result.json()),
@@ -266,7 +258,7 @@ export const AppState = {
         fetch("/model/billboard_latte.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([arDrinks, arJBurger, arEr, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arGiki, arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardDrinks, boardJBuger, boardEr, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, boardLatte, arContainer, arLibResult]) => {
+      ]).then(async ([arJBurger, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arGiki, arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardJBuger, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, boardLatte, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -281,13 +273,11 @@ export const AppState = {
         // * 設置3D場景
         arStewedRice.name = 'StewedRice'
 
-        arDrinks.name = 'Drinks'
-        arDrinks.scene.name = 'Drinks'
 
-        let foods = [arDrinks,arJBurger,arEr,arStewedRice,arKC,arBeb,arLatte,arHotPot,arThai,arBeer,arGiki]
-        let boards = [boardDrinks,boardJBuger,boardEr,boardStewedRice,boardKC,boardBeb,boardLatte,boardHotPot,boardThai,boardBeer,boardGiki]
+        let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
+        let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
-        for (let i = 0; i <11;i++){
+        for (let i = 0; i < 11; i++) {
           setScene(arLib.addAnchor(i), scene, foods[i], () => {
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -295,9 +285,9 @@ export const AppState = {
           }, boards[i])
         }
 
-        
+
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
-        setDionScene(TriArray,  arDinoTri, arContainer, () => {
+        setDionScene(TriArray, arDinoTri, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
@@ -309,7 +299,7 @@ export const AppState = {
           }
         })
         let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
-        setDionScene(RaptorArray,  arDinoRaptor, arContainer, () => {
+        setDionScene(RaptorArray, arDinoRaptor, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
@@ -321,7 +311,7 @@ export const AppState = {
           }
         })
         let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
-        setDionScene(Pterrray,  arDinoPter, arContainer, () => {
+        setDionScene(Pterrray, arDinoPter, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
@@ -389,12 +379,7 @@ export const AppState = {
           Object.keys(DinoTri.mixer).forEach(name => {
             DinoTri.mixer[name].update(mixerUpdateDelta)
           })
-          if (drinks && detect === 1) {
-            // drinks.rotation.x += 2
-            drinks.rotation.y += 0.01;
-            drinks.rotation.y %= Math.PI * 2;
-            // drinks.rotation.y = Math.max(drinks.rotation.y, -Math.PI / 2);
-          }
+
           if (rice && detect === 4) {
             // rice.rotation.x += 2
             rice.rotation.y += 0.01;
@@ -413,10 +398,7 @@ export const AppState = {
             kc.rotation.y += 0.01;
             kc.rotation.y %= Math.PI * 2;
           }
-          if (Er && detect === 3) {
-            Er.rotation.y += 0.01;
-            Er.rotation.y %= Math.PI * 2;
-          }
+
           if (Thai && detect === 9) {
             Thai.rotation.y += 0.01;
             Thai.rotation.y %= Math.PI * 2;
@@ -664,7 +646,7 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setDionScene(anchors,  sceneData, container, callback, test) {
+async function setDionScene(anchors, sceneData, container, callback, test) {
   let shortSide = anchors[0]
 
   let DD
@@ -681,7 +663,7 @@ async function setDionScene(anchors,  sceneData, container, callback, test) {
   }
 
 
-  await DD.loadModel(sceneData,container,shortSide,anchors,test)
+  await DD.loadModel(sceneData, container, shortSide, anchors, test)
 
 
   callback();
@@ -700,21 +682,6 @@ async function setScene(anchor, scene, sceneData, callback, board) {
   //設置環境貼圖
   if (obj.environment !== null) {
     scene.environment = obj.environment;
-  }
-  let textureDrink
-  //嘗試貼上飲料杯上的材質,但目前失敗
-  if (sceneData.name === 'Drinks') {
-    // console.log(obj)
-    new RGBELoader()
-      .load('/model/royal_esplanade_1k.hdr', function (texture) {
-        texture.name = 'drinks'
-        textureDrink = texture
-        texture.matrixAutoUpdate = false;
-        texture.mapping = THREE.EquirectangularReflectionMapping;
-        scene.environment = texture
-        scene.environment.needsUpdate = true;
-
-      });
   }
 
   //設置主物件的父層級並把ThreeJS場景資訊放入
@@ -742,26 +709,17 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     item.frustumCulled = false
 
     //檢查是否是燈光並把燈放到場景層下而不是跟隨物件
-    if (item.isLight && sceneData.name === 'Drinks') {
-      // mScene.add(item)
-      // console.log(item)
-      // item.parent = mScene
-    }
+
     if (item.isLight && sceneData.name === 'StewedRice') {
     }
     if (item.isLight) {
       item.parent = scene
     }
-    if (sceneData.name === "Drinks" && item.name.includes('Cylinder_')) {
-      item.texture = textureDrink
-      item.needsUpdate = true;
-    }
+ 
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
     //引入進來後,把對應變數配對
-    if (item.name === `rotation_drinks`) {
-      drinks = item;
-    }
+
     if (item.name === `rotation_jburger`) {
       burger = item
     }
@@ -774,9 +732,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.name === `rotation_kc`) {
       kc = item
     }
-    if (item.name === `rotation_er`) {
-      Er = item
-    }
+  
     if (item.name === `rotation_thai`) {
       Thai = item
     }
@@ -795,8 +751,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
 
 
     // 呼叫美術做好的動畫名稱,這邊只先處理板子,恐龍在上面處理
-    if (item.name === 'billboard_drinks.glb' || item.name === 'billboard_jburger.glb' || item.name === 'billboard_er.glb' ||
-      item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
+    if (item.name === 'billboard_jburger.glb' || item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
       let animations = item.animations;
       animations.forEach(animation => {
         //因為美術的動畫名稱都一樣,所以添加物件名稱
