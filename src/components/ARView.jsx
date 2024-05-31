@@ -141,11 +141,11 @@ const ARView = function () {
       setRecordingTime(0);
       setIsRecord(false);
       stopCaptureVideo((blob) => {
-        console.log(blob);
+        // console.log(blob);
         if (sec < 1) {
           return;
         }
-        console.log(blob);
+        // console.log(blob);
         if(!changeBtn){
           dispatch.AppState.setVideo(blob);
         }
