@@ -407,7 +407,7 @@ export class DionModel {
     }
     this.traverseModel(shortSide,sceneData)
     let self = this.modelObject
-    console.log(self)
+    // console.log(self)
     anchors.forEach(function (anchor) {
       anchor.group.add(self)
     })
