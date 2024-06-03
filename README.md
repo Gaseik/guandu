@@ -1,3 +1,10 @@
+# FrontEnd_How to start project
+
+1. open the file fold of guandu_dock via VSCode
+2. click the button to open the terminal
+3. click **up button** on the Keyboard or type:  `yarn dev`
+4. check the IP addresses and make sure you already link to the same wifi as the mobile device
+5. input the IP address on your mobile browser to test or demo!
 
 # env setting
 ```
@@ -10,7 +17,7 @@ git fetch
 git reset --hard origin/dev
 ```
 
-# how to deploy a new project
+# How to deploy a new project
 
 ## 1. connect (as below)
 ```
