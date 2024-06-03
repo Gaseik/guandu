@@ -20,9 +20,9 @@ export function captureImage(arLib) {
   const sx = (video.width - sw) / 2
   const sy = (video.height - sh) / 2
 
-  console.log(`canvas2videoRatio:${canvas2videoRatio}`)
-  console.log(`canvas.w:${canvas.width} h:${canvas.height} video.w:${video.width} h:${video.height}`)
-  console.log(`sw=${sw} sh=${sh} sx=${sx} sy=${sy}`)
+  // console.log(`canvas2videoRatio:${canvas2videoRatio}`)
+  // console.log(`canvas.w:${canvas.width} h:${canvas.height} video.w:${video.width} h:${video.height}`)
+  // console.log(`sw=${sw} sh=${sh} sx=${sx} sy=${sy}`)
 
   /*
   let webcamW = video.width * scale
