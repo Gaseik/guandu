@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PageState } from "../model/pageState";
-import { shareVideo } from "../helper/captureVideo";
 import Help from "./Help";
 import { MdSaveAlt } from "react-icons/md";
-import { FaTrash } from "react-icons/fa6";
 const ViewVideo = function () {
   const [playVideo, setPlayVideo] = useState(true);
   const videoDom = useRef();
@@ -21,10 +18,7 @@ const ViewVideo = function () {
     }
   }, []);
 
-  function onClickClose() {
-    dispatch.AppState.showDiscard(PageState.ViewVideo);
-  }
-
+  
   function onClickPlayVideo() {
     if (playVideo) {
       videoDom.current.pause();
@@ -44,19 +38,7 @@ const ViewVideo = function () {
       setPop();
     }, 1000);
   }
-  async function copyPop() {
-    await setPop(
-      <>
-        <p>Copied! Share the AR result on social media.</p>
-      </>
-    );
-    await navigator.clipboard.writeText(
-      "Seeing an incredible future with #ASUS at #CES2023!👀\n#ASUSLaunchEvent\n👉 Visit this link to have some AR fun! https://asus.click/ces23_wa"
-    );
-    await setTimeout(() => {
-      setPop();
-    }, 1000);
-  }
+
 
   function videoOnLoad() {
     videoDom.current.play();

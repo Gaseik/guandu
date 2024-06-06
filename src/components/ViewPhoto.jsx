@@ -1,17 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { PageState } from "../model/pageState";
-import { shareImage } from "../helper/shareImage";
+import React, { useState} from "react";
+import {  useSelector } from "react-redux";
 import { MdSaveAlt } from "react-icons/md";
 import Help from "./Help";
 
 const ViewPhoto = function () {
   const [pop, setPop] = useState();
   const state = useSelector((state) => state.AppState);
-  const dispatch = useDispatch();
-  function onClickClose() {
-    dispatch.AppState.showDiscard(PageState.ViewPhoto);
-  }
 
   async function savePop() {
     const link = document.createElement("a");
