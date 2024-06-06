@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 import ARView from "./components/ARView";
 import { useDispatch, useSelector } from "react-redux";
 import { PageState } from "./model/pageState";
-import { Intro,Loading } from "./components";
+import { Loading } from "./components";
 import { DeviceOrientation } from "./components";
 import './scss/app.scss'
 
@@ -54,9 +54,6 @@ function App() {
           }
         />
         <DeviceOrientation/>
-        {/* <Intro
-          style={state.pageState === PageState.Intro ? {} : { display: "none" }}
-        /> */}
        <ARView  theme={theme} />
         {/* <Panel theme={theme} setTheme={setTheme} /> */}
       </ThemeContext.Provider>
