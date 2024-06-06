@@ -69,7 +69,6 @@ const ARView = function () {
             dispatch.AppState.setPlayAuth(false);
           }
           setTimeout(() => {
-            console.log('play')
             dispatch.AppState.setMusicStarted(true);
           }, 500);
         }

@@ -224,7 +224,6 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
-          console.log(foodsArray[i].model)
           if (i < 11 && foodsArray[i].model === false) {
             dispatch.AppState.setLoading(true)
           } else {
