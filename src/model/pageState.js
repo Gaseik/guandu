@@ -16,15 +16,68 @@ const clock = new THREE.Clock();
 export let modelData = undefined;
 
 //這邊把一些需要旋轉的物件宣告
+let pizza = undefined;
 let burger = undefined;
+let cocktail = undefined;
 let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
+let latte = undefined;
+let hotPot = undefined;
 let Thai = undefined;
 let beer = undefined;
-let hotPot = undefined;
 let giki = undefined;
-let latte = undefined;
+let food1 = undefined;
+let food2 = undefined;
+let food3 = undefined;
+
+let foodsArray = [
+  {
+    name: 'mk',
+    model: false
+  },
+  {
+    name: 'jburger',
+    model: false
+  },
+  {
+    name: 'no_worries',
+    model: false
+  },
+  {
+    name: 'stewed_rice',
+    model: false
+  },
+  {
+    name: 'kc',
+    model: false
+  },
+  {
+    name: 'beb',
+    model: false
+  },
+  {
+    name: 'latte',
+    model: false
+  },
+  {
+    name: 'hot_pot',
+    model: false
+  },
+  {
+    name: 'thai',
+    model: false
+  },
+  {
+    name: 'beer',
+    model: false
+  },
+  {
+    name: 'giki',
+    model: false
+  },
+]
+
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
@@ -46,6 +99,7 @@ const initialState = {
   musicStarted: false,
   playAuth: false,
   detect: 0,
+  loading: false,
   targetFind: false,
   imageData: undefined,
   videoData: undefined,
@@ -62,6 +116,7 @@ export const AppState = {
     ...initialState
   },
   reducers: {
+
     changePageState: (state, payload) => {
       return { ...state, pageState: payload }
     },
@@ -73,6 +128,9 @@ export const AppState = {
     },
     setArLib: (state, payload) => {
       return { ...state, arLib: payload }
+    },
+    setLoading: (state, payload) => {
+      return { ...state, loading: payload }
     },
     setTargetFind: (state, payload) => {
       return { ...state, payload }
@@ -165,6 +223,11 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
+          if (i < 11 && foodsArray[i].model === false) {
+            dispatch.AppState.setLoading(true)
+          } else {
+            dispatch.AppState.setLoading(false)
+          }
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           if (DinoPter.animationList && DinoRaptor.animationList && DinoTri.animationList) {
             switch (i) {
@@ -210,7 +273,7 @@ export const AppState = {
           arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
-
+          dispatch.AppState.setLoading(false);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
           switch (i) {
             case 14:
@@ -233,30 +296,13 @@ export const AppState = {
 
       //載入JSON場景檔
       Promise.all([
-        fetch("/model/meals_jburger.json").then(result => result.json()),
-        fetch("/model/meals_stewed_rice.json").then(result => result.json()),
-        fetch("/model/meals_kc.json").then(result => result.json()),
-        fetch("/model/meals_beb.json").then(result => result.json()),
-        fetch("/model/meals_thai.json").then(result => result.json()),
-        fetch("/model/meals_beer.json").then(result => result.json()),
-        fetch("/model/meals_hot_pot.json").then(result => result.json()),
-        fetch("/model/meals_giki.json").then(result => result.json()),
-        fetch("/model/meals_latte.json").then(result => result.json()),
+
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
-        fetch("/model/billboard_jburger.json").then(result => result.json()),
-        fetch("/model/billboard_stewed_rice.json").then(result => result.json()),
-        fetch("/model/billboard_kc.json").then(result => result.json()),
-        fetch("/model/billboard_beb.json").then(result => result.json()),
-        fetch("/model/billboard_thai.json").then(result => result.json()),
-        fetch("/model/billboard_beer.json").then(result => result.json()),
-        fetch("/model/billboard_hot_pot.json").then(result => result.json()),
-        fetch("/model/billboard_giki.json").then(result => result.json()),
-        fetch("/model/billboard_latte.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([arJBurger, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arGiki, arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardJBuger, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, boardLatte, arContainer, arLibResult]) => {
+      ]).then(async ([arDinoTri, arDinoRaptor, arDinoPter, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -268,13 +314,12 @@ export const AppState = {
         arDinoTri.name = 'Tri'
         arDinoRaptor.name = 'Raptor'
 
-        // * 設置3D場景
-        arStewedRice.name = 'StewedRice'
 
 
-        let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
-        let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
+        // let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
+        // let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
+<<<<<<< HEAD
         for (let i = 0; i < 11; i++) {
           if (i !== 0 && i !== 2) {
             setScene(arLib.addAnchor(i), scene, foods[i], () => {
@@ -285,6 +330,8 @@ export const AppState = {
           }
 
         }
+=======
+>>>>>>> FEature_singleFileLoadOnce
 
 
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
@@ -296,6 +343,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
         })
         let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
@@ -307,6 +357,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
         })
         let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
@@ -318,6 +371,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
 
         })
@@ -384,9 +440,17 @@ export const AppState = {
             rice.rotation.y %= Math.PI * 2;
             // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
           }
+          if (pizza && detect === 1) {
+            pizza.rotation.y += 0.01;
+            pizza.rotation.y %= Math.PI * 2;
+          }
           if (burger && detect === 2) {
             burger.rotation.y += 0.01;
             burger.rotation.y %= Math.PI * 2;
+          }
+          if (cocktail && detect === 3) {
+            cocktail.rotation.y += 0.01;
+            cocktail.rotation.y %= Math.PI * 2;
           }
           if (bacon && detect === 6) {
             bacon.rotation.y += 0.01;
@@ -466,9 +530,12 @@ export const AppState = {
         });
 
 
+
+
       }).catch((e) => {
       });
     },
+
     setImage(imageData) {
       dispatch.AppState.setImageData(imageData);
       dispatch.AppState.changePageState(PageState.ViewPhoto);
@@ -484,6 +551,30 @@ export const AppState = {
     }
 
   })
+}
+
+function loadFoods(scene, arLib, callback) {
+  for (let i = 0; i < 11; i++) {
+    
+      let name = foodsArray[i].name
+      Promise.all([
+        fetch(`/model/meals_${name}.json`).then(result => result.json()),
+        fetch(`/model/billboard_${name}.json`).then(result => result.json()),
+      ]).then(async ([armodel, arBoard]) => {
+
+        setScene(arLib.addAnchor(i), scene, armodel, () => {
+          setTimeout(()=>{
+            callback()
+            foodsArray[i].model = true
+          },500)
+        
+        }, arBoard)
+      }).catch((err) => { console.log(err) })
+ 
+
+  }
+
+
 }
 
 
@@ -745,6 +836,12 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_latte`) {
       latte = item
+    }
+    if (item.name === `rotation_mk`) {
+      pizza = item
+    }
+    if (item.name === `rotation_no_worries`) {
+      cocktail = item
     }
 
 

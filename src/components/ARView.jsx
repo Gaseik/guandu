@@ -69,7 +69,6 @@ const ARView = function () {
             dispatch.AppState.setPlayAuth(false);
           }
           setTimeout(() => {
-            console.log('play')
             dispatch.AppState.setMusicStarted(true);
           }, 500);
         }
@@ -156,6 +155,28 @@ const ARView = function () {
       });
     }
   }
+  function loadFoodCover () {
+    return (
+      <div className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
+        state.loading ? "z-[25] opacity-100" : "opacity-0 z-[-1] pointer-events-none"
+      }`}>
+           <div
+          className="my-3 inline-block h-16 w-16 sm:h-24 sm:w-24 animate-spin rounded-full 
+          border-4 sm:border-8 border-solid border-current border-r-transparent align-[-0.125em]
+           text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          role="status"
+        >
+          <span className="!absolute  !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+            Loading...
+          </span>
+        </div>
+        <div className="text-white font-bold text-2xl sm:text-3xl">
+          模組載入中
+        </div>
+      </div>
+    )
+  }
+
 
   return (
     <div
@@ -163,7 +184,9 @@ const ARView = function () {
         state.isArModeOn ? "z-[20] opacity-100" : "opacity-0 z-[-1]"
       }`}
     >
+      {loadFoodCover()}
       <div id="ar_container" className=" h-[100%] flex " />
+      
       {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
       <div className="button-group">
