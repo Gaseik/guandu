@@ -319,19 +319,6 @@ export const AppState = {
         // let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
         // let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
-<<<<<<< HEAD
-        for (let i = 0; i < 11; i++) {
-          if (i !== 0 && i !== 2) {
-            setScene(arLib.addAnchor(i), scene, foods[i], () => {
-              renderer.shadowMap.enabled = true;
-              renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-              renderer.shadowMap.needsUpdate = true;
-            }, boards[i])
-          }
-
-        }
-=======
->>>>>>> FEature_singleFileLoadOnce
 
 
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
