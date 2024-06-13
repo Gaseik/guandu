@@ -41,7 +41,7 @@ let foodsArray = [
     model: false
   },
   {
-    name: 'cocktail',
+    name: 'no_worries',
     model: false
   },
   {
@@ -436,6 +436,10 @@ export const AppState = {
             burger.rotation.y += 0.01;
             burger.rotation.y %= Math.PI * 2;
           }
+          if (cocktail && detect === 3) {
+            cocktail.rotation.y += 0.01;
+            cocktail.rotation.y %= Math.PI * 2;
+          }
           if (bacon && detect === 6) {
             bacon.rotation.y += 0.01;
             bacon.rotation.y %= Math.PI * 2;
@@ -539,7 +543,7 @@ export const AppState = {
 
 function loadFoods(scene, arLib, callback) {
   for (let i = 0; i < 11; i++) {
-    if ( i !== 2) {
+    
       let name = foodsArray[i].name
       Promise.all([
         fetch(`/model/meals_${name}.json`).then(result => result.json()),
@@ -554,7 +558,7 @@ function loadFoods(scene, arLib, callback) {
         
         }, arBoard)
       }).catch((err) => { console.log(err) })
-    }
+ 
 
   }
 
@@ -823,6 +827,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_mk`) {
       pizza = item
+    }
+    if (item.name === `rotation_no_worries`) {
+      cocktail = item
     }
 
 
