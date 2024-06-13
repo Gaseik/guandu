@@ -128,6 +128,7 @@ export const AppState = {
   },
   effects: (dispatch) => ({
 
+
     async loadModelFile(reload) {
       //先建立一個mindar物件
       const arLib = new window.MINDAR.IMAGE.MindARThree({
@@ -139,10 +140,8 @@ export const AppState = {
         warmupTolerance: 0,
         uiError: false,
         uiLoading: false,
-        uiScanning: false
+        uiScanning: false,
       });
-
-
       const { renderer, scene, camera } = arLib;
       camera.updateProjectionMatrix();
 
@@ -277,14 +276,14 @@ export const AppState = {
         let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
         for (let i = 0; i < 11; i++) {
-          if(i !== 0 && i !== 2){
+          if (i !== 0 && i !== 2) {
             setScene(arLib.addAnchor(i), scene, foods[i], () => {
               renderer.shadowMap.enabled = true;
               renderer.shadowMap.type = THREE.PCFSoftShadowMap;
               renderer.shadowMap.needsUpdate = true;
             }, boards[i])
           }
-         
+
         }
 
 
@@ -491,7 +490,7 @@ export const AppState = {
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
-
+  // switchCamera(mindarThree, true)
   video.style.opacity = 0;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
@@ -714,7 +713,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.isLight) {
       item.parent = scene
     }
- 
+
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
     //引入進來後,把對應變數配對
@@ -731,7 +730,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.name === `rotation_kc`) {
       kc = item
     }
-  
+
     if (item.name === `rotation_thai`) {
       Thai = item
     }

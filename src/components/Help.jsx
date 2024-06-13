@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { IoIosInformationCircle } from "react-icons/io";
+import { IoCameraReverseOutline } from "react-icons/io5";
+
 import { FaTrash } from "react-icons/fa6";
 import { PageState } from "../model/pageState";
+import { switchCamera } from "../helper/switchCamera";
 
 function Help(props) {
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
   const [showTip,setShowTip] = useState(true)
+  const [frontCamera, setCamera] = useState(false)
 
   function onClickHelp() {
     dispatch.AppState.setHelpPop(!state.helpPop);
@@ -22,6 +26,12 @@ function Help(props) {
     } else {
       dispatch.AppState.setPlayAuth(true);
     }
+  }
+
+  async function onChangeCamera() {
+    console.log(frontCamera)
+    switchCamera(state.arLib,frontCamera?false:true)
+    setCamera(!frontCamera)
   }
 
   useEffect(()=>{
@@ -45,14 +55,22 @@ function Help(props) {
     <div className="btn help">
       <Bicycle className="absolute right-[-10px] top-[-25px]" />
       <span className={`flex items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
-        <IoIosInformationCircle className="sm:text-5xl text-[34px] sm:mr-4 mr-2 text-main" />
+        <IoIosInformationCircle className="sm:text-5xl text-[36px]  text-main " />
+      </span>
+     
+      <span
+        className={` flex relative justify-center items-center ${!frontCamera?`bg-main`:"bg-white"} border-2 border-main  rounded-full sm:p-1.5 p-1 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
+        onClick={onChangeCamera}
+      >
+        <IoCameraReverseOutline className={`text-[18px] sm:text-[26px]  ${frontCamera?`text-main`:"text-white"} `} />
+      
       </span>
       <span
-        className={`flex relative justify-center items-center bg-main rounded-full p-1.5 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
+        className={`flex relative justify-center items-center  bg-main rounded-full p-1.5 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
         onClick={onClickMusic}
       >
         <div className={`w-1 h-7 bg-red absolute rotate-45 ${state.playAuth?"hidden":""}`}></div>
-        <BsMusicNoteBeamed className="text-[16px] sm:text-3xl  text-white" />
+        <BsMusicNoteBeamed className="text-[18px] sm:text-[28px]  text-white" />
         <div className={`${showTip?"show":"gone"} tip absolute w-48 text-white bg-main left-[-160px] bottom-[-50px] text-center rounded-lg py-1 text-sm`}>請開啟音樂  體驗更佳！</div>
       </span>
       <div
