@@ -9,64 +9,6 @@ export const containerSetup = {
         z: 0
       },
       scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.610,
-        y: 0.016,
-        z: -0.164
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  2: {
-    wide: {
-      position: {
-        x: 0.860,
-        y: 0.004,
-        z: 0
-      },
-      scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.610,
-        y: 0.016,
-        z: -0.164
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  3: {
-    wide: {
-      position: {
-        x: -0.195,
-        y: 0.004,
-        z: 0
-      },
-      scale: {
         x: 3.690,
         y: 3.070,
         z: 3.020
@@ -87,77 +29,28 @@ export const containerSetup = {
         z: 2
       }
     }
-  }
-};
-
-export const raptorSetup = {
-  1: {
-    wide: {
-      position: {
-        x: -0.380,
-        y: 0,
-        z: 0
-      },
-   
-      
-    },
-    narrow: {
-      position: {
-        x: -5.020,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
   },
   2: {
     wide: {
       position: {
-        x: 0.7,
-        y: 0,
+        x: 0.860,
+        y: 0.004,
         z: 0
       },
-     
+      scale: {
+        x: 3.010,
+        y: 3.070,
+        z: 3.66
+      }
     },
     narrow: {
       position: {
-        x: -5.020,
-        y: 0,
-        z: -1.656
+        x: -0.822,
+        y: -0.121,
+        z: -0.335
       },
       rotation: {
         y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  3: {
-    wide: {
-      position: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-    },
-    narrow: {
-      position: {
-        x: 1.034,
-        y: -1.886,
-        z: 2.134
-      },
-      rotation: {
-        y: Math.PI / 2
       },
       scale: {
         x: 2,
@@ -165,14 +58,72 @@ export const raptorSetup = {
         z: 2
       }
     }
+  },
+  3: {
+    wide: {
+      position: {
+        x: -1.99,
+        y: 0.004,
+        z: 0
+      },
+      scale: {
+        x: 3.010,
+        y: 3.070,
+        z: 3.66
+      }
+    },
+    narrow: {
+      position: {
+        x: -0.822,
+        y: -0.121,
+        z: -0.335
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 2,
+        y: 2,
+        z: 2
+      }
+    }
+  },
+  4: {
+    wide: {
+      position: {
+        x: -1.99,
+        y: 0.004,
+        z: 0
+      },
+      scale: {
+        x: 3.010,
+        y: 3.070,
+        z: 3.66
+      }
+    },
+    narrow: {
+      position: {
+        x: 0.343,
+        y: 0.013,
+        z: -0.168
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      }
+    }
   }
 };
- 
-export const triceratopsSetup = {
+
+export const raptorSetup = {
   1: {
     wide: {
       position: {
-        x: -0.655,
+        x: 0,
         y: 0,
         z: 0
       },
@@ -184,27 +135,29 @@ export const triceratopsSetup = {
         y: 0.3,
         z: 0.3
       }
+   
+      
     },
     narrow: {
       position: {
-        x: -4.5,
-        y: 0,
-        z: -1.656
+        x: -6.632,
+        y: -1.483,
+        z: -3.251
       },
       rotation: {
         y: 0
       },
       scale: {
-        x: 0.9,
-        y: 0.9,
-        z: 0.9
+        x: 2,
+        y: 2,
+        z: 2
       }
     }
   },
   2: {
     wide: {
       position: {
-        x: 0.455,
+        x: 0,
         y: 0,
         z: 0
       },
@@ -216,24 +169,28 @@ export const triceratopsSetup = {
         y: 0.3,
         z: 0.3
       }
+     
     },
     narrow: {
       position: {
-        x: -4.5,
-        y: 0,
-        z: -1.656
+        x: -3.802,
+        y: 0.017,
+        z: -1.861
       },
       rotation: {
         y: 0
       },
       scale: {
-        x: 0.9,
-        y: 0.9,
-        z: 0.9
+        x: 1,
+        y: 1,
+        z: 1
       }
     }
-  },
-  3: {
+  }
+};
+ 
+export const triceratopsSetup = {
+  1: {
     wide: {
       position: {
         x: -0.655,
@@ -264,6 +221,38 @@ export const triceratopsSetup = {
         z: 1.7
       }
     }
+  },
+  2: {
+    wide: {
+      position: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 0.3,
+        y: 0.3,
+        z: 0.3
+      }
+    },
+    narrow: {
+      position: {
+        x: -3,
+        y: 0.025,
+        z: -1.556
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      }
+    }
   }
 };
 
@@ -271,7 +260,7 @@ export const pterodactylSetup = {
   1: {
     wide: {
       position: {
-        x: -0.413,
+        x: -2.307,
         y: 0,
         z: 0
       },
@@ -286,76 +275,12 @@ export const pterodactylSetup = {
     },
     narrow: {
       position: {
-        x: -5.000,
-        y: 0,
-        z: -1.656
+        x: -7.047,
+        y: -1.501,
+        z: -2.847
       },
       rotation: {
         y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  2: {
-    wide: {
-      position: {
-        x: 0.645,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -5.000,
-        y: 0,
-        z: -1.656
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    }
-  },
-  3: {
-    wide: {
-      position: {
-        x: 0.655,
-        y: 0,
-        z: 0
-      },
-      rotation: {
-        y: 0
-      },
-      scale: {
-        x: 0.3,
-        y: 0.3,
-        z: 0.3
-      }
-    },
-    narrow: {
-      position: {
-        x: -0.184,
-        y: -1.516,
-        z: -0.126
-      },
-      rotation: {
-        y: Math.PI / 2
       },
       scale: {
         x: 2,
@@ -363,7 +288,40 @@ export const pterodactylSetup = {
         z: 2
       }
     }
-  }
+  },
+  2: {
+    wide: {
+      position: {
+        x: -2.307,
+        y: 0,
+        z: 0
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 0.3,
+        y: 0.3,
+        z: 0.3
+      }
+    },
+    narrow: {
+      position: {
+        x: -7.047,
+        y: -1.501,
+        z: -2.847
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 2,
+        y: 2,
+        z: 2
+      }
+    }
+  },
+  
 };
 
 const setups = {
@@ -454,18 +412,6 @@ export class DionModel {
     this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
   }
 
-  rotateToThirdType(){
-    this.rotate(3,this.name)
-    this.rotate(3,'container')
-  }
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(1,'container')
-  }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(2,'container')
-  }
 
 
   rotate(position,typeString){
@@ -552,4 +498,49 @@ export class DionModel {
   }
 }
 
+export class Triceratops extends DionModel {
+  constructor() {
+    super();
+  }
+  rotateToFirstType(){
+    this.rotate(1,this.name)
+    this.rotate(1,'container')
+    console.log(this.DinoObj)
+  }
+  rotateToSecondType(){
+    this.rotate(2,this.name)
+    this.rotate(4,'container')
+  }
+  
+}
+
+export class Pterodactyl extends DionModel {
+  constructor() {
+    super();
+  }
+
+  rotateToFirstType(){
+    this.rotate(1,this.name)
+    this.rotate(3,'container')
+  }
+  rotateToSecondType(){
+    this.rotate(2,this.name)
+    this.rotate(3,'container')
+  }
+}
+
+export class Raptor extends DionModel {
+  constructor() {
+    super();
+  }
+
+  rotateToFirstType(){
+    this.rotate(1,this.name)
+    this.rotate(2,'container')
+  }
+  rotateToSecondType(){
+    this.rotate(2,this.name)
+    this.rotate(4,'container')
+  }
+}
 
