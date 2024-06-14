@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { DionModel } from "../helper/dinosaurHandle";
+import { Triceratops, Pterodactyl,Raptor} from "../helper/dinosaurHandle";
 import 'mind-ar/dist/mindar-image-three.prod'
 export const PageState = {
   Loading: 0x00000,
@@ -83,12 +83,12 @@ let textRaptor = undefined;
 let textPter = undefined;
 //宣告恐龍,因為恐龍比較複雜,美術將動畫拆成恐龍本身加上柵欄
 //然後動畫又需要在掃瞄到目標圖片的時候才開始跑動畫
-let DinoPter = new DionModel();
-let DinoTri = new DionModel();
-let DinoRaptor = new DionModel();
+let DinoPter = new Pterodactyl();
+let DinoTri = new Triceratops();
+let DinoRaptor = new Raptor();
 let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh
-let textureBlue, textureRed, textureYellow
+let textureBlack, textureDarkBlue, textureGrey, textureLightBlue,textureWhite, textureYellow
 let count = 1
 let dierction = 1
 const initialState = {
@@ -233,35 +233,38 @@ export const AppState = {
             switch (i) {
               case 14:
                 DinoTri.playAnimations()
-                DinoTri.rotateToThirdType()
+                DinoTri.rotateToFirstType()
+                DinoTri.changeBoxTexture(textureLightBlue)
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
               case 17:
                 DinoTri.playAnimations()
-                DinoTri.changeBoxTexture(textureYellow)
-                DinoTri.rotateToFirstType()
+                DinoTri.changeBoxTexture(textureBlack)
+                DinoTri.rotateToSecondType()
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
               case 15:
                 DinoRaptor.playAnimations()
-                DinoRaptor.rotateToThirdType()
-                DinoRaptor.changeBoxTexture(textureBlue)
+                DinoRaptor.rotateToFirstType()
+                DinoRaptor.changeBoxTexture(textureWhite)
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
               case 18:
                 DinoRaptor.playAnimations()
                 DinoRaptor.rotateToSecondType()
-                DinoRaptor.changeBoxTexture(textureBlue)
+                DinoRaptor.changeBoxTexture(textureGrey)
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
               case 16:
                 DinoPter.playAnimations()
-                DinoPter.rotateToThirdType()
+                DinoPter.rotateToFirstType()
+                DinoPter.changeBoxTexture(textureGrey)
                 arLib.addAnchor(i).group.add(DinoPter.modelObject)
                 break;
               case 19:
                 DinoPter.playAnimations()
-                DinoPter.rotateToFirstType()
+                DinoPter.rotateToSecondType()
+                DinoPter.changeBoxTexture(textureDarkBlue)
                 arLib.addAnchor(i).group.add(DinoPter.modelObject)
                 break;
             }
@@ -854,27 +857,32 @@ async function setScene(anchor, scene, sceneData, callback, board) {
 }
 
 
-function textureLoaders() {
+async function textureLoaders() {
 
-  let paths = ['red-Re.jpg', 'yellow-Re.jpg', 'Blue-Re.jpg']
+  let paths = ['black.png', 'dark_blue.png', 'gray.png','light_blue.png','white.png','yellow.png']
   const loader = new THREE.TextureLoader();
   paths.forEach((path, index) => {
     loader.load(
       // resource URL
-      '/model/' + path,
+      '/image/' + path,
 
       // onLoad callback
       function (texture) {
         // in this example we create the material when the texture is loaded
         texture.encoding = THREE.sRGBEncoding;
-
         switch (index) {
           case 0:
-            textureRed = texture;
+            textureBlack = texture;
           case 1:
-            textureYellow = texture;
+            textureDarkBlue = texture;
           case 2:
-            textureBlue = texture;
+            textureGrey = texture;
+          case 3:
+            textureLightBlue = texture;
+          case 4:
+            textureWhite = texture;
+          case 5:
+            textureYellow = texture;
         }
         // object.material.map = textures[index]
         // object.material.needsUpdate = true;
