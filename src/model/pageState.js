@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Triceratops, Pterodactyl,Raptor} from "../helper/dinosaurHandle";
 import 'mind-ar/dist/mindar-image-three.prod'
+import { switchCamera } from "../helper/switchCamera";
 export const PageState = {
   Loading: 0x00000,
   Intro: 0x00001,
@@ -24,6 +25,9 @@ let kc = undefined;
 let bacon = undefined;
 let latte = undefined;
 let hotPot = undefined;
+let frame_down = undefined;
+let frame_food = undefined;
+let frame_logo = undefined;
 let Thai = undefined;
 let beer = undefined;
 let giki = undefined;
@@ -105,7 +109,8 @@ const initialState = {
   videoData: undefined,
   lastPage: undefined,
   helpPop: true,
-  target: undefined
+  target: undefined,
+  switchCamera : false
 }
 
 
@@ -160,9 +165,23 @@ export const AppState = {
     setPlayAuth: (state, payload) => {
       return { ...state, playAuth: payload }
     },
+    setSwitchCamera: (state, payload) => {
+    
+      switchCamera(state.arLib,payload)
+        frame_down.visible = payload
+        frame_food.visible = payload
+        frame_logo.visible = payload
+        logoMesh.visible = !payload
+        grassMesh.visible = !payload
+        crabMesh.visible = !payload
+        egretMesh.visible =!payload
+      return { ...state, switchCamera: payload }
+    },
     setReset: () => {
       modelData = undefined;
-
+      DinoPter = new Pterodactyl();
+      DinoTri = new Triceratops();
+      DinoRaptor = new Raptor();
       orthoCamera = undefined
       orthoScene = undefined
       logoMesh = undefined
@@ -171,18 +190,24 @@ export const AppState = {
       egretMesh = undefined
       count = 1
       dierction = 1
-      burger = undefined;
-      rice = undefined;
-      kc = undefined;
-      bacon = undefined;
-      Thai = undefined;
-      beer = undefined;
-      hotPot = undefined;
+   
       textTri = undefined;
       textRaptor = undefined;
       textPter = undefined;
+      pizza = undefined;
+      burger = undefined;
+      cocktail = undefined;
+      rice = undefined;
+      kc = undefined;
+      bacon = undefined;
+      latte = undefined;
+      hotPot = undefined;
+      Thai = undefined;
+      beer = undefined;
+      giki = undefined;
       return { ...initialState }
-    }
+    },
+
   },
   effects: (dispatch) => ({
 
@@ -632,6 +657,24 @@ function connectWebCam(mindarThree) {
     }
     orthoScene.add(logoMesh);
   });
+  loader.load('/image/frame_logo.png', (texture) => {
+    texture.encoding = THREE.sRGBEncoding;
+    const logoGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
+    frame_logo = new THREE.Mesh(logoGeometry, logoMaterial);
+    if (window.innerWidth > 600) {
+      frame_logo.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
+      // 调整位置以放置在左上角
+      // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
+      frame_logo.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight * 0.92, 1);
+    } else {
+      frame_logo.scale.set(0.4 * window.innerWidth / texture.image.width, 0.4 * window.innerWidth / texture.image.width, 0.4 * window.innerWidth / texture.image.width)
+      // 调整位置以放置在左上角
+      frame_logo.position.set(window.innerWidth / 4 - 0, window.innerHeight - 70, 1);
+    }
+    frame_logo.visible = false;
+    orthoScene.add(frame_logo);
+  });
   // 加载grass并添加到2D场景
   loader.load('/image/Grass.png', (texture) => {
     texture.encoding = THREE.sRGBEncoding;
@@ -661,6 +704,37 @@ function connectWebCam(mindarThree) {
     //新增到2D場景
     orthoScene.add(crabMesh);
 
+
+  });
+
+  loader.load('/image/frame_down.png', (texture) => {
+    texture.encoding = THREE.sRGBEncoding;
+    const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
+
+    frame_down = new THREE.Mesh(grassGeometry, grassMaterial);
+    // 設定大小
+    frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在左上角
+    frame_down.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    //新增到2D場景
+    frame_down.visible = false;
+    orthoScene.add(frame_down);
+
+  });
+  loader.load('/image/frame_food.png', (texture) => {
+    texture.encoding = THREE.sRGBEncoding;
+    const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
+    const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
+
+    frame_food = new THREE.Mesh(grassGeometry, grassMaterial);
+    // 設定大小
+    frame_food.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+    // 调整位置以放置在左上角
+    frame_food.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    //新增到2D場景
+    frame_food.visible = false;
+    orthoScene.add(frame_food);
 
   });
 
