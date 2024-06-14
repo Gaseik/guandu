@@ -58,9 +58,6 @@ function App() {
           }
         />
         <DeviceOrientation/>
-        {/* <Intro
-          style={state.pageState === PageState.Intro ? {} : { display: "none" }}
-        /> */}
        <ARView  theme={theme} />
         {/* <Panel theme={theme} setTheme={setTheme} /> */}
       </ThemeContext.Provider>

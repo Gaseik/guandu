@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { DionModel } from "../helper/dinosaurHandle";
+import { Triceratops, Pterodactyl,Raptor} from "../helper/dinosaurHandle";
 import 'mind-ar/dist/mindar-image-three.prod'
 export const PageState = {
   Loading: 0x00000,
@@ -16,26 +16,79 @@ const clock = new THREE.Clock();
 export let modelData = undefined;
 
 //這邊把一些需要旋轉的物件宣告
+let pizza = undefined;
 let burger = undefined;
+let cocktail = undefined;
 let rice = undefined;
 let kc = undefined;
 let bacon = undefined;
+let latte = undefined;
+let hotPot = undefined;
 let Thai = undefined;
 let beer = undefined;
-let hotPot = undefined;
 let giki = undefined;
-let latte = undefined;
+let food1 = undefined;
+let food2 = undefined;
+let food3 = undefined;
+
+let foodsArray = [
+  {
+    name: 'mk',
+    model: false
+  },
+  {
+    name: 'jburger',
+    model: false
+  },
+  {
+    name: 'no_worries',
+    model: false
+  },
+  {
+    name: 'stewed_rice',
+    model: false
+  },
+  {
+    name: 'kc',
+    model: false
+  },
+  {
+    name: 'beb',
+    model: false
+  },
+  {
+    name: 'latte',
+    model: false
+  },
+  {
+    name: 'hot_pot',
+    model: false
+  },
+  {
+    name: 'thai',
+    model: false
+  },
+  {
+    name: 'beer',
+    model: false
+  },
+  {
+    name: 'giki',
+    model: false
+  },
+]
+
 let textTri = undefined;
 let textRaptor = undefined;
 let textPter = undefined;
 //宣告恐龍,因為恐龍比較複雜,美術將動畫拆成恐龍本身加上柵欄
 //然後動畫又需要在掃瞄到目標圖片的時候才開始跑動畫
-let DinoPter = new DionModel();
-let DinoTri = new DionModel();
-let DinoRaptor = new DionModel();
+let DinoPter = new Pterodactyl();
+let DinoTri = new Triceratops();
+let DinoRaptor = new Raptor();
 let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh
-let textureBlue, textureRed, textureYellow
+let textureBlack, textureDarkBlue, textureGrey, textureLightBlue,textureWhite, textureYellow
 let count = 1
 let dierction = 1
 const initialState = {
@@ -46,6 +99,7 @@ const initialState = {
   musicStarted: false,
   playAuth: false,
   detect: 0,
+  loading: false,
   targetFind: false,
   imageData: undefined,
   videoData: undefined,
@@ -62,6 +116,7 @@ export const AppState = {
     ...initialState
   },
   reducers: {
+
     changePageState: (state, payload) => {
       return { ...state, pageState: payload }
     },
@@ -73,6 +128,9 @@ export const AppState = {
     },
     setArLib: (state, payload) => {
       return { ...state, arLib: payload }
+    },
+    setLoading: (state, payload) => {
+      return { ...state, loading: payload }
     },
     setTargetFind: (state, payload) => {
       return { ...state, payload }
@@ -128,6 +186,7 @@ export const AppState = {
   },
   effects: (dispatch) => ({
 
+
     async loadModelFile(reload) {
       //先建立一個mindar物件
       const arLib = new window.MINDAR.IMAGE.MindARThree({
@@ -139,10 +198,8 @@ export const AppState = {
         warmupTolerance: 0,
         uiError: false,
         uiLoading: false,
-        uiScanning: false
+        uiScanning: false,
       });
-
-
       const { renderer, scene, camera } = arLib;
       camera.updateProjectionMatrix();
 
@@ -166,40 +223,48 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
+          if (i < 11 && foodsArray[i].model === false) {
+            dispatch.AppState.setLoading(true)
+          } else {
+            dispatch.AppState.setLoading(false)
+          }
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           if (DinoPter.animationList && DinoRaptor.animationList && DinoTri.animationList) {
             switch (i) {
               case 14:
                 DinoTri.playAnimations()
-                DinoTri.rotateToThirdType()
+                DinoTri.rotateToFirstType()
+                DinoTri.changeBoxTexture(textureLightBlue)
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
               case 17:
                 DinoTri.playAnimations()
-                DinoTri.changeBoxTexture(textureYellow)
-                DinoTri.rotateToFirstType()
+                DinoTri.changeBoxTexture(textureBlack)
+                DinoTri.rotateToSecondType()
                 arLib.addAnchor(i).group.add(DinoTri.modelObject)
                 break;
               case 15:
                 DinoRaptor.playAnimations()
-                DinoRaptor.rotateToThirdType()
-                DinoRaptor.changeBoxTexture(textureBlue)
+                DinoRaptor.rotateToFirstType()
+                DinoRaptor.changeBoxTexture(textureWhite)
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
               case 18:
                 DinoRaptor.playAnimations()
                 DinoRaptor.rotateToSecondType()
-                DinoRaptor.changeBoxTexture(textureBlue)
+                DinoRaptor.changeBoxTexture(textureGrey)
                 arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
                 break;
               case 16:
                 DinoPter.playAnimations()
-                DinoPter.rotateToThirdType()
+                DinoPter.rotateToFirstType()
+                DinoPter.changeBoxTexture(textureGrey)
                 arLib.addAnchor(i).group.add(DinoPter.modelObject)
                 break;
               case 19:
                 DinoPter.playAnimations()
-                DinoPter.rotateToFirstType()
+                DinoPter.rotateToSecondType()
+                DinoPter.changeBoxTexture(textureDarkBlue)
                 arLib.addAnchor(i).group.add(DinoPter.modelObject)
                 break;
             }
@@ -211,7 +276,7 @@ export const AppState = {
           arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
           dispatch.AppState.setHelpPop(true);
-
+          dispatch.AppState.setLoading(false);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
           switch (i) {
             case 14:
@@ -234,30 +299,13 @@ export const AppState = {
 
       //載入JSON場景檔
       Promise.all([
-        fetch("/model/meals_jburger.json").then(result => result.json()),
-        fetch("/model/meals_stewed_rice.json").then(result => result.json()),
-        fetch("/model/meals_kc.json").then(result => result.json()),
-        fetch("/model/meals_beb.json").then(result => result.json()),
-        fetch("/model/meals_thai.json").then(result => result.json()),
-        fetch("/model/meals_beer.json").then(result => result.json()),
-        fetch("/model/meals_hot_pot.json").then(result => result.json()),
-        fetch("/model/meals_giki.json").then(result => result.json()),
-        fetch("/model/meals_latte.json").then(result => result.json()),
+
         fetch("/model/triceratops.json").then(result => result.json()),
         fetch("/model/raptor.json").then(result => result.json()),
         fetch("/model/pterodactyl.json").then(result => result.json()),
-        fetch("/model/billboard_jburger.json").then(result => result.json()),
-        fetch("/model/billboard_stewed_rice.json").then(result => result.json()),
-        fetch("/model/billboard_kc.json").then(result => result.json()),
-        fetch("/model/billboard_beb.json").then(result => result.json()),
-        fetch("/model/billboard_thai.json").then(result => result.json()),
-        fetch("/model/billboard_beer.json").then(result => result.json()),
-        fetch("/model/billboard_hot_pot.json").then(result => result.json()),
-        fetch("/model/billboard_giki.json").then(result => result.json()),
-        fetch("/model/billboard_latte.json").then(result => result.json()),
         fetch("/model/container.json").then(result => result.json()),
         arLib.start()
-      ]).then(async ([arJBurger, arStewedRice, arKC, arBeb, arThai, arBeer, arHotPot, arGiki, arLatte, arDinoTri, arDinoRaptor, arDinoPter, boardJBuger, boardStewedRice, boardKC, boardBeb, boardThai, boardBeer, boardHotPot, boardGiki, boardLatte, arContainer, arLibResult]) => {
+      ]).then(async ([arDinoTri, arDinoRaptor, arDinoPter, arContainer, arLibResult]) => {
 
         // * 設置攝影機的畫面
         connectWebCam(arLib)
@@ -269,23 +317,11 @@ export const AppState = {
         arDinoTri.name = 'Tri'
         arDinoRaptor.name = 'Raptor'
 
-        // * 設置3D場景
-        arStewedRice.name = 'StewedRice'
 
 
-        let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
-        let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
+        // let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
+        // let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
-        for (let i = 0; i < 11; i++) {
-          if(i !== 0 && i !== 2){
-            setScene(arLib.addAnchor(i), scene, foods[i], () => {
-              renderer.shadowMap.enabled = true;
-              renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-              renderer.shadowMap.needsUpdate = true;
-            }, boards[i])
-          }
-         
-        }
 
 
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
@@ -297,6 +333,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
         })
         let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
@@ -308,6 +347,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
         })
         let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
@@ -319,6 +361,9 @@ export const AppState = {
             dispatch.AppState.changePageState(PageState.ARView);
             dispatch.AppState.setIsArModeOn(true)
             dispatch.AppState.setArLib(arLib);
+            loadFoods(scene, arLib, () => {
+              dispatch.AppState.setLoading(false)
+            })
           }
 
         })
@@ -385,9 +430,17 @@ export const AppState = {
             rice.rotation.y %= Math.PI * 2;
             // rice.rotation.y = Math.max(rice.rotation.y, -Math.PI / 2);
           }
+          if (pizza && detect === 1) {
+            pizza.rotation.y += 0.01;
+            pizza.rotation.y %= Math.PI * 2;
+          }
           if (burger && detect === 2) {
             burger.rotation.y += 0.01;
             burger.rotation.y %= Math.PI * 2;
+          }
+          if (cocktail && detect === 3) {
+            cocktail.rotation.y += 0.01;
+            cocktail.rotation.y %= Math.PI * 2;
           }
           if (bacon && detect === 6) {
             bacon.rotation.y += 0.01;
@@ -467,9 +520,12 @@ export const AppState = {
         });
 
 
+
+
       }).catch((e) => {
       });
     },
+
     setImage(imageData) {
       dispatch.AppState.setImageData(imageData);
       dispatch.AppState.changePageState(PageState.ViewPhoto);
@@ -487,11 +543,35 @@ export const AppState = {
   })
 }
 
+function loadFoods(scene, arLib, callback) {
+  for (let i = 0; i < 11; i++) {
+    
+      let name = foodsArray[i].name
+      Promise.all([
+        fetch(`/model/meals_${name}.json`).then(result => result.json()),
+        fetch(`/model/billboard_${name}.json`).then(result => result.json()),
+      ]).then(async ([armodel, arBoard]) => {
+
+        setScene(arLib.addAnchor(i), scene, armodel, () => {
+          setTimeout(()=>{
+            callback()
+            foodsArray[i].model = true
+          },500)
+        
+        }, arBoard)
+      }).catch((err) => { console.log(err) })
+ 
+
+  }
+
+
+}
+
 
 //設置攝影機的畫面
 function connectWebCam(mindarThree) {
   const { video, scene } = mindarThree;
-
+  // switchCamera(mindarThree, true)
   video.style.opacity = 0;
   //建立影像圖層
   let videoTex = new THREE.VideoTexture(video);
@@ -714,7 +794,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.isLight) {
       item.parent = scene
     }
- 
+
 
     //這邊的名字都是跟美術團隊溝通好,利用excel統一名稱
     //引入進來後,把對應變數配對
@@ -731,7 +811,7 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.name === `rotation_kc`) {
       kc = item
     }
-  
+
     if (item.name === `rotation_thai`) {
       Thai = item
     }
@@ -746,6 +826,12 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_latte`) {
       latte = item
+    }
+    if (item.name === `rotation_mk`) {
+      pizza = item
+    }
+    if (item.name === `rotation_no_worries`) {
+      cocktail = item
     }
 
 
@@ -771,27 +857,32 @@ async function setScene(anchor, scene, sceneData, callback, board) {
 }
 
 
-function textureLoaders() {
+async function textureLoaders() {
 
-  let paths = ['red-Re.jpg', 'yellow-Re.jpg', 'Blue-Re.jpg']
+  let paths = ['black.png', 'dark_blue.png', 'gray.png','light_blue.png','white.png','yellow.png']
   const loader = new THREE.TextureLoader();
   paths.forEach((path, index) => {
     loader.load(
       // resource URL
-      '/model/' + path,
+      '/image/' + path,
 
       // onLoad callback
       function (texture) {
         // in this example we create the material when the texture is loaded
         texture.encoding = THREE.sRGBEncoding;
-
         switch (index) {
           case 0:
-            textureRed = texture;
+            textureBlack = texture;
           case 1:
-            textureYellow = texture;
+            textureDarkBlue = texture;
           case 2:
-            textureBlue = texture;
+            textureGrey = texture;
+          case 3:
+            textureLightBlue = texture;
+          case 4:
+            textureWhite = texture;
+          case 5:
+            textureYellow = texture;
         }
         // object.material.map = textures[index]
         // object.material.needsUpdate = true;
