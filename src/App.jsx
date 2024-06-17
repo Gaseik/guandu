@@ -8,6 +8,8 @@ import { Loading } from "./components";
 import { DeviceOrientation } from "./components";
 import './scss/app.scss'
 
+
+
 export function usePageVisibility() {
   const [isVisible, setIsVisible] = useState(true);
   
@@ -16,11 +18,44 @@ export function usePageVisibility() {
     const handleVisibilityChange = () => {
       setIsVisible(!document.hidden);
     };
+    const preventDefault = (e) => {
+      e.preventDefault();
+    };
 
+    const preventZoom = (e) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    const preventDoubleClickZoom = (e) => {
+      // If this is a double-tap event, prevent the default behavior
+      const now = new Date().getTime();
+      const lastTouch = e.target.dataset.lastTouch || now + 1;
+      const delta = now - lastTouch;
+      if (delta < 500 && delta > 0) {
+        e.preventDefault();
+        e.target.dataset.lastTouch = 0;
+      } else {
+        e.target.dataset.lastTouch = now;
+      }
+    };
+
+    document.addEventListener('touchstart', preventZoom, { passive: false });
+    document.addEventListener('touchmove', preventZoom, { passive: false });
+    document.addEventListener('gesturestart', preventDefault);
+    document.addEventListener('gesturechange', preventDefault);
+    document.addEventListener('dblclick', preventDefault);
+    document.addEventListener('touchend', preventDoubleClickZoom, { passive: false });
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('touchstart', preventZoom);
+      document.removeEventListener('touchmove', preventZoom);
+      document.removeEventListener('gesturestart', preventDefault);
+      document.removeEventListener('gesturechange', preventDefault);
+      document.removeEventListener('dblclick', preventDefault);
+      document.removeEventListener('touchend', preventDoubleClickZoom);
     };
   }, []);
 

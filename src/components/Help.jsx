@@ -51,7 +51,8 @@ function Help(props) {
   return (
     <div className="btn help">
       <Bicycle className="absolute right-[-10px] top-[-25px]" />
-      <span className={`flex items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
+      <span className={`flex relative items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
+        <div className={`w-1 h-7 bg-red absolute rotate-45 ${state.helpPop?"hidden":""} left-4`}></div>
         <IoIosInformationCircle className="sm:text-5xl text-[36px]  text-main " />
       </span>
      
