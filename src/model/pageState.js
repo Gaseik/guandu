@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Triceratops, Pterodactyl,Raptor} from "../helper/dinosaurHandle";
+import { Triceratops, Pterodactyl, Raptor } from "../helper/dinosaurHandle";
 import 'mind-ar/dist/mindar-image-three.prod'
 export const PageState = {
   Loading: 0x00000,
@@ -88,9 +88,10 @@ let DinoTri = new Triceratops();
 let DinoRaptor = new Raptor();
 let detect = 0
 let orthoCamera, orthoScene, logoMesh, grassMesh, crabMesh, egretMesh
-let textureBlack, textureDarkBlue, textureGrey, textureLightBlue,textureWhite, textureYellow
+let textureBlack, textureDarkBlue, textureGrey, textureLightBlue, textureWhite, textureYellow
 let count = 1
 let dierction = 1
+let done = false
 const initialState = {
   pageState: PageState.Loading,
   isArModeOn: false,
@@ -108,7 +109,50 @@ const initialState = {
   target: undefined
 }
 
+function handleDinos(arLib, i) {
+  console.log(DinoPter)
+  if (DinoPter.modelObject && DinoRaptor.modelObject && DinoTri.modelObject) {
 
+    switch (i) {
+      case 14:
+        DinoTri.changeBoxTexture(textureLightBlue)
+        DinoTri.playAnimations()
+        DinoTri.rotateToFirstType()
+        arLib.addAnchor(i).group.add(DinoTri.modelObject)
+        break;
+      case 17:
+        DinoTri.changeBoxTexture(textureBlack)
+        DinoTri.playAnimations()
+        DinoTri.rotateToSecondType()
+        arLib.addAnchor(i).group.add(DinoTri.modelObject)
+        break;
+      case 15:
+        DinoRaptor.changeBoxTexture(textureWhite)
+        DinoRaptor.playAnimations()
+        DinoRaptor.rotateToFirstType()
+        arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
+        break;
+      case 18:
+        DinoRaptor.changeBoxTexture(textureGrey)
+        DinoRaptor.playAnimations()
+        DinoRaptor.rotateToSecondType()
+        arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
+        break;
+      case 16:
+        DinoPter.changeBoxTexture(textureGrey)
+        DinoPter.playAnimations()
+        DinoPter.rotateToFirstType()
+        arLib.addAnchor(i).group.add(DinoPter.modelObject)
+        break;
+      case 19:
+        DinoPter.changeBoxTexture(textureDarkBlue)
+        DinoPter.playAnimations()
+        DinoPter.rotateToSecondType()
+        arLib.addAnchor(i).group.add(DinoPter.modelObject)
+        break;
+    }
+  }
+}
 
 
 export const AppState = {
@@ -160,6 +204,7 @@ export const AppState = {
     setPlayAuth: (state, payload) => {
       return { ...state, playAuth: payload }
     },
+
     setReset: () => {
       modelData = undefined;
 
@@ -185,7 +230,16 @@ export const AppState = {
     }
   },
   effects: (dispatch) => ({
-
+    dinoCallback(arLib, scene) {
+      dispatch.AppState.changePageState(PageState.ARView);
+      dispatch.AppState.setIsArModeOn(true)
+      dispatch.AppState.setArLib(arLib);
+      handleDinos(arLib, detect - 1)
+    
+      // loadFoods(scene, arLib, () => {
+      //   dispatch.AppState.setLoading(false)
+      // })
+    },
 
     async loadModelFile(reload) {
       //先建立一個mindar物件
@@ -228,47 +282,9 @@ export const AppState = {
           } else {
             dispatch.AppState.setLoading(false)
           }
+          console.log(done)
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
-          if (DinoPter.animationList && DinoRaptor.animationList && DinoTri.animationList) {
-            switch (i) {
-              case 14:
-                DinoTri.playAnimations()
-                DinoTri.rotateToFirstType()
-                DinoTri.changeBoxTexture(textureLightBlue)
-                arLib.addAnchor(i).group.add(DinoTri.modelObject)
-                break;
-              case 17:
-                DinoTri.playAnimations()
-                DinoTri.changeBoxTexture(textureBlack)
-                DinoTri.rotateToSecondType()
-                arLib.addAnchor(i).group.add(DinoTri.modelObject)
-                break;
-              case 15:
-                DinoRaptor.playAnimations()
-                DinoRaptor.rotateToFirstType()
-                DinoRaptor.changeBoxTexture(textureWhite)
-                arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
-                break;
-              case 18:
-                DinoRaptor.playAnimations()
-                DinoRaptor.rotateToSecondType()
-                DinoRaptor.changeBoxTexture(textureGrey)
-                arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
-                break;
-              case 16:
-                DinoPter.playAnimations()
-                DinoPter.rotateToFirstType()
-                DinoPter.changeBoxTexture(textureGrey)
-                arLib.addAnchor(i).group.add(DinoPter.modelObject)
-                break;
-              case 19:
-                DinoPter.playAnimations()
-                DinoPter.rotateToSecondType()
-                DinoPter.changeBoxTexture(textureDarkBlue)
-                arLib.addAnchor(i).group.add(DinoPter.modelObject)
-                break;
-            }
-          }
+          handleDinos(arLib, i)
         }
 
         arLib.addAnchor(i).onTargetLost = async () => {
@@ -323,19 +339,17 @@ export const AppState = {
         // let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
 
-
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
         setDionScene(TriArray, arDinoTri, arContainer, () => {
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
-            dispatch.AppState.changePageState(PageState.ARView);
-            dispatch.AppState.setIsArModeOn(true)
-            dispatch.AppState.setArLib(arLib);
+            this.dinoCallback(arLib, scene)
             loadFoods(scene, arLib, () => {
               dispatch.AppState.setLoading(false)
             })
+
           }
         })
         let RaptorArray = [arLib.addAnchor(15), arLib.addAnchor(18)]
@@ -344,12 +358,11 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
-            dispatch.AppState.changePageState(PageState.ARView);
-            dispatch.AppState.setIsArModeOn(true)
-            dispatch.AppState.setArLib(arLib);
+            this.dinoCallback(arLib, scene)
             loadFoods(scene, arLib, () => {
               dispatch.AppState.setLoading(false)
             })
+
           }
         })
         let Pterrray = [arLib.addAnchor(16), arLib.addAnchor(19)]
@@ -358,12 +371,11 @@ export const AppState = {
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.shadowMap.needsUpdate = true;
           if (DinoTri.Dino && DinoRaptor.Dino && DinoPter.Dino) {
-            dispatch.AppState.changePageState(PageState.ARView);
-            dispatch.AppState.setIsArModeOn(true)
-            dispatch.AppState.setArLib(arLib);
+            this.dinoCallback(arLib, scene)
             loadFoods(scene, arLib, () => {
               dispatch.AppState.setLoading(false)
             })
+
           }
 
         })
@@ -545,22 +557,22 @@ export const AppState = {
 
 function loadFoods(scene, arLib, callback) {
   for (let i = 0; i < 11; i++) {
-    
-      let name = foodsArray[i].name
-      Promise.all([
-        fetch(`/model/meals_${name}.json`).then(result => result.json()),
-        fetch(`/model/billboard_${name}.json`).then(result => result.json()),
-      ]).then(async ([armodel, arBoard]) => {
 
-        setScene(arLib.addAnchor(i), scene, armodel, () => {
-          setTimeout(()=>{
-            callback()
-            foodsArray[i].model = true
-          },500)
-        
-        }, arBoard)
-      }).catch((err) => { console.log(err) })
- 
+    let name = foodsArray[i].name
+    Promise.all([
+      fetch(`/model/meals_${name}.json`).then(result => result.json()),
+      fetch(`/model/billboard_${name}.json`).then(result => result.json()),
+    ]).then(async ([armodel, arBoard]) => {
+
+      setScene(arLib.addAnchor(i), scene, armodel, () => {
+        setTimeout(() => {
+          callback()
+          foodsArray[i].model = true
+        }, 500)
+
+      }, arBoard)
+    }).catch((err) => { console.log(err) })
+
 
   }
 
@@ -725,7 +737,7 @@ function connectWebCam(mindarThree) {
 
 
 //設置場景
-async function setDionScene(anchors, sceneData, container, callback, test) {
+async function setDionScene(anchors, sceneData, container, callback) {
   let shortSide = anchors[0]
 
   let DD
@@ -742,10 +754,10 @@ async function setDionScene(anchors, sceneData, container, callback, test) {
   }
 
 
-  await DD.loadModel(sceneData, container, shortSide, anchors, test)
+  await DD.loadModel(sceneData, container, shortSide, anchors, callback)
 
 
-  callback();
+  // callback();
 }
 
 //設置場景
@@ -857,9 +869,10 @@ async function setScene(anchor, scene, sceneData, callback, board) {
 }
 
 
+
 async function textureLoaders() {
 
-  let paths = ['black.png', 'dark_blue.png', 'gray.png','light_blue.png','white.png','yellow.png']
+  let paths = ['black.png', 'dark_blue.png', 'gray.png', 'light_blue.png', 'white.png', 'yellow.png']
   const loader = new THREE.TextureLoader();
   paths.forEach((path, index) => {
     loader.load(
