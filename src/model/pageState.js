@@ -31,9 +31,9 @@ let frame_logo = undefined;
 let Thai = undefined;
 let beer = undefined;
 let giki = undefined;
-let food1 = undefined;
-let food2 = undefined;
-let food3 = undefined;
+let er = undefined;
+let sparkling = undefined;
+let steak = undefined;
 
 let foodsArray = [
   {
@@ -80,6 +80,19 @@ let foodsArray = [
     name: 'giki',
     model: false
   },
+  {
+    name: 'er',
+    model: false
+  },
+  {
+    name: 'steak',
+    model: false
+  },
+  {
+    name: 'sparkling',
+    model: false
+  },
+ 
 ]
 
 let textTri = undefined;
@@ -301,7 +314,7 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
-          if (i < 11 && foodsArray[i].model === false) {
+          if (i < 12 && foodsArray[i].model === false) {
             dispatch.AppState.setLoading(true)
           } else {
             dispatch.AppState.setLoading(false)
@@ -503,6 +516,10 @@ export const AppState = {
             giki.rotation.y += 0.01;
             giki.rotation.y %= Math.PI * 2;
           }
+          if (er && detect === 12) {
+            er.rotation.y += 0.01;
+            er.rotation.y %= Math.PI * 2;
+          }
           if (latte && detect === 7) {
             latte.rotation.y += 0.01;
             latte.rotation.y %= Math.PI * 2;
@@ -580,7 +597,7 @@ export const AppState = {
 }
 
 function loadFoods(scene, arLib, callback) {
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 12; i++) {
 
     let name = foodsArray[i].name
     Promise.all([
@@ -902,6 +919,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     }
     if (item.name === `rotation_beer`) {
       beer = item
+    }
+    if (item.name === `rotation_er`) {
+      er = item
     }
     if (item.name === `rotation_hot_pot`) {
       hotPot = item
