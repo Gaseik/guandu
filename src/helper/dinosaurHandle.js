@@ -135,8 +135,8 @@ export const raptorSetup = {
         y: 0.3,
         z: 0.3
       }
-   
-      
+
+
     },
     narrow: {
       position: {
@@ -169,7 +169,7 @@ export const raptorSetup = {
         y: 0.3,
         z: 0.3
       }
-     
+
     },
     narrow: {
       position: {
@@ -188,7 +188,7 @@ export const raptorSetup = {
     }
   }
 };
- 
+
 export const triceratopsSetup = {
   1: {
     wide: {
@@ -321,14 +321,14 @@ export const pterodactylSetup = {
       }
     }
   },
-  
+
 };
 
 const setups = {
-  pterodactyl:pterodactylSetup,
-  raptor:raptorSetup,
-  triceratops:triceratopsSetup,
-  container:containerSetup
+  pterodactyl: pterodactylSetup,
+  raptor: raptorSetup,
+  triceratops: triceratopsSetup,
+  container: containerSetup
 }
 
 
@@ -348,9 +348,10 @@ export class DionModel {
     this.animations = []
     this.Node_Narrow = null
     this.DinoObj = { animations: [] };
+    this.callback = undefined
   }
 
-  async loadModel(sceneData, container, shortSide,anchors,test) {
+  async loadModel(sceneData, container, shortSide, anchors, callback) {
     const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
     const objCon = await loader.parseAsync(container.scene ? container.scene : container.Scene);
 
@@ -359,19 +360,17 @@ export class DionModel {
     this.modelObject.add(obj);
     this.modelObject.add(objCon);
 
-    if (test) {
-      const obT = await loader.parseAsync(test.scene ? test.scene : test.Scene);
-      this.modelObject.add(obT);
-    }
-    this.traverseModel(shortSide,sceneData)
+
+    await this.traverseModel(shortSide, sceneData,    callback)
     let self = this.modelObject
-    // console.log(self)
     anchors.forEach(function (anchor) {
       anchor.group.add(self)
     })
+    callback()
+
   }
 
-  async traverseModel(shortSide, sceneData) {
+  async traverseModel(shortSide, sceneData,callback) {
     this.modelObject.traverse((item) => {
       item.layers.set(shortSide.targetIndex + 1);
       item.frustumCulled = false
@@ -406,7 +405,7 @@ export class DionModel {
       if (['pterodactyl.glb', 'raptor.glb', 'triceratops.glb'].includes(item.name)) {
         this.Dino = item;
         this.DinoObj.Dino = item;
-        this.name = item.name.replace('.glb','');
+        this.name = item.name.replace('.glb', '');
       }
     });
     this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
@@ -414,26 +413,31 @@ export class DionModel {
 
 
 
-  rotate(position,typeString){
+  rotate(position, typeString) {
     // console.log(typeString,this.name);
-    let type = setups[typeString]
-    let nodeWide = typeString === 'container' ? 'nodeWideContainer': 'nodeWide'
-    let nodeNarrow = typeString === 'container' ? 'nodeNarrowContainer': 'nodeNarrow'
-    // console.log(type)
-    let wideT = type[position].wide
-    let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
-    let wideScale = wideT.scale ? wideT.scale :  this.DinoObj[nodeWide].initialScale
-    let narrowT = type[position].narrow
-    this.DinoObj[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
-    this.DinoObj[nodeNarrow].rotation.y = narrowT.rotation.y;
-    this.DinoObj[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
-    this.DinoObj[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
-    this.DinoObj[nodeWide].rotation.y = wideRotationY;
-    this.DinoObj[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
+    if (typeString && this.Dino) {
+      let type = setups[typeString]
+      let nodeWide = typeString === 'container' ? 'nodeWideContainer' : 'nodeWide'
+      let nodeNarrow = typeString === 'container' ? 'nodeNarrowContainer' : 'nodeNarrow'
+      // console.log(type)
+      let wideT = type[position].wide
+      let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
+      let wideScale = wideT.scale ? wideT.scale : this.DinoObj[nodeWide].initialScale
+      let narrowT = type[position].narrow
+      this.DinoObj[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
+      this.DinoObj[nodeNarrow].rotation.y = narrowT.rotation.y;
+      this.DinoObj[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
+      this.DinoObj[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
+      this.DinoObj[nodeWide].rotation.y = wideRotationY;
+      this.DinoObj[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
+    }
+
   }
 
-  changeBoxTexture(texture){
-    this.box.material.map = texture
+  changeBoxTexture(texture) {
+    if (this.box) {
+      this.box.material.map = texture
+    }
   }
 
   setInitialTransform(name, item) {
@@ -456,15 +460,16 @@ export class DionModel {
     if (fense) {
       this.setupFenseAnimations(fense, door, door2, sceneData);
     }
+   
   }
 
-  playAnimations () {
+  playAnimations() {
     this.DinoObj.animations.forEach(an => {
       this.animationList[an].play()
     })
   }
 
-  stopAnimations () {
+  stopAnimations() {
     this.DinoObj.animations.forEach(an => {
       this.animationList[an].stop()
     })
@@ -502,16 +507,15 @@ export class Triceratops extends DionModel {
   constructor() {
     super();
   }
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(1,'container')
-    console.log(this.DinoObj)
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(1, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(4,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(4, 'container')
   }
-  
+
 }
 
 export class Pterodactyl extends DionModel {
@@ -519,13 +523,13 @@ export class Pterodactyl extends DionModel {
     super();
   }
 
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(3,'container')
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(3, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(3,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(3, 'container')
   }
 }
 
@@ -534,13 +538,13 @@ export class Raptor extends DionModel {
     super();
   }
 
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(2,'container')
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(2, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(4,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(4, 'container')
   }
 }
 
