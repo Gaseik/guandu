@@ -33,7 +33,7 @@ let beer = undefined;
 let giki = undefined;
 let er = undefined;
 let sparkling = undefined;
-let steak = undefined;
+let red_barn = undefined;
 
 let foodsArray = [
   {
@@ -85,14 +85,14 @@ let foodsArray = [
     model: false
   },
   {
-    name: 'steak',
+    name: 'red_barn',
     model: false
   },
   {
     name: 'sparkling',
     model: false
   },
- 
+
 ]
 
 let textTri = undefined;
@@ -124,11 +124,11 @@ const initialState = {
   lastPage: undefined,
   helpPop: true,
   target: undefined,
-  switchCamera : false
+  switchCamera: false
 }
 
 function handleDinos(arLib, i) {
-  console.log(DinoPter)
+  // console.log(DinoPter)
   if (DinoPter.modelObject && DinoRaptor.modelObject && DinoTri.modelObject) {
 
     switch (i) {
@@ -223,15 +223,15 @@ export const AppState = {
       return { ...state, playAuth: payload }
     },
     setSwitchCamera: (state, payload) => {
-    
-      switchCamera(state.arLib,payload)
-        frame_down.visible = payload
-        frame_food.visible = payload
-        frame_logo.visible = payload
-        logoMesh.visible = !payload
-        grassMesh.visible = !payload
-        crabMesh.visible = !payload
-        egretMesh.visible =!payload
+
+      switchCamera(state.arLib, payload)
+      frame_down.visible = payload
+      frame_food.visible = payload
+      frame_logo.visible = payload
+      logoMesh.visible = !payload
+      grassMesh.visible = !payload
+      crabMesh.visible = !payload
+      egretMesh.visible = !payload
       return { ...state, switchCamera: payload }
     },
     setReset: () => {
@@ -247,7 +247,7 @@ export const AppState = {
       egretMesh = undefined
       count = 1
       dierction = 1
-   
+
       textTri = undefined;
       textRaptor = undefined;
       textPter = undefined;
@@ -272,7 +272,7 @@ export const AppState = {
       dispatch.AppState.setIsArModeOn(true)
       dispatch.AppState.setArLib(arLib);
       handleDinos(arLib, detect - 1)
-    
+
       // loadFoods(scene, arLib, () => {
       //   dispatch.AppState.setLoading(false)
       // })
@@ -314,7 +314,7 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
-          if (i < 12 && foodsArray[i].model === false) {
+          if (i < 13 && foodsArray[i].model === false) {
             dispatch.AppState.setLoading(true)
           } else {
             dispatch.AppState.setLoading(false)
@@ -348,7 +348,7 @@ export const AppState = {
       }
 
       //載入箱子顏色的環境貼圖
-      textureLoaders()
+      await textureLoaders()
 
       //載入JSON場景檔
       Promise.all([
@@ -520,6 +520,10 @@ export const AppState = {
             er.rotation.y += 0.01;
             er.rotation.y %= Math.PI * 2;
           }
+          if (red_barn && detect === 13) {
+            red_barn.rotation.y += 0.01;
+            red_barn.rotation.y %= Math.PI * 2;
+          }
           if (latte && detect === 7) {
             latte.rotation.y += 0.01;
             latte.rotation.y %= Math.PI * 2;
@@ -597,7 +601,7 @@ export const AppState = {
 }
 
 function loadFoods(scene, arLib, callback) {
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 13; i++) {
 
     let name = foodsArray[i].name
     Promise.all([
@@ -938,7 +942,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.name === `rotation_no_worries`) {
       cocktail = item
     }
-
+    if (item.name === `rotation_red_barn`) {
+      red_barn = item
+    }
 
     // 呼叫美術做好的動畫名稱,這邊只先處理板子,恐龍在上面處理
     if (item.name === 'billboard_jburger.glb' || item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
