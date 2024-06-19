@@ -57,8 +57,12 @@ export function captureImage(arLib) {
   renderer.preserveDrawingBuffer = true;
   camera.layers.set(0);
   renderer.render(scene, camera);
+  if(detect>17){
+    camera.layers.set(detect-3);
+  }else{
+    camera.layers.set(detect);
+  }
   
-  camera.layers.set(detect);
   renderer.render(scene, camera);
   
   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染

@@ -320,7 +320,6 @@ export const AppState = {
           } else {
             dispatch.AppState.setLoading(false)
           }
-          console.log(done)
           //依序把每個恐龍物件裡面從好的動畫名稱,對應到animationList裡面,一一撥放
           handleDinos(arLib, i)
         }
@@ -370,11 +369,6 @@ export const AppState = {
         arDinoPter.name = 'Pter'
         arDinoTri.name = 'Tri'
         arDinoRaptor.name = 'Raptor'
-
-
-
-        // let foods = [arJBurger, arJBurger, arJBurger, arStewedRice, arKC, arBeb, arLatte, arHotPot, arThai, arBeer, arGiki]
-        // let boards = [boardJBuger, boardJBuger, boardJBuger, boardStewedRice, boardKC, boardBeb, boardLatte, boardHotPot, boardThai, boardBeer, boardGiki]
 
 
         let TriArray = [arLib.addAnchor(14), arLib.addAnchor(17),]
@@ -990,7 +984,6 @@ async function textureLoaders() {
       function (texture) {
         // in this example we create the material when the texture is loaded
         texture.encoding = THREE.sRGBEncoding;
-        console.log(texture,path,index)
         switch (index) {
           case 0:
             textureBlack = texture;

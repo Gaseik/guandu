@@ -10,6 +10,7 @@ import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
+import { switchCamera } from "../helper/switchCamera";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -32,14 +33,17 @@ const ARView = function () {
   useEffect(() => {
     //判斷哪些地方需要撥放音樂
     if (
-      state.pageState === PageState.Intro ||
+      state.pageState === PageState.Discard ||
       state.pageState === PageState.ViewPhoto ||
+      state.pageState === PageState.ViewVideo ||
+      state.pageState === PageState.ViewVideo ||
       state.pageState === PageState.ARView 
     
     ) {
       bgMusic.volume = 0.1;
       if (state.musicStarted&&state.playAuth) {
         bgMusic.play();
+        dispatch.AppState.setPlayAuth(true)
         dispatch.AppState.setMusicStarted(true);
       } else {
         bgMusic.pause();
@@ -51,7 +55,22 @@ const ARView = function () {
     }
   }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
 
+  useEffect(() => {
+    // 页面可见性变化处理
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // 切回頁面,有時攝影機畫面會停住,重新抓一次
+        dispatch.AppState.setSwitchCamera(state.switchCamera)
+      }
+    };
 
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 组件卸载时移除事件监听器
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
@@ -117,7 +136,7 @@ const ARView = function () {
     } else {
       if (!isRecord) {
         const { renderer } = state.arLib;
-        startCaptureVideo(renderer.domElement);
+        startCaptureVideo(renderer.domElement,bgMusic);
         const startTime = Date.now();
         if (counter) {
           clearInterval(counter);

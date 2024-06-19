@@ -493,8 +493,6 @@ export class DionModel {
   }
 
   changeBoxTexture(texture) {
-    console.log(this.box)
-    console.log(texture)
     if (this.box) {
       this.box.material.map = texture
     }
