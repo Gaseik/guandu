@@ -4,21 +4,21 @@ export const containerSetup = {
   1: {
     wide: {
       position: {
-        x: -0.195,
-        y: 0.004,
+        x: -0.232,
+        y: 0.053,
         z: 0
       },
       scale: {
-        x: 3.690,
-        y: 3.070,
-        z: 3.020
+        x: 3.76,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
       position: {
-        x: 0.153,
+        x: 0.186,
         y: -0.129,
-        z: 0
+        z: 0.005
       },
       rotation: {
         y: Math.PI / 2
@@ -33,14 +33,14 @@ export const containerSetup = {
   2: {
     wide: {
       position: {
-        x: 0.860,
+        x: 0.471,
         y: 0.004,
         z: 0
       },
       scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
@@ -62,21 +62,21 @@ export const containerSetup = {
   3: {
     wide: {
       position: {
-        x: -1.99,
-        y: 0.004,
+        x: -5.111,
+        y: -0.363,
         z: 0
       },
       scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
       position: {
-        x: -0.822,
-        y: -0.121,
-        z: -0.335
+        x: 0.343,
+        y: -0.001,
+        z: -0.338
       },
       rotation: {
         y: 0
@@ -91,8 +91,66 @@ export const containerSetup = {
   4: {
     wide: {
       position: {
-        x: -1.99,
-        y: 0.004,
+        x: -4.813,
+        y: -0.363,
+        z: 0
+      },
+      scale: {
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
+      }
+    },
+    narrow: {
+      position: {
+        x: 0.343,
+        y: 0.013,
+        z: -0.338
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 2,
+        y: 2,
+        z: 2
+      }
+    }
+  },
+  5: {
+    wide: {
+      position: {
+        x: -1.693,
+        y: 0.037,
+        z: 0
+      },
+      scale: {
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
+      }
+    },
+    narrow: {
+      position: {
+        x: 0.343,
+        y: 0.013,
+        z: -0.168
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      }
+    }
+  },
+  6: {
+    wide: {
+      position: {
+        x: -1.622,
+        y: 0.037,
         z: 0
       },
       scale: {
@@ -128,7 +186,7 @@ export const raptorSetup = {
         z: 0
       },
       rotation: {
-        y: 0
+        y:0
       },
       scale: {
         x: 0.3,
@@ -140,12 +198,12 @@ export const raptorSetup = {
     },
     narrow: {
       position: {
-        x: -6.632,
+        x: -9.523,
         y: -1.483,
-        z: -3.251
+        z: -2.255
       },
       rotation: {
-        y: 0
+        y:  11 * Math.PI / 180
       },
       scale: {
         x: 2,
@@ -173,7 +231,7 @@ export const raptorSetup = {
     },
     narrow: {
       position: {
-        x: -3.802,
+        x: -2.724,
         y: 0.017,
         z: -1.861
       },
@@ -195,7 +253,7 @@ export const triceratopsSetup = {
       position: {
         x: -0.655,
         y: 0,
-        z: -0.076
+        z: -0.330
       },
       rotation: {
         y: 0
@@ -240,7 +298,7 @@ export const triceratopsSetup = {
     },
     narrow: {
       position: {
-        x: -3,
+        x: -2.342,
         y: 0.025,
         z: -1.556
       },
@@ -275,8 +333,8 @@ export const pterodactylSetup = {
     },
     narrow: {
       position: {
-        x: -7.047,
-        y: -1.501,
+        x: -5.767,
+        y: -1.401,
         z: -2.847
       },
       rotation: {
@@ -307,8 +365,8 @@ export const pterodactylSetup = {
     },
     narrow: {
       position: {
-        x: -7.047,
-        y: -1.501,
+        x: -3.847,
+        y: -1.401,
         z: -2.847
       },
       rotation: {
@@ -435,6 +493,8 @@ export class DionModel {
   }
 
   changeBoxTexture(texture) {
+    console.log(this.box)
+    console.log(texture)
     if (this.box) {
       this.box.material.map = texture
     }
@@ -513,7 +573,7 @@ export class Triceratops extends DionModel {
   }
   rotateToSecondType() {
     this.rotate(2, this.name)
-    this.rotate(4, 'container')
+    this.rotate(5, 'container')
   }
 
 }
@@ -529,7 +589,7 @@ export class Pterodactyl extends DionModel {
   }
   rotateToSecondType() {
     this.rotate(2, this.name)
-    this.rotate(3, 'container')
+    this.rotate(4, 'container')
   }
 }
 
@@ -544,7 +604,7 @@ export class Raptor extends DionModel {
   }
   rotateToSecondType() {
     this.rotate(2, this.name)
-    this.rotate(4, 'container')
+    this.rotate(6, 'container')
   }
 }
 

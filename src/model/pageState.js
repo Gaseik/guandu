@@ -146,6 +146,7 @@ function handleDinos(arLib, i) {
         break;
       case 15:
         DinoRaptor.changeBoxTexture(textureWhite)
+  
         DinoRaptor.playAnimations()
         DinoRaptor.rotateToFirstType()
         arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
@@ -314,7 +315,7 @@ export const AppState = {
           dispatch.AppState.setModelData(arLib.addAnchor(i).group)
           changeState(i + 1)
           arLib.detect = i + 1
-          if (i < 13 && foodsArray[i].model === false) {
+          if (i < 14 && foodsArray[i].model === false) {
             dispatch.AppState.setLoading(true)
           } else {
             dispatch.AppState.setLoading(false)
@@ -524,6 +525,10 @@ export const AppState = {
             red_barn.rotation.y += 0.01;
             red_barn.rotation.y %= Math.PI * 2;
           }
+          if (sparkling && detect === 14) {
+            sparkling.rotation.y += 0.01;
+            sparkling.rotation.y %= Math.PI * 2;
+          }
           if (latte && detect === 7) {
             latte.rotation.y += 0.01;
             latte.rotation.y %= Math.PI * 2;
@@ -601,7 +606,7 @@ export const AppState = {
 }
 
 function loadFoods(scene, arLib, callback) {
-  for (let i = 0; i < 13; i++) {
+  for (let i = 0; i < 14; i++) {
 
     let name = foodsArray[i].name
     Promise.all([
@@ -945,6 +950,9 @@ async function setScene(anchor, scene, sceneData, callback, board) {
     if (item.name === `rotation_red_barn`) {
       red_barn = item
     }
+    if (item.name === `rotation_sparkling`) {
+      sparkling = item
+    }
 
     // 呼叫美術做好的動畫名稱,這邊只先處理板子,恐龍在上面處理
     if (item.name === 'billboard_jburger.glb' || item.name === 'billboard_stewed_rice.glb' || item.name === 'billboard_kc.glb' || item.name === 'billboard_kc.glb') {
@@ -982,19 +990,32 @@ async function textureLoaders() {
       function (texture) {
         // in this example we create the material when the texture is loaded
         texture.encoding = THREE.sRGBEncoding;
+        console.log(texture,path,index)
         switch (index) {
           case 0:
             textureBlack = texture;
+            textureBlack.name = path
+            break
           case 1:
             textureDarkBlue = texture;
+            textureDarkBlue.name = path
+            break
           case 2:
             textureGrey = texture;
+            textureGrey.name = path
+            break
           case 3:
             textureLightBlue = texture;
+            textureLightBlue.name = path
+            break
           case 4:
             textureWhite = texture;
+            textureWhite.name = path
+            break
           case 5:
             textureYellow = texture;
+            textureYellow.name = path
+            break
         }
         // object.material.map = textures[index]
         // object.material.needsUpdate = true;
