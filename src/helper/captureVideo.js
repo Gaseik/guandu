@@ -2,21 +2,33 @@ let mediaRecorder;
 let recordedChunks = [];
 let audioStream;
 
-export async function startCaptureVideo(canvasDom) {
+export async function startCaptureVideo(canvasDom,backgroundAudioElement) {
   // 获取视频流
   const videoStream = canvasDom.captureStream();
+
+  // 创建音频上下文
+  const audioContext = new AudioContext();
+  const destination = audioContext.createMediaStreamDestination();
+
+  // 获取背景音乐的音频流
+  const backgroundAudioSource = audioContext.createMediaElementSource(backgroundAudioElement);
+  backgroundAudioSource.connect(destination);
+  backgroundAudioSource.connect(audioContext.destination); 
+
+  // 将背景音乐的音频流与视频流合并
+  const combinedStream = new MediaStream([...videoStream.getTracks(), ...destination.stream.getAudioTracks()]);
+
+
   try {
-    let options
+    let options;
     if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
       options = { mimeType: 'video/webm; codecs=vp9' };
-      mediaRecorder = new MediaRecorder(videoStream, options);
-
+      mediaRecorder = new MediaRecorder(combinedStream, options);
     } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
       options = { mimeType: 'video/webm; codecs=vp8' };
-      mediaRecorder = new MediaRecorder(videoStream, options);
-
+      mediaRecorder = new MediaRecorder(combinedStream, options);
     } else {
-      mediaRecorder = new MediaRecorder(videoStream);
+      mediaRecorder = new MediaRecorder(combinedStream);
     }
 
     mediaRecorder.ondataavailable = function (event) {
