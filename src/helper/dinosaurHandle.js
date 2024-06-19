@@ -4,21 +4,21 @@ export const containerSetup = {
   1: {
     wide: {
       position: {
-        x: -0.195,
-        y: 0.004,
+        x: -0.232,
+        y: 0.053,
         z: 0
       },
       scale: {
-        x: 3.690,
-        y: 3.070,
-        z: 3.020
+        x: 3.76,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
       position: {
-        x: 0.153,
+        x: 0.186,
         y: -0.129,
-        z: 0
+        z: 0.005
       },
       rotation: {
         y: Math.PI / 2
@@ -33,14 +33,14 @@ export const containerSetup = {
   2: {
     wide: {
       position: {
-        x: 0.860,
+        x: 0.471,
         y: 0.004,
         z: 0
       },
       scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
@@ -62,21 +62,21 @@ export const containerSetup = {
   3: {
     wide: {
       position: {
-        x: -1.99,
-        y: 0.004,
+        x: -5.111,
+        y: -0.363,
         z: 0
       },
       scale: {
-        x: 3.010,
-        y: 3.070,
-        z: 3.66
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
       }
     },
     narrow: {
       position: {
-        x: -0.822,
-        y: -0.121,
-        z: -0.335
+        x: 0.343,
+        y: -0.001,
+        z: -0.338
       },
       rotation: {
         y: 0
@@ -91,8 +91,66 @@ export const containerSetup = {
   4: {
     wide: {
       position: {
-        x: -1.99,
-        y: 0.004,
+        x: -4.813,
+        y: -0.363,
+        z: 0
+      },
+      scale: {
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
+      }
+    },
+    narrow: {
+      position: {
+        x: 0.343,
+        y: 0.013,
+        z: -0.338
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 2,
+        y: 2,
+        z: 2
+      }
+    }
+  },
+  5: {
+    wide: {
+      position: {
+        x: -1.693,
+        y: 0.037,
+        z: 0
+      },
+      scale: {
+        x: 3.092,
+        y: 3.154,
+        z: 3.76
+      }
+    },
+    narrow: {
+      position: {
+        x: 0.343,
+        y: 0.013,
+        z: -0.168
+      },
+      rotation: {
+        y: 0
+      },
+      scale: {
+        x: 1,
+        y: 1,
+        z: 1
+      }
+    }
+  },
+  6: {
+    wide: {
+      position: {
+        x: -1.622,
+        y: 0.037,
         z: 0
       },
       scale: {
@@ -128,24 +186,24 @@ export const raptorSetup = {
         z: 0
       },
       rotation: {
-        y: 0
+        y:0
       },
       scale: {
         x: 0.3,
         y: 0.3,
         z: 0.3
       }
-   
-      
+
+
     },
     narrow: {
       position: {
-        x: -6.632,
+        x: -9.523,
         y: -1.483,
-        z: -3.251
+        z: -2.255
       },
       rotation: {
-        y: 0
+        y:  11 * Math.PI / 180
       },
       scale: {
         x: 2,
@@ -169,11 +227,11 @@ export const raptorSetup = {
         y: 0.3,
         z: 0.3
       }
-     
+
     },
     narrow: {
       position: {
-        x: -3.802,
+        x: -2.724,
         y: 0.017,
         z: -1.861
       },
@@ -188,14 +246,14 @@ export const raptorSetup = {
     }
   }
 };
- 
+
 export const triceratopsSetup = {
   1: {
     wide: {
       position: {
         x: -0.655,
         y: 0,
-        z: -0.076
+        z: -0.330
       },
       rotation: {
         y: 0
@@ -240,7 +298,7 @@ export const triceratopsSetup = {
     },
     narrow: {
       position: {
-        x: -3,
+        x: -2.342,
         y: 0.025,
         z: -1.556
       },
@@ -275,8 +333,8 @@ export const pterodactylSetup = {
     },
     narrow: {
       position: {
-        x: -7.047,
-        y: -1.501,
+        x: -5.767,
+        y: -1.401,
         z: -2.847
       },
       rotation: {
@@ -307,8 +365,8 @@ export const pterodactylSetup = {
     },
     narrow: {
       position: {
-        x: -7.047,
-        y: -1.501,
+        x: -3.847,
+        y: -1.401,
         z: -2.847
       },
       rotation: {
@@ -321,14 +379,14 @@ export const pterodactylSetup = {
       }
     }
   },
-  
+
 };
 
 const setups = {
-  pterodactyl:pterodactylSetup,
-  raptor:raptorSetup,
-  triceratops:triceratopsSetup,
-  container:containerSetup
+  pterodactyl: pterodactylSetup,
+  raptor: raptorSetup,
+  triceratops: triceratopsSetup,
+  container: containerSetup
 }
 
 
@@ -348,9 +406,10 @@ export class DionModel {
     this.animations = []
     this.Node_Narrow = null
     this.DinoObj = { animations: [] };
+    this.callback = undefined
   }
 
-  async loadModel(sceneData, container, shortSide,anchors,test) {
+  async loadModel(sceneData, container, shortSide, anchors, callback) {
     const obj = await loader.parseAsync(sceneData.scene ? sceneData.scene : sceneData.Scene);
     const objCon = await loader.parseAsync(container.scene ? container.scene : container.Scene);
 
@@ -359,19 +418,17 @@ export class DionModel {
     this.modelObject.add(obj);
     this.modelObject.add(objCon);
 
-    if (test) {
-      const obT = await loader.parseAsync(test.scene ? test.scene : test.Scene);
-      this.modelObject.add(obT);
-    }
-    this.traverseModel(shortSide,sceneData)
+
+    await this.traverseModel(shortSide, sceneData,    callback)
     let self = this.modelObject
-    // console.log(self)
     anchors.forEach(function (anchor) {
       anchor.group.add(self)
     })
+    callback()
+
   }
 
-  async traverseModel(shortSide, sceneData) {
+  async traverseModel(shortSide, sceneData,callback) {
     this.modelObject.traverse((item) => {
       item.layers.set(shortSide.targetIndex + 1);
       item.frustumCulled = false
@@ -406,7 +463,7 @@ export class DionModel {
       if (['pterodactyl.glb', 'raptor.glb', 'triceratops.glb'].includes(item.name)) {
         this.Dino = item;
         this.DinoObj.Dino = item;
-        this.name = item.name.replace('.glb','');
+        this.name = item.name.replace('.glb', '');
       }
     });
     this.setupAnimations(this.Dino, this.fense, this.door, this.door2, sceneData);
@@ -414,26 +471,33 @@ export class DionModel {
 
 
 
-  rotate(position,typeString){
+  rotate(position, typeString) {
     // console.log(typeString,this.name);
-    let type = setups[typeString]
-    let nodeWide = typeString === 'container' ? 'nodeWideContainer': 'nodeWide'
-    let nodeNarrow = typeString === 'container' ? 'nodeNarrowContainer': 'nodeNarrow'
-    // console.log(type)
-    let wideT = type[position].wide
-    let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
-    let wideScale = wideT.scale ? wideT.scale :  this.DinoObj[nodeWide].initialScale
-    let narrowT = type[position].narrow
-    this.DinoObj[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
-    this.DinoObj[nodeNarrow].rotation.y = narrowT.rotation.y;
-    this.DinoObj[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
-    this.DinoObj[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
-    this.DinoObj[nodeWide].rotation.y = wideRotationY;
-    this.DinoObj[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
+    if (typeString && this.Dino) {
+      let type = setups[typeString]
+      let nodeWide = typeString === 'container' ? 'nodeWideContainer' : 'nodeWide'
+      let nodeNarrow = typeString === 'container' ? 'nodeNarrowContainer' : 'nodeNarrow'
+      // console.log(type)
+      let wideT = type[position].wide
+      let wideRotationY = wideT.rotation ? wideT.rotation.y : this.DinoObj[nodeWide].initialRotation.y
+      let wideScale = wideT.scale ? wideT.scale : this.DinoObj[nodeWide].initialScale
+      let narrowT = type[position].narrow
+      this.DinoObj[nodeNarrow].position.set(narrowT.position.x, narrowT.position.y, narrowT.position.z)
+      this.DinoObj[nodeNarrow].rotation.y = narrowT.rotation.y;
+      this.DinoObj[nodeNarrow].scale.set(narrowT.scale.x, narrowT.scale.y, narrowT.scale.z);
+      this.DinoObj[nodeWide].position.set(wideT.position.x, wideT.position.y, wideT.position.z)
+      this.DinoObj[nodeWide].rotation.y = wideRotationY;
+      this.DinoObj[nodeWide].scale.set(wideScale.x, wideScale.y, wideScale.z);
+    }
+
   }
 
-  changeBoxTexture(texture){
-    this.box.material.map = texture
+  changeBoxTexture(texture) {
+    console.log(this.box)
+    console.log(texture)
+    if (this.box) {
+      this.box.material.map = texture
+    }
   }
 
   setInitialTransform(name, item) {
@@ -456,15 +520,16 @@ export class DionModel {
     if (fense) {
       this.setupFenseAnimations(fense, door, door2, sceneData);
     }
+   
   }
 
-  playAnimations () {
+  playAnimations() {
     this.DinoObj.animations.forEach(an => {
       this.animationList[an].play()
     })
   }
 
-  stopAnimations () {
+  stopAnimations() {
     this.DinoObj.animations.forEach(an => {
       this.animationList[an].stop()
     })
@@ -502,16 +567,15 @@ export class Triceratops extends DionModel {
   constructor() {
     super();
   }
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(1,'container')
-    console.log(this.DinoObj)
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(1, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(4,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(5, 'container')
   }
-  
+
 }
 
 export class Pterodactyl extends DionModel {
@@ -519,13 +583,13 @@ export class Pterodactyl extends DionModel {
     super();
   }
 
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(3,'container')
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(3, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(3,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(4, 'container')
   }
 }
 
@@ -534,13 +598,13 @@ export class Raptor extends DionModel {
     super();
   }
 
-  rotateToFirstType(){
-    this.rotate(1,this.name)
-    this.rotate(2,'container')
+  rotateToFirstType() {
+    this.rotate(1, this.name)
+    this.rotate(2, 'container')
   }
-  rotateToSecondType(){
-    this.rotate(2,this.name)
-    this.rotate(4,'container')
+  rotateToSecondType() {
+    this.rotate(2, this.name)
+    this.rotate(6, 'container')
   }
 }
 
