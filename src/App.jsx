@@ -8,8 +8,8 @@ import { DeviceOrientation } from "./components";
 import './scss/app.scss'
 import axios from "axios";
 
-axios.defaults.baseURL = 'https://192.168.1.220:8081/api'
-axios.defaults.headers.common['authorization'] = "5e5e06e0-a991-4e06-99fb-068367a8e513";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
+axios.defaults.headers.common['authorization'] = import.meta.env.VITE_AUTH_KEY;
 axios.defaults.headers.common['Content-Type'] = "multipart/form-data";
 
 
@@ -51,7 +51,8 @@ export function usePageVisibility() {
     document.addEventListener('dblclick', preventDefault);
     document.addEventListener('touchend', preventDoubleClickZoom, { passive: false });
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
+   
+    
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       document.removeEventListener('touchstart', preventZoom);
