@@ -39,12 +39,12 @@ function Loading(props) {
   useEffect(() => {
     if (!isVisible) {
       dispatch.AppState.setMusicStarted(false);
-      stopCameraAndMicrophone()
-      dispatch.AppState.setReset();
+      // stopCameraAndMicrophone()
+      // dispatch.AppState.setReset();
     
     } else {
       if (state.pageState === PageState.Loading && !first) {
-        dispatch.AppState.loadModelFile(true);
+        // dispatch.AppState.loadModelFile(true);
       
       }
     }

@@ -12,7 +12,6 @@ function Help(props) {
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
   const [showTip,setShowTip] = useState(true)
-  const [frontCamera, setCamera] = useState(false)
 
   function onClickHelp() {
     dispatch.AppState.setHelpPop(!state.helpPop);
@@ -29,9 +28,7 @@ function Help(props) {
   }
 
   async function onChangeCamera() {
-    console.log(frontCamera)
-    switchCamera(state.arLib,frontCamera?false:true)
-    setCamera(!frontCamera)
+    dispatch.AppState.setSwitchCamera(!state.switchCamera)
   }
 
   useEffect(()=>{
@@ -54,15 +51,16 @@ function Help(props) {
   return (
     <div className="btn help">
       <Bicycle className="absolute right-[-10px] top-[-25px]" />
-      <span className={`flex items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
+      <span className={`flex relative items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
+        <div className={`w-1 h-7 bg-red absolute rotate-45 ${state.helpPop?"hidden":""} left-4 sm:left-6`}></div>
         <IoIosInformationCircle className="sm:text-5xl text-[36px]  text-main " />
       </span>
      
       <span
-        className={` flex relative justify-center items-center ${!frontCamera?`bg-main`:"bg-white"} border-2 border-main  rounded-full sm:p-1.5 p-1 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
+        className={` flex relative justify-center items-center ${!state.switchCamera?`bg-main`:"bg-white"} border-2 border-main  rounded-full sm:p-1.5 p-1 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
         onClick={onChangeCamera}
       >
-        <IoCameraReverseOutline className={`text-[18px] sm:text-[26px]  ${frontCamera?`text-main`:"text-white"} `} />
+        <IoCameraReverseOutline className={`text-[18px] sm:text-[26px]  ${state.switchCamera?`text-main`:"text-white"} `} />
       
       </span>
       <span

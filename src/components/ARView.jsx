@@ -10,6 +10,7 @@ import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
+import { switchCamera } from "../helper/switchCamera";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -32,14 +33,17 @@ const ARView = function () {
   useEffect(() => {
     //判斷哪些地方需要撥放音樂
     if (
-      state.pageState === PageState.Intro ||
+      state.pageState === PageState.Discard ||
       state.pageState === PageState.ViewPhoto ||
+      state.pageState === PageState.ViewVideo ||
+      state.pageState === PageState.ViewVideo ||
       state.pageState === PageState.ARView 
     
     ) {
       bgMusic.volume = 0.1;
       if (state.musicStarted&&state.playAuth) {
         bgMusic.play();
+        dispatch.AppState.setPlayAuth(true)
         dispatch.AppState.setMusicStarted(true);
       } else {
         bgMusic.pause();
@@ -51,7 +55,22 @@ const ARView = function () {
     }
   }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
 
+  useEffect(() => {
+    // 页面可见性变化处理
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // 切回頁面,有時攝影機畫面會停住,重新抓一次
+        dispatch.AppState.setSwitchCamera(state.switchCamera)
+      }
+    };
 
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 组件卸载时移除事件监听器
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
@@ -69,7 +88,6 @@ const ARView = function () {
             dispatch.AppState.setPlayAuth(false);
           }
           setTimeout(() => {
-            console.log('play')
             dispatch.AppState.setMusicStarted(true);
           }, 500);
         }
@@ -118,7 +136,7 @@ const ARView = function () {
     } else {
       if (!isRecord) {
         const { renderer } = state.arLib;
-        startCaptureVideo(renderer.domElement);
+        startCaptureVideo(renderer.domElement,bgMusic);
         const startTime = Date.now();
         if (counter) {
           clearInterval(counter);
@@ -156,6 +174,28 @@ const ARView = function () {
       });
     }
   }
+  function loadFoodCover () {
+    return (
+      <div className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
+        state.loading ? "z-[25] opacity-100" : "opacity-0 z-[-1] pointer-events-none"
+      }`}>
+           <div
+          className="my-3 inline-block h-16 w-16 sm:h-24 sm:w-24 animate-spin rounded-full 
+          border-4 sm:border-8 border-solid border-current border-r-transparent align-[-0.125em]
+           text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          role="status"
+        >
+          <span className="!absolute  !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+            Loading...
+          </span>
+        </div>
+        <div className="text-white font-bold text-2xl sm:text-3xl">
+          模組載入中
+        </div>
+      </div>
+    )
+  }
+
 
   return (
     <div
@@ -163,7 +203,9 @@ const ARView = function () {
         state.isArModeOn ? "z-[20] opacity-100" : "opacity-0 z-[-1]"
       }`}
     >
+      {loadFoodCover()}
       <div id="ar_container" className=" h-[100%] flex " />
+      
       {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
       <div className="button-group">

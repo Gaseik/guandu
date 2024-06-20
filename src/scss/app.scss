@@ -16,6 +16,16 @@ body {
   -ms-user-select:none;       /* Internet Explorer/Edge */
   user-select:none;           /* Non-prefixed version */
 }
+html, body {
+  touch-action: manipulation;
+  touch-action: none;
+  -ms-touch-action: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden; /* 防止滚动 */
+}
 
 .App {
   position: fixed;
