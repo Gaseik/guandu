@@ -120,7 +120,7 @@ export const containerSetup = {
   5: {
     wide: {
       position: {
-        x: -1.693,
+        x: -2.193,
         y: 0.037,
         z: 0
       },
@@ -283,7 +283,7 @@ export const triceratopsSetup = {
   2: {
     wide: {
       position: {
-        x: 0,
+        x: -0.5,
         y: 0,
         z: 0
       },

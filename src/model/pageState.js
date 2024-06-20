@@ -611,7 +611,7 @@ function loadFoods(scene, arLib, callback) {
       setScene(arLib.addAnchor(i), scene, armodel, () => {
         setTimeout(() => {
           callback()
-          foodsArray[i].model = true
+          foodsArray[i].model = true      
         }, 500)
 
       }, arBoard)
