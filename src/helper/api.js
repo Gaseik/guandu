@@ -5,11 +5,11 @@ export function enterPageApi() {
         eventName: 'MainPageCount',
     })
         .then(function (response) {
-            alert("後臺數據傳輸成功" + JSON.stringify(response.data))
+            // alert("後臺數據傳輸成功" + JSON.stringify(response.data))
             console.log(JSON.stringify(response.data));
         })
         .catch(function (error) {
-            alert("後臺數據傳輸失敗" + JSON.stringify(error))
+            // alert("後臺數據傳輸失敗" + JSON.stringify(error))
             console.log(JSON.stringify(error));
         });
 }
