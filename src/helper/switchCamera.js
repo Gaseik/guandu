@@ -1,7 +1,14 @@
 export async function switchCamera(arLib, mode) {
   let { video } = arLib;
   const facingMode = mode ? 'user' : 'environment';
-  console.log(facingMode, mode);
+  console.log(`Switching camera to ${facingMode} mode.`);
+
+  // Release current media stream
+  if (video.srcObject) {
+    let tracks = video.srcObject.getTracks();
+    tracks.forEach(track => track.stop());
+    video.srcObject = null;
+  }
 
   const constraints = {
     video: {
@@ -10,17 +17,17 @@ export async function switchCamera(arLib, mode) {
   };
 
   try {
-    // 尝试使用facingMode获取媒体流
+    console.log(`Trying to get media stream with facingMode: ${facingMode}`);
     let stream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = stream;
   } catch (error) {
     console.error(`Error getting media stream with facingMode: ${facingMode}`, error);
-    if (error.name === 'OverconstrainedError' || error.name === 'NotFoundError') {
+    if (error.name === 'OverconstrainedError' || error.name === 'NotFoundError' || error.name === 'NotReadableError') {
       try {
-        // 尝试获取设备列表并使用deviceId获取媒体流
         const cameras = await getCameras();
         const deviceId = mode ? getFrontCameraId(cameras) : getBackCameraId(cameras);
         if (deviceId) {
+          console.log(`Trying to get media stream with deviceId: ${deviceId}`);
           let stream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: { exact: deviceId } }
           });
@@ -41,9 +48,9 @@ export async function switchCamera(arLib, mode) {
 async function getCameras() {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter(device => device.kind === 'videoinput');
+  console.log('Available video devices:', videoDevices);
   return videoDevices;
 }
-
 function getFrontCameraId(cameras) {
   for (const camera of cameras) {
     if (camera.label.toLowerCase().includes('front')) {
