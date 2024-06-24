@@ -62,7 +62,6 @@ function Loading(props) {
       loadModelFile()
     }
   
-  
   },[])
 
   return (
@@ -73,6 +72,7 @@ function Loading(props) {
           : "opacity-100"
       }`}
     >
+      <div className="version">v{import.meta.env.VITE_VERSION}</div>
       <div className="loading-group w-full h-full flex  items-center flex-col p-5">
         <img
           src="/image/guanduLogo.png"
