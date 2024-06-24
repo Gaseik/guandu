@@ -694,14 +694,14 @@ function connectWebCam(mindarThree) {
     const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
     frame_logo = new THREE.Mesh(logoGeometry, logoMaterial);
     if (window.innerWidth > 600) {
-      frame_logo.scale.set(0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width, 0.3 * window.innerWidth / texture.image.width)
+      frame_logo.scale.set(0.35 * window.innerWidth / texture.image.width, 0.35 * window.innerWidth / texture.image.width, 0.35 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
       // 半張logo寬度 = texture.image.width * 0.3 *window.innerWidth / texture.image.wid /2
-      frame_logo.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.1 * window.innerWidth, window.innerHeight * 0.92, 1);
+      frame_logo.position.set(texture.image.width * 0.2 * window.innerWidth / texture.image.width / 2 + 0.11 * window.innerWidth, window.innerHeight * 0.91, 1);
     } else {
-      frame_logo.scale.set(0.4 * window.innerWidth / texture.image.width, 0.4 * window.innerWidth / texture.image.width, 0.4 * window.innerWidth / texture.image.width)
+      frame_logo.scale.set(0.45* window.innerWidth / texture.image.width, 0.45* window.innerWidth / texture.image.width, 0.4 * window.innerWidth / texture.image.width)
       // 调整位置以放置在左上角
-      frame_logo.position.set(window.innerWidth / 4 - 0, window.innerHeight - 70, 1);
+      frame_logo.position.set(window.innerWidth / 4 +10, window.innerHeight - 70, 1);
     }
     frame_logo.visible = false;
     orthoScene.add(frame_logo);
@@ -737,32 +737,55 @@ function connectWebCam(mindarThree) {
 
 
   });
-
+  //* 前鏡頭的背景橫幅
   loader.load('/image/frame_down.png', (texture) => {
     texture.encoding = THREE.sRGBEncoding;
     const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
 
     frame_down = new THREE.Mesh(grassGeometry, grassMaterial);
-    // 設定大小
-    frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
-    // 调整位置以放置在左上角
-    frame_down.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    console.log(texture.image.height,'高度',texture.image.height * window.innerWidth / texture.image.width / 2)
+    console.log(texture.image.width)
+    console.log(window.innerWidth)
+    console.log(texture.image.height * window.innerWidth / texture.image.width )
+   
+    if (window.innerWidth > 600) {
+      // 設定大小
+      frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+      // 调整位置以放置在左上角
+      frame_down.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    } else {
+     // 設定大小
+     frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+     console.log(frame_down.position)
+     // 调整位置以放置在左上角
+     frame_down.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    }
+  
     //新增到2D場景
     frame_down.visible = false;
     orthoScene.add(frame_down);
 
   });
+  //* 前鏡頭的下方食物
   loader.load('/image/frame_food.png', (texture) => {
     texture.encoding = THREE.sRGBEncoding;
     const grassGeometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
     const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
 
     frame_food = new THREE.Mesh(grassGeometry, grassMaterial);
-    // 設定大小
-    frame_food.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
-    // 调整位置以放置在左上角
-    frame_food.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
+    if (window.innerWidth > 600) {
+       // 設定大小
+       frame_food.scale.set(0.9 * window.innerWidth / texture.image.width, 0.9* window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+       // 调整位置以放置在左上角
+       frame_food.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2.2 - 20, 2);
+    } else {
+     // 設定大小
+     frame_food.scale.set(0.95 * window.innerWidth / texture.image.width, 0.95* window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
+     // 调整位置以放置在左上角
+     frame_food.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2.2-8, 2);
+    }
+
     //新增到2D場景
     frame_food.visible = false;
     orthoScene.add(frame_food);
