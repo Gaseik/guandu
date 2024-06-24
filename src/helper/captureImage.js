@@ -20,38 +20,6 @@ export function captureImage(arLib) {
   const sx = (video.width - sw) / 2
   const sy = (video.height - sh) / 2
 
-  // console.log(`canvas2videoRatio:${canvas2videoRatio}`)
-  // console.log(`canvas.w:${canvas.width} h:${canvas.height} video.w:${video.width} h:${video.height}`)
-  // console.log(`sw=${sw} sh=${sh} sx=${sx} sy=${sy}`)
-
-  /*
-  let webcamW = video.width * scale
-  let webcamH = video.height * scale
-
-  const sx = (webcamW - canvas.width) / 2
-  const sy = (canvas.height - canvas.height) / 2
-  const sw = video.width - sx * 2
-  const sh = video.height - sy * 2
-  */
- 
-  // let scale = video.clientHeight / video.height
-  // const sx =
-  //   (((video.clientWidth - renderCanvas.clientWidth) / 2) * video.videoWidth) /
-  //   video.clientWidth;
-
-
-  // const sy =canvas.height - video.height * scale;
-
-  // const sw = video.videoWidth - sx * 2;
-  // const sh = video.videoHeight - sy * 2;
-
-  /*
-  console.log('canvesHeight', canvas.height)
-  console.log('videoHeight', video.height)
-  console.log('videoclientHeight', video.clientHeight)
-  console.log(scale )
-  console.log('result' ,sy )
-  */
   context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
   renderer.preserveDrawingBuffer = true;

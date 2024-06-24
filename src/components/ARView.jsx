@@ -248,7 +248,7 @@ const ARView = function () {
           </div>
         </div>
       </div>
-
+      {/* <div className="version absolute bottom-0">v{import.meta.env.VITE_VERSION}</div> */}
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div
@@ -271,6 +271,7 @@ const ARView = function () {
             alt=""
             className="absolute w-16 bottom-[-20px] boddarti"
           />
+     
         </div>
       ) : (
         <></>

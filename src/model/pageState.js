@@ -744,11 +744,7 @@ function connectWebCam(mindarThree) {
     const grassMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, toneMapped: false });
 
     frame_down = new THREE.Mesh(grassGeometry, grassMaterial);
-    console.log(texture.image.height,'高度',texture.image.height * window.innerWidth / texture.image.width / 2)
-    console.log(texture.image.width)
-    console.log(window.innerWidth)
-    console.log(texture.image.height * window.innerWidth / texture.image.width )
-   
+ 
     if (window.innerWidth > 600) {
       // 設定大小
       frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
@@ -757,7 +753,7 @@ function connectWebCam(mindarThree) {
     } else {
      // 設定大小
      frame_down.scale.set(1 * window.innerWidth / texture.image.width, 1.15 * window.innerWidth / texture.image.width, 1 * window.innerWidth / texture.image.width)
-     console.log(frame_down.position)
+
      // 调整位置以放置在左上角
      frame_down.position.set(window.innerWidth / 2, texture.image.height * window.innerWidth / texture.image.width / 2, 2);
     }
