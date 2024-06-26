@@ -146,7 +146,6 @@ function handleDinos(arLib, i) {
         break;
       case 15:
         DinoRaptor.changeBoxTexture(textureWhite)
-  
         DinoRaptor.playAnimations()
         DinoRaptor.rotateToFirstType()
         arLib.addAnchor(i).group.add(DinoRaptor.modelObject)
@@ -273,10 +272,6 @@ export const AppState = {
       dispatch.AppState.setIsArModeOn(true)
       dispatch.AppState.setArLib(arLib);
       handleDinos(arLib, detect - 1)
-
-      // loadFoods(scene, arLib, () => {
-      //   dispatch.AppState.setLoading(false)
-      // })
     },
 
     async loadModelFile(reload) {

@@ -5,35 +5,24 @@ export function captureImage(arLib) {
   const context = canvas.getContext('2d');
   canvas.width = renderCanvas.width;
   canvas.height = renderCanvas.height;
-  // console.log('videoHeight = ',video.clientHeight)
-  // console.log('videoW = ',video.clientWidth)
-  // console.log('canvasW = ',canvas.width)
-  // console.log('canvasH = ',canvas.height)
-  // console.log(renderCanvas.clientWidth)
 
-
-  const canvas2videoRatio = canvas.height / video.height
-  const videoScaledW = video.width * canvas2videoRatio
-  
-  const sw = video.width * (canvas.width / videoScaledW)
-  const sh = video.height
-  const sx = (video.width - sw) / 2
-  const sy = (video.height - sh) / 2
-
-  context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-
+  //* 先把模型畫上去
   renderer.preserveDrawingBuffer = true;
-  camera.layers.set(0);
-  renderer.render(scene, camera);
+  renderer.autoClear = false;
   if(detect>17){
     camera.layers.set(detect-3);
   }else{
     camera.layers.set(detect);
   }
-  
   renderer.render(scene, camera);
-  
+
+   //* 切換2D相機layer到視訊畫面的那層
+  renderer.autoClear = false; 
+  camera2D.layers.set(25);
+  renderer.render(scene, camera2D);
+  //* 切換2D相機layer到圖框的那層
   renderer.autoClear = false; // 防止在渲染2D场景前清除现有的渲染
+  camera2D.layers.set(0);
   renderer.render(scene2D, camera2D);
   renderer.autoClear = true; 
   context.drawImage(renderCanvas, 0, 0, canvas.width, canvas.height);
