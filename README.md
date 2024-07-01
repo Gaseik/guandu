@@ -1,12 +1,86 @@
-# FrontEnd_How to start project
+# Guandu Dock (關渡碼頭_中華電信_時藝)
 
-1. open the file fold of guandu_dock via VSCode
-2. click the button to open the terminal
-3. click **up button** on the Keyboard or type:  `yarn dev`
-4. check the IP addresses and make sure you already link to the same wifi as the mobile device
-5. input the IP address on your mobile browser to test or demo!
 
-# env setting
+## Project Description
+This project uses MindAR and Three.js to implement a feature where the camera scans specific images, triggering various 3D models to appear. These models include food from vendors at Guandu Wharf and dinosaur models.
+
+
+## Table of Contents
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Project Structure](#Project-structure)
+- [Tech Stack](#Tech-stack)
+- [Env Setting](#env-setting)
+- [Deployment](#Deployment)
+
+## Installation
+Instructions on how to install and set up the project.
+### Prerequisites
+- Node.js (>16.9.1)
+- npm or yarn (recomand yarn)
+
+### Steps
+1. Clone the repository
+    ```bash
+    git clone https://gitlab.com/picbot/guandu_dock.git
+    ```
+2. Install dependencies
+    ```bash
+    cd guandu_dock
+    yarn 
+    ```
+    
+    
+    
+## Usage
+Instructions on how to run and use the project.
+### Development Mode
+    yarn dev
+### Build for Production
+    yarn build
+    
+    
+## Project Structure
+A brief explanation of the project's directory and file structure.
+
+    ```
+    ├── public            
+    │   ├── music          # svgs and test contents
+    │   ├── model          # 3D model .json
+    │   ├── image          # 2D scene frame / textureForBox / logo
+    ├── src
+    │   ├── App.jsx        # Entry point
+    │   ├── model          # pageStage for most rematch management
+    │   ├── helper         # api methods / js handles
+    │   ├── scss           # scss
+    │   ├── main.tsx       # Application entry point
+    │   └── components     # components
+    │        ├── Loading   # loading cover
+    │        ├── DeviceO...# cover for orientation to small width
+    │        ├── ARView    # Main page for whole AR experience
+    │        ├── ViewPhoto # preview for photo
+    │        └── ViewVideo # preview for record video
+    ├── package.json       # Project dependencies and scripts
+    ├── tsconfig.json      # TypeScript configuration
+    ├── env                # env variables
+    ├── dockerfile         # docker file
+    └── vite.config.ts     # Vite configuration
+    
+    ```
+    
+    
+## Tech Stack
+List the main technologies and tools used in the project.
+- React
+- Vite
+- [MindAR](https://hiukim.github.io/mind-ar-js-doc/)
+- Threejs **(v0.136)**
+- Rematch
+- Axios
+- Tailwind
+- Sass
+
+## env-setting
 ```
 sudo apt update
 sudo apt install curl
@@ -17,9 +91,9 @@ git fetch
 git reset --hard origin/dev
 ```
 
-# How to deploy a new project
+## Deployment
 
-## 1. connect (as below)
+### 1. connect (as below)
 ```
 // 登入機器
 ssh ictserver@192.168.1.220
@@ -29,7 +103,7 @@ ssh ictserver@192.168.1.220
 sudo su
 密碼
 ```
-## 2. 建立git專案
+### 2. 建立git專案
 ```
 // 建立新資料夾並進入
 mkdir your_folder_name
@@ -42,7 +116,7 @@ git checkout "Feature_UI_delete&music-button" //切換到遠端 branch
 git branch                                    //確認你現在處於正確的 branch
 ```
 
-## 3.修正資源庫
+### 3.修正資源庫
 ```
 // 更新node module
 npm i
@@ -54,7 +128,7 @@ vim ./node_modules/mind-ar/dist/mindar-image-three.prod.js
 // 改完後按 "esc" 然後輸入 ":wq" 表示儲存 
 ``` 
 
-## 4.新建.env
+### 4.新建.env
 ```
 touch .env
 
@@ -69,7 +143,7 @@ cat .env
 ``` 
 
 
-## 5.run in background 
+### 5.run in background 
 ```
 // 背景執行
 nohup npm run dev &
