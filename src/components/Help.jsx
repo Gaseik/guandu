@@ -6,6 +6,8 @@ import { IoCameraReverseOutline } from "react-icons/io5";
 
 import { FaTrash } from "react-icons/fa6";
 import { PageState } from "../model/pageState";
+import { RiArrowGoBackLine } from "react-icons/ri";
+
 import { switchCamera } from "../helper/switchCamera";
 
 function Help(props) {
@@ -76,7 +78,7 @@ function Help(props) {
         onClick={onClickClose}
       >
         {" "}
-        <FaTrash className="text-xl sm:text-3xl text-main  " />{" "}
+        <RiArrowGoBackLine className="text-xl sm:text-3xl text-main  " />{" "}
       </div>
     </div>
   );
