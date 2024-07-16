@@ -27,33 +27,88 @@ const ARView = function () {
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-  const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
-
+  const bgMusicRef = useRef(new Audio(bgMusicFile));
+  const bgMusic2Ref = useRef(new Audio(bgDMusicFile));
 
   useEffect(() => {
-    //判斷哪些地方需要撥放音樂
-    if (
-      state.pageState === PageState.Discard ||
-      state.pageState === PageState.ViewPhoto ||
-      state.pageState === PageState.ViewVideo ||
-      state.pageState === PageState.ViewVideo ||
-      state.pageState === PageState.ARView 
-    
-    ) {
-      bgMusic.volume = 0.1;
-      if (state.musicStarted&&state.playAuth) {
-        bgMusic.play();
-        dispatch.AppState.setPlayAuth(true)
-        dispatch.AppState.setMusicStarted(true);
+    const bgMusic = bgMusicRef.current;
+    const bgMusic2 = bgMusic2Ref.current;
+
+    const playMusic = async () => {
+      if (
+        state.pageState === PageState.Discard ||
+        state.pageState === PageState.ViewPhoto ||
+        state.pageState === PageState.ViewVideo ||
+        state.pageState === PageState.ARView 
+      ) {
+        if (state.musicStarted && state.playAuth) {
+          bgMusic.loop = true;
+          bgMusic2.loop = true;
+
+          if (state.detect > 0) {
+            if (state.detect < 15) {
+              await bgMusic2.pause();
+              bgMusic2.currentTime = 0; // 确保音乐从头播放
+              bgMusic.volume = 0.1;
+              bgMusic2.volume = 0;
+              bgMusic.play();
+            } else {
+              await bgMusic.pause();
+              bgMusic.currentTime = 0; // 确保音乐从头播放
+              bgMusic.volume = 0;
+              bgMusic2.volume = 0.1;
+              bgMusic2.play();
+            }
+          }
+        } else {
+          bgMusic.pause();
+          bgMusic2.pause();
+        }
       } else {
         bgMusic.pause();
+        bgMusic2.pause();
+        dispatch.AppState.setPlayAuth(false);
+        dispatch.AppState.setMusicStarted(false);
       }
-    } else {
+    };
+
+    playMusic();
+
+    return () => {
       bgMusic.pause();
-      dispatch.AppState.setPlayAuth(false)
-      dispatch.AppState.setMusicStarted(false); // 否则暂停背景音乐
-    }
-  }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
+      bgMusic2.pause();
+    };
+  }, [state.pageState, state.musicStarted, state.playAuth, state.detect, dispatch]);
+
+  useEffect(() => {
+    dispatch.AppState.setMusicStarted(false);
+    const bgMusic = bgMusicRef.current;
+    const bgMusic2 = bgMusic2Ref.current;
+
+    const handleDetectChange = async () => {
+      if (state.detect > 0) {
+        if (state.detect < 15) {
+          await bgMusic2.pause();
+          bgMusic2.currentTime = 0; // 确保音乐从头播放
+          bgMusic.volume = 0.1;
+          bgMusic2.volume = 0;
+          bgMusic.play();
+        } else {
+          await bgMusic.pause();
+          bgMusic.currentTime = 0; // 确保音乐从头播放
+          bgMusic.volume = 0;
+          bgMusic2.volume = 0.1;
+          bgMusic2.play();
+        }
+        dispatch.AppState.setMusicStarted(true);
+      } else {
+        bgMusic.volume = 0;
+        bgMusic2.volume = 0;
+      }
+    };
+
+    handleDetectChange();
+  }, [state.detect, dispatch]);
 
   useEffect(() => {
     // 页面可见性变化处理
@@ -72,46 +127,7 @@ const ARView = function () {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch.AppState.setMusicStarted(false);
-    // 判斷是恐龍還是食物類，判斷要撥放甚麼音樂
-    // 目前0是初始狀態，1-14是食物，15-20是恐龍類
-    if(state.detect > 0 ){
-      if (state.detect < 15) {
-        if (bgMusic.src !== bgMusicFile) {
-          dispatch.AppState.setPlayAuth(false);
-          setBgMusic(null);
-          const newBgMusic = new Audio(bgMusicFile);
-          newBgMusic.loop = true; // 在這裡設置音樂循環播放
-          setBgMusic(newBgMusic);
-          if (state.playAuth) {
-            dispatch.AppState.setPlayAuth(false);
-          }
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        }
-      } else {
-        if (bgMusic.src !== bgDMusicFile) {
-          setBgMusic(null);
-          const newBgMusic = new Audio(bgDMusicFile);
-          newBgMusic.loop = true; // 在這裡設置音樂循環播放
-          setBgMusic(newBgMusic);
-          if (state.playAuth) {
-            dispatch.AppState.setPlayAuth(false);
-          }
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        } else {
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        }
-      }
-    }
-    
-  }, [state.detect]);
+ 
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -248,7 +264,7 @@ const ARView = function () {
           </div>
         </div>
       </div>
-      {/* <div className="version absolute bottom-0">v{import.meta.env.VITE_VERSION}</div> */}
+      
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div
