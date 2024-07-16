@@ -323,7 +323,7 @@ export const AppState = {
           dispatch.AppState.setDetect(0)
           arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
-          dispatch.AppState.setHelpPop(true);
+          // dispatch.AppState.setHelpPop(true);
           dispatch.AppState.setLoading(false);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
           switch (i) {
