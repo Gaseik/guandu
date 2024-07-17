@@ -83,11 +83,11 @@ function Help(props) {
         <div className={`${showTip?"show":"gone"} tip absolute w-48 text-white bg-main left-[-160px] bottom-[-50px] text-center rounded-lg py-1 text-sm`}>請開啟音樂  體驗更佳！</div>
       </span>
       <div
-        className={`rounded-full bg-white flex text-[#020202] font-bold  p-1  ${state.pageState!==PageState.ARView?"":"hidden"}`}
+        className={`rounded-full bg-main flex text-[#020202] font-bold  p-1.5  ${state.pageState!==PageState.ARView?"":"hidden"}`}
         onClick={onClickClose}
       >
         {" "}
-        <RiArrowGoBackLine className="text-xl sm:text-3xl text-main  " />{" "}
+        <RiArrowGoBackLine className="text-xl sm:text-3xl text-white  " />{" "}
       </div>
     </div>
   );
