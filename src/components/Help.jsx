@@ -87,7 +87,7 @@ function Help(props) {
         onClick={onClickClose}
       >
         {" "}
-        <RiArrowGoBackLine className="text-xl sm:text-3xl text-white  " />{" "}
+        <RiArrowGoBackLine className="text-lg sm:text-3xl text-white  " />{" "}
       </div>
     </div>
   );
