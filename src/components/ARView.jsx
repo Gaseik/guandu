@@ -11,6 +11,7 @@ import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
 import { switchCamera } from "../helper/switchCamera";
+import Steps from "./DownloadSteps";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -289,9 +290,12 @@ const ARView = function () {
           />
      
         </div>
-      ) : (
-        <></>
-      )}
+      ) : 
+       null
+      }
+      {
+        state.stepsPop?<Steps/>:null
+      }
       {state.pageState === PageState.ViewPhoto ? <ViewPhoto /> : null}
       {state.pageState === PageState.ViewVideo ? <ViewVideo /> : null}
       {state.pageState === PageState.Discard ? <Discard /> : null}

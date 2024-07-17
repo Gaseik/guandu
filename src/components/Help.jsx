@@ -9,6 +9,7 @@ import { PageState } from "../model/pageState";
 import { RiArrowGoBackLine } from "react-icons/ri";
 
 import { switchCamera } from "../helper/switchCamera";
+import { isSafari, isIOS } from "react-device-detect";
 
 function Help(props) {
   const state = useSelector((state) => state.AppState);
@@ -17,6 +18,10 @@ function Help(props) {
 
   function onClickHelp() {
     dispatch.AppState.setHelpPop(!state.helpPop);
+  }
+  function onClickSteps() {
+    console.log(state.stepsPop)
+    dispatch.AppState.setStepsPop(!state.stepsPop);
   }
   function onClickClose() {
     dispatch.AppState.showDiscard(PageState.ViewVideo);
@@ -51,13 +56,17 @@ function Help(props) {
 
 
   return (
-    <div className="btn help">
+    <div className="btn help help-group">
       <Bicycle className="absolute right-[-10px] top-[-25px]" />
       <span className={`flex relative items-center ${state.pageState===PageState.ARView?"":"hidden"}`} onClick={onClickHelp}>
         <div className={`w-1 h-7 bg-red absolute rotate-45 ${state.helpPop?"hidden":""} left-4 sm:left-6`}></div>
         <IoIosInformationCircle className="sm:text-5xl text-[36px]  text-main " />
       </span>
-     
+      <span className={`flex relative items-center ${state.pageState===PageState.ViewVideo  && isIOS?"":"hidden"}`} onClick={onClickSteps}>
+        <IoIosInformationCircle className="sm:text-5xl text-[36px]  text-main mr-2" />
+        <div className={`${!state.stepsPop?"show":"gone"} tip absolute w-48 text-white bg-main left-[-155px] bottom-[-45px] text-center rounded-lg py-1 text-sm`}>iOS 用戶 下載流程</div>
+
+      </span>
       <span
         className={` flex relative justify-center items-center ${!state.switchCamera?`bg-main`:"bg-white"} border-2 border-main  rounded-full sm:p-1.5 p-1 m-1  ${state.pageState===PageState.ARView?"":"hidden"} musicbtn`}
         onClick={onChangeCamera}

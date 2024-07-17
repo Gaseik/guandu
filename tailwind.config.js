@@ -9,7 +9,8 @@ export default {
       'main':"#5CC2D5",
       'white':"#FFF",
       "transparent": 'transparent',
-      'red':"#EF8784"
+      'red':"#EF8784",
+      "black":"#020202"
     },
     screens: {
       'sm': '640px',
