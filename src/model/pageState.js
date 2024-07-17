@@ -123,6 +123,7 @@ const initialState = {
   videoData: undefined,
   lastPage: undefined,
   helpPop: true,
+  stepsPop: false,
   target: undefined,
   switchCamera: false
 }
@@ -211,6 +212,9 @@ export const AppState = {
     },
     setHelpPop: (state, payload) => {
       return { ...state, helpPop: payload }
+    },
+    setStepsPop: (state, payload) => {
+      return { ...state, stepsPop: payload }
     },
     setMusicStarted: (state, payload) => {
       return { ...state, musicStarted: payload }
