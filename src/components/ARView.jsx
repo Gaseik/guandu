@@ -35,6 +35,7 @@ const ARView = function () {
     const bgMusic2 = bgMusic2Ref.current;
 
     const playMusic = async () => {
+      console.log('1')
       if (
         state.pageState === PageState.Discard ||
         state.pageState === PageState.ViewPhoto ||
@@ -86,6 +87,7 @@ const ARView = function () {
     const bgMusic2 = bgMusic2Ref.current;
 
     const handleDetectChange = async () => {
+      console.log('2')
       if (state.detect > 0) {
         if (state.detect < 15) {
           await bgMusic2.pause();
@@ -108,7 +110,7 @@ const ARView = function () {
     };
 
     handleDetectChange();
-  }, [state.detect, dispatch]);
+  }, [state.detect,state.playAuth]);
 
   useEffect(() => {
     // 页面可见性变化处理
