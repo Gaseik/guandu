@@ -13,7 +13,7 @@ export async function startCaptureVideo(canvasDom,backgroundAudioElement) {
   // 获取背景音乐的音频流
   const backgroundAudioSource = audioContext.createMediaElementSource(backgroundAudioElement);
   backgroundAudioSource.connect(destination);
-  backgroundAudioSource.connect(audioContext.destination); 
+  backgroundAudioSource.connect(audioContext.destination);
 
   // 将背景音乐的音频流与视频流合并
   const combinedStream = new MediaStream([...videoStream.getTracks(), ...destination.stream.getAudioTracks()]);

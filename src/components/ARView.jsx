@@ -143,7 +143,8 @@ const ARView = function () {
     }
   }
 
-  function onClickTakeVideo() {
+  const onClickTakeVideo = () => {
+    let bgM = state.detect > 14 ? bgMusic2Ref.current : bgMusicRef.current
     if (changeBtn !== viewButton.video) {
       setChangeBtn(viewButton.video);
       setTimeout(() => {
@@ -152,7 +153,7 @@ const ARView = function () {
     } else {
       if (!isRecord) {
         const { renderer } = state.arLib;
-        startCaptureVideo(renderer.domElement,bgMusic);
+        startCaptureVideo(renderer.domElement, bgM);
         const startTime = Date.now();
         if (counter) {
           clearInterval(counter);
@@ -170,7 +171,8 @@ const ARView = function () {
         stopRecord(false);
       }
     }
-  }
+  };
+
 
   function stopRecord(changeBtn) {
     if (counter) {
