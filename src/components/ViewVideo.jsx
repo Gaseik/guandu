@@ -66,8 +66,8 @@ const ViewVideo = function () {
         className="stop-btn"
         style={{ display: playVideo ? "none" : "flex" }}
       >
-        <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" />
-        <div className="stop"></div>
+        {/* <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" /> */}
+        <div className="stop"   ></div>
         <div className="bg"></div>
       </div>
       {/* <div className="absolute bottom-0 z-[0]">
