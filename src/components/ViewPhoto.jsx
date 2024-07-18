@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import Help from "./Help";
 import { isMobile, isIOS } from "react-device-detect";
 import { BiDownload } from "react-icons/bi";
+import { TbHandFinger } from "react-icons/tb";
 
 const ViewPhoto = function () {
   const [pop, setPop] = useState();
@@ -73,17 +74,19 @@ const ViewPhoto = function () {
       {/* <div className="absolute bottom-0 z-[0]">
         <img src={"/image/frameGroup.png"} alt="frame" />
       </div> */}
-      <div className="stepBtn-container">
-        {/* <div className="info">請在相簿或資料夾中找到您的檔案</div> */}
-        <div className="stepBtn-group">
-          <div
-            className={`info flex justify-center items-center ${
+        <TbHandFinger className="absolute bottom-[25%] left-[calc(50%-48px)] animate-pulse animate-bounce text-6xl"/>
+        <div
+            className={` flex justify-center items-center absolute  bottom-[20%]   animate-pulse w-full ${
               isMobile && isIOS ? "" : "hidden"
             }`}
           >
-            請長按畫面，選取儲存照片
+            請<a className="font-bold">長按</a>畫面，選取儲存照片
             <BiDownload className="text-xl ml-2"/>
           </div>
+      <div className="stepBtn-container">
+        {/* <div className="info">請在相簿或資料夾中找到您的檔案</div> */}
+        <div className="stepBtn-group">
+        
           <button
             className={`${
               isMobile && isIOS ? "hidden" : ""
