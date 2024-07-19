@@ -4,13 +4,14 @@ import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
-import {  IoIosClose, IoMdCamera } from "react-icons/io";
+import { IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
 import bgDMusicFile from "/music/audio_container.mp3";
 import Help from "./Help";
 import { switchCamera } from "../helper/switchCamera";
+import Steps from "./DownloadSteps";
 const viewButton = {
   camera: "camera",
   video: "video",
@@ -27,91 +28,111 @@ const ARView = function () {
   const view = useRef(null);
   const state = useSelector((state) => state.AppState);
   const dispatch = useDispatch();
-  const [bgMusic, setBgMusic] = useState(new Audio(bgMusicFile)); // 创建背景音乐的 Audio 实例
-
+  const bgMusicRef = useRef(new Audio(bgMusicFile));
+  const bgMusic2Ref = useRef(new Audio(bgDMusicFile));
 
   useEffect(() => {
-    //判斷哪些地方需要撥放音樂
-    if (
-      state.pageState === PageState.Discard ||
-      state.pageState === PageState.ViewPhoto ||
-      state.pageState === PageState.ViewVideo ||
-      state.pageState === PageState.ViewVideo ||
-      state.pageState === PageState.ARView 
-    
-    ) {
-      bgMusic.volume = 0.1;
-      if (state.musicStarted&&state.playAuth) {
-        bgMusic.play();
-        dispatch.AppState.setPlayAuth(true)
-        dispatch.AppState.setMusicStarted(true);
+    const bgMusic = bgMusicRef.current;
+    const bgMusic2 = bgMusic2Ref.current;
+
+    const playMusic = async () => {
+      if (
+        state.pageState === PageState.Discard ||
+        state.pageState === PageState.ARView
+      ) {
+        if (state.musicStarted && state.playAuth) {
+          bgMusic.loop = true;
+          bgMusic2.loop = true;
+          bgMusic.play();
+          bgMusic2.play();
+          if (state.detect > 0) {
+            if (state.detect < 15) {
+               bgMusic2.pause();
+              bgMusic2.currentTime = 0; // 确保音乐从头播放
+              bgMusic.volume = 0.1;
+              bgMusic2.volume = 0;
+            } else {
+               bgMusic.pause();
+              bgMusic.currentTime = 0; // 确保音乐从头播放
+              bgMusic.volume = 0;
+              bgMusic2.volume = 0.1;
+            }
+          }
+        } else {
+          bgMusic.pause();
+          bgMusic2.pause();
+        }
       } else {
         bgMusic.pause();
+        bgMusic2.pause();
+        dispatch.AppState.setPlayAuth(false);
+        dispatch.AppState.setMusicStarted(false);
       }
-    } else {
+    };
+
+    playMusic();
+
+    return () => {
       bgMusic.pause();
-      dispatch.AppState.setPlayAuth(false)
-      dispatch.AppState.setMusicStarted(false); // 否则暂停背景音乐
-    }
-  }, [state.pageState, state.musicStarted,state.playAuth]);// 依赖于页面状态和背景音乐实例
+      bgMusic2.pause();
+    };
+  }, [
+    state.pageState,
+    state.musicStarted,
+    state.playAuth,
+    state.detect,
+    dispatch,
+  ]);
+
+  // useEffect(() => {
+  //   dispatch.AppState.setMusicStarted(false);
+  //   const bgMusic = bgMusicRef.current;
+  //   const bgMusic2 = bgMusic2Ref.current;
+
+  //   const handleDetectChange = async () => {
+  //     if (
+  //       state.pageState === PageState.Discard ||
+  //       state.pageState === PageState.ARView     
+  //     ) {
+  //       if (state.detect > 0  &&  state.playAuth) {
+  //         if (state.detect < 15) {
+  //           bgMusic2.currentTime = 0; // 确保音乐从头播放
+  //           bgMusic.volume = 0.1;
+  //           bgMusic2.volume = 0;
+  //           bgMusic.play();
+  //         } else {
+  //           bgMusic.currentTime = 0; // 确保音乐从头播放
+  //           bgMusic.volume = 0;
+  //           bgMusic2.volume = 0.1;
+  //           bgMusic2.play();
+  //         }
+  //         dispatch.AppState.setMusicStarted(true);
+  //       } else {
+  //         bgMusic.volume = 0;
+  //         bgMusic2.volume = 0;
+  //       }
+  //     }
+  //   };
+
+  //   handleDetectChange();
+  // }, [state.detect, state.playAuth]);
 
   useEffect(() => {
     // 页面可见性变化处理
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // 切回頁面,有時攝影機畫面會停住,重新抓一次
-        dispatch.AppState.setSwitchCamera(state.switchCamera)
+        dispatch.AppState.setSwitchCamera(state.switchCamera);
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // 组件卸载时移除事件监听器
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
-
-  useEffect(() => {
-    dispatch.AppState.setMusicStarted(false);
-    // 判斷是恐龍還是食物類，判斷要撥放甚麼音樂
-    // 目前0是初始狀態，1-14是食物，15-20是恐龍類
-    if(state.detect > 0 ){
-      if (state.detect < 15) {
-        if (bgMusic.src !== bgMusicFile) {
-          dispatch.AppState.setPlayAuth(false);
-          setBgMusic(null);
-          const newBgMusic = new Audio(bgMusicFile);
-          newBgMusic.loop = true; // 在這裡設置音樂循環播放
-          setBgMusic(newBgMusic);
-          if (state.playAuth) {
-            dispatch.AppState.setPlayAuth(false);
-          }
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        }
-      } else {
-        if (bgMusic.src !== bgDMusicFile) {
-          setBgMusic(null);
-          const newBgMusic = new Audio(bgDMusicFile);
-          newBgMusic.loop = true; // 在這裡設置音樂循環播放
-          setBgMusic(newBgMusic);
-          if (state.playAuth) {
-            dispatch.AppState.setPlayAuth(false);
-          }
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        } else {
-          setTimeout(() => {
-            dispatch.AppState.setMusicStarted(true);
-          }, 500);
-        }
-      }
-    }
-    
-  }, [state.detect]);
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -123,11 +144,12 @@ const ARView = function () {
     } else {
       setChangeBtn(viewButton.camera);
       setVideoBtn(false);
-      stopRecord(true)
+      stopRecord(true);
     }
   }
 
-  function onClickTakeVideo() {
+  const onClickTakeVideo = () => {
+    let bgM = state.detect > 14 ? bgMusic2Ref.current : bgMusicRef.current;
     if (changeBtn !== viewButton.video) {
       setChangeBtn(viewButton.video);
       setTimeout(() => {
@@ -136,7 +158,7 @@ const ARView = function () {
     } else {
       if (!isRecord) {
         const { renderer } = state.arLib;
-        startCaptureVideo(renderer.domElement,bgMusic);
+        startCaptureVideo(renderer.domElement, bgM);
         const startTime = Date.now();
         if (counter) {
           clearInterval(counter);
@@ -154,7 +176,7 @@ const ARView = function () {
         stopRecord(false);
       }
     }
-  }
+  };
 
   function stopRecord(changeBtn) {
     if (counter) {
@@ -167,19 +189,22 @@ const ARView = function () {
           return;
         }
         // console.log(blob);
-        if(!changeBtn){
+        if (!changeBtn) {
           dispatch.AppState.setVideo(blob);
         }
-       
       });
     }
   }
-  function loadFoodCover () {
+  function loadFoodCover() {
     return (
-      <div className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
-        state.loading ? "z-[25] opacity-100" : "opacity-0 z-[-1] pointer-events-none"
-      }`}>
-           <div
+      <div
+        className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
+          state.loading
+            ? "z-[25] opacity-100"
+            : "opacity-0 z-[-1] pointer-events-none"
+        }`}
+      >
+        <div
           className="my-3 inline-block h-16 w-16 sm:h-24 sm:w-24 animate-spin rounded-full 
           border-4 sm:border-8 border-solid border-current border-r-transparent align-[-0.125em]
            text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -193,9 +218,8 @@ const ARView = function () {
           模組載入中
         </div>
       </div>
-    )
+    );
   }
-
 
   return (
     <div
@@ -205,7 +229,7 @@ const ARView = function () {
     >
       {loadFoodCover()}
       <div id="ar_container" className=" h-[100%] flex " />
-      
+
       {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
       <div className="button-group">
@@ -248,7 +272,7 @@ const ARView = function () {
           </div>
         </div>
       </div>
-      {/* <div className="version absolute bottom-0">v{import.meta.env.VITE_VERSION}</div> */}
+
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div
@@ -271,11 +295,13 @@ const ARView = function () {
             alt=""
             className="absolute w-16 bottom-[-20px] boddarti"
           />
-     
         </div>
-      ) : (
-        <></>
-      )}
+      ) : 
+       null
+      }
+      {
+        state.stepsPop?<Steps/>:null
+      }
       {state.pageState === PageState.ViewPhoto ? <ViewPhoto /> : null}
       {state.pageState === PageState.ViewVideo ? <ViewVideo /> : null}
       {state.pageState === PageState.Discard ? <Discard /> : null}
