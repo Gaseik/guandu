@@ -4,7 +4,7 @@ import { PageState } from "../model/pageState";
 import { ViewPhoto, ViewVideo, Discard, Progress } from "./index";
 import { captureImage } from "../helper/captureImage";
 import { startCaptureVideo, stopCaptureVideo } from "../helper/captureVideo";
-import {  IoIosClose, IoMdCamera } from "react-icons/io";
+import { IoIosClose, IoMdCamera } from "react-icons/io";
 import { AiFillVideoCamera } from "react-icons/ai";
 import { IoStop } from "react-icons/io5";
 import bgMusicFile from "/music/audio_meals.mp3";
@@ -35,12 +35,9 @@ const ARView = function () {
     const bgMusic2 = bgMusic2Ref.current;
 
     const playMusic = async () => {
-      console.log('1')
       if (
         state.pageState === PageState.Discard ||
-        state.pageState === PageState.ViewPhoto ||
-        state.pageState === PageState.ViewVideo ||
-        state.pageState === PageState.ARView 
+        state.pageState === PageState.ARView
       ) {
         if (state.musicStarted && state.playAuth) {
           bgMusic.loop = true;
@@ -79,7 +76,13 @@ const ARView = function () {
       bgMusic.pause();
       bgMusic2.pause();
     };
-  }, [state.pageState, state.musicStarted, state.playAuth, state.detect, dispatch]);
+  }, [
+    state.pageState,
+    state.musicStarted,
+    state.playAuth,
+    state.detect,
+    dispatch,
+  ]);
 
   useEffect(() => {
     dispatch.AppState.setMusicStarted(false);
@@ -87,49 +90,49 @@ const ARView = function () {
     const bgMusic2 = bgMusic2Ref.current;
 
     const handleDetectChange = async () => {
-      console.log('2')
-      if (state.detect > 0) {
-        if (state.detect < 15) {
-          await bgMusic2.pause();
-          bgMusic2.currentTime = 0; // 确保音乐从头播放
-          bgMusic.volume = 0.1;
-          bgMusic2.volume = 0;
-          bgMusic.play();
+      if (
+        state.pageState === PageState.Discard ||
+        state.pageState === PageState.ARView     
+      ) {
+        if (state.detect > 0  &&  state.playAuth) {
+          if (state.detect < 15) {
+            bgMusic2.currentTime = 0; // 确保音乐从头播放
+            bgMusic.volume = 0.1;
+            bgMusic2.volume = 0;
+            bgMusic.play();
+          } else {
+            bgMusic.currentTime = 0; // 确保音乐从头播放
+            bgMusic.volume = 0;
+            bgMusic2.volume = 0.1;
+            bgMusic2.play();
+          }
+          dispatch.AppState.setMusicStarted(true);
         } else {
-          await bgMusic.pause();
-          bgMusic.currentTime = 0; // 确保音乐从头播放
           bgMusic.volume = 0;
-          bgMusic2.volume = 0.1;
-          bgMusic2.play();
+          bgMusic2.volume = 0;
         }
-        dispatch.AppState.setMusicStarted(true);
-      } else {
-        bgMusic.volume = 0;
-        bgMusic2.volume = 0;
       }
     };
 
     handleDetectChange();
-  }, [state.detect,state.playAuth]);
+  }, [state.detect, state.playAuth]);
 
   useEffect(() => {
     // 页面可见性变化处理
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // 切回頁面,有時攝影機畫面會停住,重新抓一次
-        dispatch.AppState.setSwitchCamera(state.switchCamera)
+        dispatch.AppState.setSwitchCamera(state.switchCamera);
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // 组件卸载时移除事件监听器
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
-
- 
 
   function onClickTakePhoto() {
     if (changeBtn === viewButton.camera) {
@@ -141,12 +144,12 @@ const ARView = function () {
     } else {
       setChangeBtn(viewButton.camera);
       setVideoBtn(false);
-      stopRecord(true)
+      stopRecord(true);
     }
   }
 
   const onClickTakeVideo = () => {
-    let bgM = state.detect > 14 ? bgMusic2Ref.current : bgMusicRef.current
+    let bgM = state.detect > 14 ? bgMusic2Ref.current : bgMusicRef.current;
     if (changeBtn !== viewButton.video) {
       setChangeBtn(viewButton.video);
       setTimeout(() => {
@@ -175,7 +178,6 @@ const ARView = function () {
     }
   };
 
-
   function stopRecord(changeBtn) {
     if (counter) {
       clearInterval(counter);
@@ -187,19 +189,22 @@ const ARView = function () {
           return;
         }
         // console.log(blob);
-        if(!changeBtn){
+        if (!changeBtn) {
           dispatch.AppState.setVideo(blob);
         }
-       
       });
     }
   }
-  function loadFoodCover () {
+  function loadFoodCover() {
     return (
-      <div className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
-        state.loading ? "z-[25] opacity-100" : "opacity-0 z-[-1] pointer-events-none"
-      }`}>
-           <div
+      <div
+        className={`w-full absolute h-full transition-all duration-200 bg-[#020202] bg-opacity-50 flex flex-col justify-center items-center ${
+          state.loading
+            ? "z-[25] opacity-100"
+            : "opacity-0 z-[-1] pointer-events-none"
+        }`}
+      >
+        <div
           className="my-3 inline-block h-16 w-16 sm:h-24 sm:w-24 animate-spin rounded-full 
           border-4 sm:border-8 border-solid border-current border-r-transparent align-[-0.125em]
            text-white motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -213,9 +218,8 @@ const ARView = function () {
           模組載入中
         </div>
       </div>
-    )
+    );
   }
-
 
   return (
     <div
@@ -225,7 +229,7 @@ const ARView = function () {
     >
       {loadFoodCover()}
       <div id="ar_container" className=" h-[100%] flex " />
-      
+
       {/* <img src="image/textForTri.png" alt="" className={`absolute bottom-40 sm:bottom-60  right-14 w-[60%] animate-pulse ${state.detect===11?"":"hidden"}`}/> */}
       <Help />
       <div className="button-group">
@@ -268,7 +272,7 @@ const ARView = function () {
           </div>
         </div>
       </div>
-      
+
       {state.helpPop ? (
         <div className="help-pop hidden">
           <div
@@ -291,7 +295,6 @@ const ARView = function () {
             alt=""
             className="absolute w-16 bottom-[-20px] boddarti"
           />
-     
         </div>
       ) : (
         <></>
