@@ -74,19 +74,24 @@ const ViewPhoto = function () {
       {/* <div className="absolute bottom-0 z-[0]">
         <img src={"/image/frameGroup.png"} alt="frame" />
       </div> */}
-        <TbHandFinger className="absolute bottom-[25%] left-[calc(50%-48px)] animate-pulse animate-bounce text-6xl"/>
+      <div className=" absolute bottom-[25%] left-0 w-full flex flex-col items-center animate-pulse pt-8">
+        <div>
+          <TbHandFinger className=" fill-main animate-bounce text-6xl" />
+        </div>
+
         <div
-            className={` flex justify-center items-center absolute  bottom-[20%]   animate-pulse w-full ${
-              isMobile && isIOS ? "" : "hidden"
-            }`}
-          >
-            請<a className="font-bold">長按</a>畫面，選取儲存照片
-            <BiDownload className="text-xl ml-2"/>
-          </div>
+          className={` flex justify-center items-center mt-2 bg-main px-4 py-2 rounded-full ${
+            isMobile && isIOS ? "" : "hidden"
+          }`}
+        >
+          請<a className="font-bold">長按</a>畫面，選取儲存照片
+          <BiDownload className="text-xl ml-2" />
+        </div>
+      </div>
+
       <div className="stepBtn-container">
         {/* <div className="info">請在相簿或資料夾中找到您的檔案</div> */}
         <div className="stepBtn-group">
-        
           <button
             className={`${
               isMobile && isIOS ? "hidden" : ""
