@@ -123,6 +123,7 @@ const initialState = {
   videoData: undefined,
   lastPage: undefined,
   helpPop: true,
+  stepsPop: false,
   target: undefined,
   switchCamera: false
 }
@@ -211,6 +212,9 @@ export const AppState = {
     },
     setHelpPop: (state, payload) => {
       return { ...state, helpPop: payload }
+    },
+    setStepsPop: (state, payload) => {
+      return { ...state, stepsPop: payload }
     },
     setMusicStarted: (state, payload) => {
       return { ...state, musicStarted: payload }
@@ -323,7 +327,7 @@ export const AppState = {
           dispatch.AppState.setDetect(0)
           arLib.detect = 0
           dispatch.AppState.setMusicStarted(false)
-          dispatch.AppState.setHelpPop(true);
+          // dispatch.AppState.setHelpPop(true);
           dispatch.AppState.setLoading(false);
           //設定好每個恐龍掃版結束後,要把板子回復,動畫結束
           switch (i) {

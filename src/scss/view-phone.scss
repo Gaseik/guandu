@@ -82,11 +82,11 @@
     width: 60px;
     .stop{
       display: block;
-      position: absolute;
       height: 26px;
       width: 26px;
-      opacity: 1;
+      opacity: 0;
       background-color: #ffff;
+      animation: stop-gradual-change 1s 1;
     }
     .bg{
         content: '""';
@@ -130,7 +130,6 @@
     font-size: 3rem;
     opacity: 0;
     position: absolute;
-    animation: stop-gradual-change 1s 1;
     content: '';
    
   }
@@ -166,7 +165,7 @@
   height: 120px;
   position: absolute;
   padding: 30px 25px;
-  bottom: 50px;
+  bottom: 3%;
   background-color: transparent;
   align-items: center;
   flex-direction: column;

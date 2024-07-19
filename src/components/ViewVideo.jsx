@@ -4,6 +4,7 @@ import Help from "./Help";
 import { MdSaveAlt } from "react-icons/md";
 import { saveApi } from "../helper/api";
 
+import { isSafari, isIOS } from "react-device-detect";
 
 const ViewVideo = function () {
   const [playVideo, setPlayVideo] = useState(true);
@@ -47,7 +48,6 @@ const ViewVideo = function () {
     }, 1000);
   }
 
-
   function videoOnLoad() {
     videoDom.current.play();
   }
@@ -63,7 +63,7 @@ const ViewVideo = function () {
           ref={videoDom}
         />
       </div>
-      <Help/>
+      <Help />
       <div
         className="play-btn"
         style={{ display: playVideo ? "block" : "none" }}
@@ -74,15 +74,20 @@ const ViewVideo = function () {
         className="stop-btn"
         style={{ display: playVideo ? "none" : "flex" }}
       >
-        <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" />
-        <div className="stop"></div>
+        {/* <img src="/image/icon/stop-icon.svg" className="stop-icon" alt="" /> */}
+        <div className="stop"   ></div>
         <div className="bg"></div>
       </div>
       {/* <div className="absolute bottom-0 z-[0]">
         <img src={"/image/frameGroup.png"} alt="frame" />
       </div> */}
       <div className="stepBtn-container">
-        <div className="info">請在相簿或資料夾中找到您的檔案</div>
+        {isIOS ? (
+          null
+          // <div className="rounded-full bg-white text-black p-2">IOS 用戶 下載流程</div>
+        ) : (
+          <div className="info">請在相簿或資料夾中找到您的檔案</div>
+        )}
         <div className="stepBtn-group">
           <button
             className="text-white text-base flex items-center rounded-full py-2 px-6 bg-main"
