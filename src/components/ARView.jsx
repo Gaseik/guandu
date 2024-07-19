@@ -42,20 +42,19 @@ const ARView = function () {
         if (state.musicStarted && state.playAuth) {
           bgMusic.loop = true;
           bgMusic2.loop = true;
-
+          bgMusic.play();
+          bgMusic2.play();
           if (state.detect > 0) {
             if (state.detect < 15) {
-              await bgMusic2.pause();
+               bgMusic2.pause();
               bgMusic2.currentTime = 0; // 确保音乐从头播放
               bgMusic.volume = 0.1;
               bgMusic2.volume = 0;
-              bgMusic.play();
             } else {
-              await bgMusic.pause();
+               bgMusic.pause();
               bgMusic.currentTime = 0; // 确保音乐从头播放
               bgMusic.volume = 0;
               bgMusic2.volume = 0.1;
-              bgMusic2.play();
             }
           }
         } else {
@@ -84,38 +83,38 @@ const ARView = function () {
     dispatch,
   ]);
 
-  useEffect(() => {
-    dispatch.AppState.setMusicStarted(false);
-    const bgMusic = bgMusicRef.current;
-    const bgMusic2 = bgMusic2Ref.current;
+  // useEffect(() => {
+  //   dispatch.AppState.setMusicStarted(false);
+  //   const bgMusic = bgMusicRef.current;
+  //   const bgMusic2 = bgMusic2Ref.current;
 
-    const handleDetectChange = async () => {
-      if (
-        state.pageState === PageState.Discard ||
-        state.pageState === PageState.ARView     
-      ) {
-        if (state.detect > 0  &&  state.playAuth) {
-          if (state.detect < 15) {
-            bgMusic2.currentTime = 0; // 确保音乐从头播放
-            bgMusic.volume = 0.1;
-            bgMusic2.volume = 0;
-            bgMusic.play();
-          } else {
-            bgMusic.currentTime = 0; // 确保音乐从头播放
-            bgMusic.volume = 0;
-            bgMusic2.volume = 0.1;
-            bgMusic2.play();
-          }
-          dispatch.AppState.setMusicStarted(true);
-        } else {
-          bgMusic.volume = 0;
-          bgMusic2.volume = 0;
-        }
-      }
-    };
+  //   const handleDetectChange = async () => {
+  //     if (
+  //       state.pageState === PageState.Discard ||
+  //       state.pageState === PageState.ARView     
+  //     ) {
+  //       if (state.detect > 0  &&  state.playAuth) {
+  //         if (state.detect < 15) {
+  //           bgMusic2.currentTime = 0; // 确保音乐从头播放
+  //           bgMusic.volume = 0.1;
+  //           bgMusic2.volume = 0;
+  //           bgMusic.play();
+  //         } else {
+  //           bgMusic.currentTime = 0; // 确保音乐从头播放
+  //           bgMusic.volume = 0;
+  //           bgMusic2.volume = 0.1;
+  //           bgMusic2.play();
+  //         }
+  //         dispatch.AppState.setMusicStarted(true);
+  //       } else {
+  //         bgMusic.volume = 0;
+  //         bgMusic2.volume = 0;
+  //       }
+  //     }
+  //   };
 
-    handleDetectChange();
-  }, [state.detect, state.playAuth]);
+  //   handleDetectChange();
+  // }, [state.detect, state.playAuth]);
 
   useEffect(() => {
     // 页面可见性变化处理
