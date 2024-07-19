@@ -66,7 +66,6 @@ export function stopCaptureVideo(callback) {
     // 停止音频流
     if (audioContext) {
       // audioContext.close();
-      console.log(audioContext)
     }
   }
 }
